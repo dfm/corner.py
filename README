@@ -1,1 +1,11 @@
 MOAR TRIANGLZ!
+
+Install
+-------
+
+% pip install -e git+https://github.com/dfm/triangle.py.git#egg=triangle.py-dev
+
+Use
+---
+
+LOOK AT demo.py!
