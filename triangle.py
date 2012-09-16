@@ -87,15 +87,22 @@ def hist2d(x, y, *args, **kwargs):
 
 
 def corner(xs, labels=None, **kwargs):
-    factor = 2.5
-    dim = factor * len(xs)
+    K = len(xs)
+    factor = 2.0          # size of one side of one panel
+    lbdim = 0.5 * factor  # size of left/bottom margin
+    trdim = 0.05 * factor # size of top/right margin
+    whspace = 0.05        # w/hspace size
+    plotdim = factor * K + factor * (K - 1.) * whspace
+    dim = lbdim + plotdim + trdim
     fig = pl.figure(figsize=(dim, dim))
-    fig.subplots_adjust(left=0.2, bottom=0.2, right=0.95, top=0.95,
-            wspace=0.04, hspace=0.04)
+    lb = lbdim / dim
+    tr = (lbdim + plotdim) / dim
+    fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
+                        wspace=whspace, hspace=whspace)
 
     for i, x in enumerate(xs):
         # Plot the histograms.
-        ax = fig.add_subplot(len(xs), len(xs), i * (len(xs) + 1) + 1)
+        ax = fig.add_subplot(K, K, i * (K + 1) + 1)
         ax.hist(x, bins=kwargs.get("bins", 50), histtype="step",
                 color=kwargs.get("color", "k"))
 
@@ -105,26 +112,25 @@ def corner(xs, labels=None, **kwargs):
         ax.xaxis.set_major_locator(MaxNLocator(5))
 
         # Not so DRY.
-        if i < len(xs) - 1:
+        if i < K - 1:
             ax.set_xticklabels([])
         else:
-            [l.set_rotation(35) for l in ax.get_xticklabels()]
+            [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
                 ax.set_xlabel(labels[i])
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
         for j, y in enumerate(xs[:i]):
-            ax = fig.add_subplot(len(xs), len(xs),
-                    (i * len(xs) + j) + 1)
+            ax = fig.add_subplot(K, K, (i * K + j) + 1)
             hist2d(y, x, ax=ax, **kwargs)
 
             ax.xaxis.set_major_locator(MaxNLocator(5))
             ax.yaxis.set_major_locator(MaxNLocator(5))
 
-            if i < len(xs) - 1:
+            if i < K - 1:
                 ax.set_xticklabels([])
             else:
-                [l.set_rotation(35) for l in ax.get_xticklabels()]
+                [l.set_rotation(45) for l in ax.get_xticklabels()]
                 if labels is not None:
                     ax.set_xlabel(labels[j])
                     ax.xaxis.set_label_coords(0.5, -0.3)
@@ -132,8 +138,9 @@ def corner(xs, labels=None, **kwargs):
             if j > 0:
                 ax.set_yticklabels([])
             else:
+                [l.set_rotation(45) for l in ax.get_yticklabels()]
                 if labels is not None:
                     ax.set_ylabel(labels[i])
-                    ax.yaxis.set_label_coords(-0.4, 0.5)
+                    ax.yaxis.set_label_coords(-0.3, 0.5)
 
     return fig
