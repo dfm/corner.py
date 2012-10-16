@@ -85,13 +85,16 @@ def hist2d(x, y, *args, **kwargs):
     cov = np.cov(data)
     error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
 
+    ax.set_xlim(extent[0])
+    ax.set_ylim(extent[1])
 
-def corner(xs, labels=None, **kwargs):
+
+def corner(xs, labels=None, extents=None, **kwargs):
     K = len(xs)
-    factor = 2.0          # size of one side of one panel
-    lbdim = 0.5 * factor  # size of left/bottom margin
-    trdim = 0.05 * factor # size of top/right margin
-    whspace = 0.05        # w/hspace size
+    factor = 2.0           # size of one side of one panel
+    lbdim = 0.5 * factor   # size of left/bottom margin
+    trdim = 0.05 * factor  # size of top/right margin
+    whspace = 0.05         # w/hspace size
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
     fig = pl.figure(figsize=(dim, dim))
@@ -100,6 +103,9 @@ def corner(xs, labels=None, **kwargs):
     fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
                         wspace=whspace, hspace=whspace)
 
+    if extents is None:
+        extents = [[x.min(), x.max()] for x in xs]
+
     for i, x in enumerate(xs):
         # Plot the histograms.
         ax = fig.add_subplot(K, K, i * (K + 1) + 1)
@@ -107,7 +113,7 @@ def corner(xs, labels=None, **kwargs):
                 color=kwargs.get("color", "k"))
 
         # Set up the axes.
-        ax.set_xlim([x.min(), x.max()])
+        ax.set_xlim(extents[i])
         ax.set_yticklabels([])
         ax.xaxis.set_major_locator(MaxNLocator(5))
 
@@ -122,7 +128,7 @@ def corner(xs, labels=None, **kwargs):
 
         for j, y in enumerate(xs[:i]):
             ax = fig.add_subplot(K, K, (i * K + j) + 1)
-            hist2d(y, x, ax=ax, **kwargs)
+            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
 
             ax.xaxis.set_major_locator(MaxNLocator(5))
             ax.yaxis.set_major_locator(MaxNLocator(5))
