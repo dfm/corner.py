@@ -109,7 +109,7 @@ def corner(xs, labels=None, extents=None, **kwargs):
     for i, x in enumerate(xs):
         # Plot the histograms.
         ax = fig.add_subplot(K, K, i * (K + 1) + 1)
-        ax.hist(x, bins=kwargs.get("bins", 50), histtype="step",
+        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],histtype="step",
                 color=kwargs.get("color", "k"))
 
         # Set up the axes.
