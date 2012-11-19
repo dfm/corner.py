@@ -89,7 +89,8 @@ def hist2d(x, y, *args, **kwargs):
     ax.set_ylim(extent[1])
 
 
-def corner(xs, labels=None, extents=None, **kwargs):
+def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
+           **kwargs):
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
@@ -109,8 +110,10 @@ def corner(xs, labels=None, extents=None, **kwargs):
     for i, x in enumerate(xs):
         # Plot the histograms.
         ax = fig.add_subplot(K, K, i * (K + 1) + 1)
-        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],histtype="step",
-                color=kwargs.get("color", "k"))
+        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
+                histtype="step", color=kwargs.get("color", "k"))
+        if truths is not None:
+            ax.axvline(truths[i], color=truth_color)
 
         # Set up the axes.
         ax.set_xlim(extents[i])
@@ -129,6 +132,9 @@ def corner(xs, labels=None, extents=None, **kwargs):
         for j, y in enumerate(xs[:i]):
             ax = fig.add_subplot(K, K, (i * K + j) + 1)
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
+
+            if truths is not None:
+                ax.plot(truths[i], truths[j], ".", color=truth_color)
 
             ax.xaxis.set_major_locator(MaxNLocator(5))
             ax.yaxis.set_major_locator(MaxNLocator(5))
