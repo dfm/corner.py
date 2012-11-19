@@ -134,7 +134,9 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
 
             if truths is not None:
-                ax.plot(truths[j], truths[i], ".", color=truth_color)
+                ax.plot(truths[j], truths[i], "s", color=truth_color)
+                ax.axvline(truths[j], color=truth_color)
+                ax.axhline(truths[i], color=truth_color)
 
             ax.xaxis.set_major_locator(MaxNLocator(5))
             ax.yaxis.set_major_locator(MaxNLocator(5))
