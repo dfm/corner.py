@@ -57,7 +57,7 @@ def hist2d(x, y, *args, **kwargs):
     Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
     H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y))
 
-    V = sp.erf(np.arange(0.5, 2.1, 0.5) / np.sqrt(2))
+    V = sp.erf(np.arange(1, 2.1, 0.5) / np.sqrt(2))
     Hflat = H.flatten()
     inds = np.argsort(Hflat)[::-1]
     Hflat = Hflat[inds]
@@ -70,15 +70,16 @@ def hist2d(x, y, *args, **kwargs):
         except:
             V[i] = Hflat[0]
 
-    X, Y = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
-
+    X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
+    X, Y = X[:-1], Y[:-1]
+    
     ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
             rasterized=True)
-    ax.contourf(X, Y, H.T, [V[-1], 0.],
+    ax.contourf(X1, Y1, H.T, [V[-1], 0.],
         cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
             N=2))
     ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-    ax.contour(X, Y, H.T, V, colors=color)
+    ax.contour(X1, Y1, H.T, V, colors=color)
 
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
