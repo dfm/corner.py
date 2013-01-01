@@ -47,6 +47,7 @@ def hist2d(x, y, *args, **kwargs):
 	extent = kwargs.pop("extent", [[x.min(), x.max()], [y.min(), y.max()]])
 	bins = kwargs.pop("bins", 50)
 	color = kwargs.pop("color", 'k')
+	plot_datapoints = kwargs.get("plot_datapoints", True)
 
 	cmap = cm.get_cmap("gray")
 	cmap._init()
@@ -72,11 +73,13 @@ def hist2d(x, y, *args, **kwargs):
 
 	X, Y = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
 
-	ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
-			rasterized=True)
-	ax.contourf(X, Y, H.T, [V[-1], H.max()],
-		cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
-			N=2), antialiased=False)
+	if plot_datapoints:
+		ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
+				rasterized=True)
+		ax.contourf(X, Y, H.T, [V[-1], H.max()],
+			cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
+				N=2), antialiased=False)
+	
 	ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
 	ax.contour(X, Y, H.T, V, colors=color)
 
