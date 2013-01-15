@@ -5,7 +5,6 @@ __version__ = "0.0.1"
 
 
 import numpy as np
-import scipy.special as sp
 
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
@@ -46,7 +45,7 @@ def hist2d(x, y, *args, **kwargs):
 
     extent = kwargs.pop("extent", [[x.min(), x.max()], [y.min(), y.max()]])
     bins = kwargs.pop("bins", 50)
-    color = kwargs.pop("color", 'k')
+    color = kwargs.pop("color", "k")
     plot_datapoints = kwargs.get("plot_datapoints", True)
 
     cmap = cm.get_cmap("gray")
@@ -58,7 +57,7 @@ def hist2d(x, y, *args, **kwargs):
     Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
     H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y))
 
-    V = 1.0 - np.exp(-0.5*np.arange(0.5,2.1,0.5)**2)
+    V = 1.0 - np.exp(-0.5 * np.arange(0.5, 2.1, 0.5) ** 2)
     Hflat = H.flatten()
     inds = np.argsort(Hflat)[::-1]
     Hflat = Hflat[inds]
@@ -71,17 +70,18 @@ def hist2d(x, y, *args, **kwargs):
         except:
             V[i] = Hflat[0]
 
-    X, Y = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
+    X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
+    X, Y = X[:-1], Y[:-1]
 
     if plot_datapoints:
         ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
                 rasterized=True)
-        ax.contourf(X, Y, H.T, [V[-1], H.max()],
+        ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
             cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
                 N=2), antialiased=False)
-    
+
     ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-    ax.contour(X, Y, H.T, V, colors=color)
+    ax.contour(X1, Y1, H.T, V, colors=color)
 
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
