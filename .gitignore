@@ -3,3 +3,4 @@
 *.png
 *.egg-info
 *.pdf
+dist

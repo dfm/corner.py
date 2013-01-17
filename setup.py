@@ -14,7 +14,7 @@ version = re.findall(r"__version__ = \"(.*?)\"", open("triangle.py").read())[0]
 
 
 setup(
-    name="triangle.py",
+    name="triangle_plot",
     version=version,
     author="Daniel Foreman-Mackey",
     author_email="danfm@nyu.edu",
