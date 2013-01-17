@@ -25,7 +25,15 @@ import matplotlib.cm as cm
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
            **kwargs):
 
-    xs = np.atleast_2d(xs).T
+    # Deal with 1D sample lists.
+    xs = np.atleast_1d(xs)
+    if len(xs.shape) == 1:
+        xs = np.atleast_2d(xs)
+    else:
+        assert len(xs.shape) == 2, "The input sample array must be 1- or 2-D."
+        xs = xs.T
+    assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
+                                       "dimensions than samples!"
 
     K = len(xs)
     factor = 2.0           # size of one side of one panel
