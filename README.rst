@@ -39,3 +39,9 @@ like this:
     samples = np.random.randn(ndim * nsamples).reshape([nsamples, ndim])
     figure = triangle.corner(samples)
     figure.savefig("triangle.png")
+
+With some other tweaks (see `demo.py
+<https://github.com/dfm/triangle.py/blob/master/demo.py>`_) you can get
+something that looks awesome like:
+
+.. image:: https://raw.github.com/dfm/triangle.py/master/demo.png

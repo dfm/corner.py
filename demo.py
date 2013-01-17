@@ -4,7 +4,7 @@ import numpy as np
 import triangle
 
 # Set up the parameters of the problem.
-ndim, nsamples = 5, 50000
+ndim, nsamples = 3, 50000
 
 # Generate some fake data.
 data1 = np.random.randn(ndim * 4 * nsamples / 5) \
@@ -15,6 +15,6 @@ data2 = 5 * np.random.rand(ndim)[None, :] \
 data = np.vstack([data1, data2])
 
 # Plot it.
-figure = triangle.corner(data)
+figure = triangle.corner(data, labels=[r"$x$", r"$y$", r"$\log \alpha$",
+                                       r"$\Gamma \, [\mathrm{parsec}]$"])
 figure.savefig("demo.png")
-figure.savefig("demo.pdf")
