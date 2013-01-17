@@ -1,16 +1,99 @@
-__all__ = ["hist2d", "error_ellipse", "corner"]
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+from __future__ import print_function, absolute_import, unicode_literals
 
+__all__ = ["corner", "hist2d", "error_ellipse"]
 __version__ = "0.0.1"
-
+__author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
+__copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
+__contributors__ = [    # Alphabetical by first name.
+                        "Ekta Patel @ekta1224",
+                        "Geoff Ryan @geoffryan",
+                        "Phil Marshall @drphilmarshall",
+                        "Pierre Gratier @pirg",
+                   ]
 
 import numpy as np
-
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Ellipse
 import matplotlib.cm as cm
+
+
+def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
+           **kwargs):
+
+    xs = np.atleast_2d(xs).T
+
+    K = len(xs)
+    factor = 2.0           # size of one side of one panel
+    lbdim = 0.5 * factor   # size of left/bottom margin
+    trdim = 0.05 * factor  # size of top/right margin
+    whspace = 0.05         # w/hspace size
+    plotdim = factor * K + factor * (K - 1.) * whspace
+    dim = lbdim + plotdim + trdim
+    fig = pl.figure(figsize=(dim, dim))
+    lb = lbdim / dim
+    tr = (lbdim + plotdim) / dim
+    fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
+                        wspace=whspace, hspace=whspace)
+
+    if extents is None:
+        extents = [[x.min(), x.max()] for x in xs]
+
+    for i, x in enumerate(xs):
+        # Plot the histograms.
+        ax = fig.add_subplot(K, K, i * (K + 1) + 1)
+        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
+                histtype="step", color=kwargs.get("color", "k"))
+        if truths is not None:
+            ax.axvline(truths[i], color=truth_color)
+
+        # Set up the axes.
+        ax.set_xlim(extents[i])
+        ax.set_yticklabels([])
+        ax.xaxis.set_major_locator(MaxNLocator(5))
+
+        # Not so DRY.
+        if i < K - 1:
+            ax.set_xticklabels([])
+        else:
+            [l.set_rotation(45) for l in ax.get_xticklabels()]
+            if labels is not None:
+                ax.set_xlabel(labels[i])
+                ax.xaxis.set_label_coords(0.5, -0.3)
+
+        for j, y in enumerate(xs[:i]):
+            ax = fig.add_subplot(K, K, (i * K + j) + 1)
+            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
+
+            if truths is not None:
+                ax.plot(truths[j], truths[i], "s", color=truth_color)
+                ax.axvline(truths[j], color=truth_color)
+                ax.axhline(truths[i], color=truth_color)
+
+            ax.xaxis.set_major_locator(MaxNLocator(5))
+            ax.yaxis.set_major_locator(MaxNLocator(5))
+
+            if i < K - 1:
+                ax.set_xticklabels([])
+            else:
+                [l.set_rotation(45) for l in ax.get_xticklabels()]
+                if labels is not None:
+                    ax.set_xlabel(labels[j])
+                    ax.xaxis.set_label_coords(0.5, -0.3)
+
+            if j > 0:
+                ax.set_yticklabels([])
+            else:
+                [l.set_rotation(45) for l in ax.get_yticklabels()]
+                if labels is not None:
+                    ax.set_ylabel(labels[i])
+                    ax.yaxis.set_label_coords(-0.3, 0.5)
+
+    return fig
 
 
 def error_ellipse(mu, cov, ax=None, **kwargs):
@@ -90,74 +173,3 @@ def hist2d(x, y, *args, **kwargs):
 
     ax.set_xlim(extent[0])
     ax.set_ylim(extent[1])
-
-
-def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
-           **kwargs):
-    K = len(xs)
-    factor = 2.0           # size of one side of one panel
-    lbdim = 0.5 * factor   # size of left/bottom margin
-    trdim = 0.05 * factor  # size of top/right margin
-    whspace = 0.05         # w/hspace size
-    plotdim = factor * K + factor * (K - 1.) * whspace
-    dim = lbdim + plotdim + trdim
-    fig = pl.figure(figsize=(dim, dim))
-    lb = lbdim / dim
-    tr = (lbdim + plotdim) / dim
-    fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
-                        wspace=whspace, hspace=whspace)
-
-    if extents is None:
-        extents = [[x.min(), x.max()] for x in xs]
-
-    for i, x in enumerate(xs):
-        # Plot the histograms.
-        ax = fig.add_subplot(K, K, i * (K + 1) + 1)
-        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
-                histtype="step", color=kwargs.get("color", "k"))
-        if truths is not None:
-            ax.axvline(truths[i], color=truth_color)
-
-        # Set up the axes.
-        ax.set_xlim(extents[i])
-        ax.set_yticklabels([])
-        ax.xaxis.set_major_locator(MaxNLocator(5))
-
-        # Not so DRY.
-        if i < K - 1:
-            ax.set_xticklabels([])
-        else:
-            [l.set_rotation(45) for l in ax.get_xticklabels()]
-            if labels is not None:
-                ax.set_xlabel(labels[i])
-                ax.xaxis.set_label_coords(0.5, -0.3)
-
-        for j, y in enumerate(xs[:i]):
-            ax = fig.add_subplot(K, K, (i * K + j) + 1)
-            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
-
-            if truths is not None:
-                ax.plot(truths[j], truths[i], "s", color=truth_color)
-                ax.axvline(truths[j], color=truth_color)
-                ax.axhline(truths[i], color=truth_color)
-
-            ax.xaxis.set_major_locator(MaxNLocator(5))
-            ax.yaxis.set_major_locator(MaxNLocator(5))
-
-            if i < K - 1:
-                ax.set_xticklabels([])
-            else:
-                [l.set_rotation(45) for l in ax.get_xticklabels()]
-                if labels is not None:
-                    ax.set_xlabel(labels[j])
-                    ax.xaxis.set_label_coords(0.5, -0.3)
-
-            if j > 0:
-                ax.set_yticklabels([])
-            else:
-                [l.set_rotation(45) for l in ax.get_yticklabels()]
-                if labels is not None:
-                    ax.set_ylabel(labels[i])
-                    ax.yaxis.set_label_coords(-0.3, 0.5)
-
-    return fig

@@ -1,23 +1,32 @@
-import triangle
+#!/usr/bin/env python
 
-try:
-    from setuptools import setup
-    setup
-except ImportError:
-    from distutils.core import setup
-    setup
+import re
+import os
+import sys
+from setuptools import setup
+
+if sys.argv[-1] == "publish":
+    os.system("python setup.py sdist upload")
+    sys.exit()
+
+# Hackishly synchronize the version.
+version = re.findall(r"__version__ = \"(.*?)\"", open("triangle.py").read())[0]
 
 
 setup(
     name="triangle.py",
-    version=triangle.__version__,
+    version=version,
     author="Daniel Foreman-Mackey",
     author_email="danfm@nyu.edu",
+    url="https://github.com/dfm/triangle.py",
     py_modules=["triangle"],
-    description="MOAR TRIANGLEZ",
-    long_description=open("README").read(),
+    description="Make some beautiful corner plots of samples.",
+    long_description=open("README.rst").read(),
+    package_data={"": ["LICENSE"]},
+    include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
+        "License :: OSI Approved :: BSD License",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "Operating System :: OS Independent",
