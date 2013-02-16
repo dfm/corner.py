@@ -6,7 +6,7 @@ __version__ = "0.0.1"
 
 import numpy as np
 import scipy.special as sp
-
+import math
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap
@@ -83,11 +83,23 @@ def hist2d(x, y, *args, **kwargs):
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
     cov = np.cov(data)
-    error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
+    #error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
 
     ax.set_xlim(extent[0])
     ax.set_ylim(extent[1])
 
+def quantile(x,q):
+    x=sorted(x)
+    a=len(x)*q
+    b=int(math.floor(a))
+    c=x[b]
+    return c
+
+def plotq(y):
+    pl.axvline(x=quantile(y,0.25), color='black',alpha=0.5)
+    pl.axvline(x=quantile(y,0.50),color='black',alpha=0.5)
+    pl.axvline(x=quantile(y,0.75),color='black',alpha=0.5)
+    return 'plotted'   
 
 def corner(xs, labels=None, extents=None, **kwargs):
     K = len(xs)
@@ -109,17 +121,19 @@ def corner(xs, labels=None, extents=None, **kwargs):
     for i, x in enumerate(xs):
         # Plot the histograms.
         ax = fig.add_subplot(K, K, i * (K + 1) + 1)
-        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],histtype="step",
+        n, bins, patches=ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],histtype="step",
                 color=kwargs.get("color", "k"))
 
         # Set up the axes.
         ax.set_xlim(extents[i])
+        ax.set_ylim(-0.1*max(n), 1.1*max(n))
         ax.set_yticklabels([])
         ax.xaxis.set_major_locator(MaxNLocator(5))
 
         # Not so DRY.
         if i < K - 1:
             ax.set_xticklabels([])
+
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
@@ -129,7 +143,7 @@ def corner(xs, labels=None, extents=None, **kwargs):
         for j, y in enumerate(xs[:i]):
             ax = fig.add_subplot(K, K, (i * K + j) + 1)
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
-
+            plotq(y)
             ax.xaxis.set_major_locator(MaxNLocator(5))
             ax.yaxis.set_major_locator(MaxNLocator(5))
 
