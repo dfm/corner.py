@@ -23,7 +23,7 @@ import matplotlib.cm as cm
 
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
-           **kwargs):
+           scale_hist=False, quantiles=[], **kwargs):
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
@@ -54,13 +54,25 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
     for i, x in enumerate(xs):
         # Plot the histograms.
         ax = fig.add_subplot(K, K, i * (K + 1) + 1)
-        ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
+        n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
                 histtype="step", color=kwargs.get("color", "k"))
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
+        # Plot quantiles if wanted.
+        if len(quantiles) > 0:
+            xsorted = sorted(x)
+            for q in quantiles:
+                ax.axvline(xsorted[int(q * len(xsorted))], ls="dashed",
+                           color=kwargs.get("color", "k"))
+
         # Set up the axes.
         ax.set_xlim(extents[i])
+        if scale_hist:
+            maxn = np.max(n)
+            ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
+        else:
+            ax.set_ylim(0, 1.1 * np.max(n))
         ax.set_yticklabels([])
         ax.xaxis.set_major_locator(MaxNLocator(5))
 
@@ -177,7 +189,8 @@ def hist2d(x, y, *args, **kwargs):
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
     cov = np.cov(data)
-    error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
+    if kwargs.pop("plot_ellipse", False):
+        error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
 
     ax.set_xlim(extent[0])
     ax.set_ylim(extent[1])

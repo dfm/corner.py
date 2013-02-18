@@ -16,5 +16,6 @@ data = np.vstack([data1, data2])
 
 # Plot it.
 figure = triangle.corner(data, labels=[r"$x$", r"$y$", r"$\log \alpha$",
-                                       r"$\Gamma \, [\mathrm{parsec}]$"])
+                                       r"$\Gamma \, [\mathrm{parsec}]$"],
+                         quantiles=[0.16, 0.5, 0.84], plot_ellipse=True)
 figure.savefig("demo.png")
