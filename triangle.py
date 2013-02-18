@@ -24,6 +24,34 @@ import matplotlib.cm as cm
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], **kwargs):
+    """
+    Make a *sick* corner plot showing the projections of a set of samples
+    drawn in a multi-dimensional space.
+
+    :param xs: ``(nsamples, ndim)``
+        The samples. This should be a 1- or 2-dimensional array. For a 1-D
+        array this results in a simple histogram. For a 2-D array, the zeroth
+        axis is the list of samples and the next axis are the dimensions of
+        the space.
+
+    :param labels: ``ndim`` (optional)
+        A list of names for the dimensions.
+
+    :param truths: ``ndim`` (optional)
+        A list of reference values to indicate on the plots.
+
+    :param truth_color: (optional)
+        A ``matplotlib`` style color for the ``truths`` makers.
+
+    :param quantiles: (optional)
+        A list of fractional quantiles to show on the 1-D histograms as
+        vertical dashed lines.
+
+    :param scale_hist: (optional)
+        Should the 1-D histograms be scaled in such a way that the zero line
+        is visible?
+
+    """
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
