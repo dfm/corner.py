@@ -44,4 +44,4 @@ With some other tweaks (see `demo.py
 <https://github.com/dfm/triangle.py/blob/master/demo.py>`_) you can get
 something that looks awesome like:
 
-.. image:: https://raw.github.com/dfm/triangle.py/master/demo.png
+.. image:: https://raw.github.com/dfm/triangle.py/master/triangle.png
