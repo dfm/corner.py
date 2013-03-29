@@ -166,6 +166,8 @@ def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
         ax = pl.gca()
     ax.add_patch(ellipsePlot)
 
+    return ellipsePlot
+
 
 def hist2d(x, y, *args, **kwargs):
     """
