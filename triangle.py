@@ -8,6 +8,7 @@ __version__ = "0.0.5"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
 __contributors__ = [    # Alphabetical by first name.
+                        "Brendon Brewer @eggplantbren",
                         "Ekta Patel @ekta1224",
                         "Geoff Ryan @geoffryan",
                         "Phil Marshall @drphilmarshall",
@@ -180,6 +181,7 @@ def hist2d(x, y, *args, **kwargs):
     bins = kwargs.pop("bins", 50)
     color = kwargs.pop("color", "k")
     plot_datapoints = kwargs.get("plot_datapoints", True)
+    smooth = kwargs.get("smooth", True)
 
     cmap = cm.get_cmap("gray")
     cmap._init()
@@ -209,12 +211,14 @@ def hist2d(x, y, *args, **kwargs):
     if plot_datapoints:
         ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
                 rasterized=True)
-        ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
-            cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
-                N=2), antialiased=False)
+        if smooth:
+            ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
+                cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
+                   N=2), antialiased=False)
 
-    ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-    ax.contour(X1, Y1, H.T, V, colors=color)
+    if smooth:
+        ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
+        ax.contour(X1, Y1, H.T, V, colors=color)
 
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
