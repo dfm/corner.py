@@ -10,6 +10,7 @@ __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
 __contributors__ = [    # Alphabetical by first name.
                         "Brendon Brewer @eggplantbren",
                         "Ekta Patel @ekta1224",
+                        "Emily Rice @emilurice",
                         "Geoff Ryan @geoffryan",
                         "Phil Marshall @drphilmarshall",
                         "Pierre Gratier @pirg",
