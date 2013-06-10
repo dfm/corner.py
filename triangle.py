@@ -147,7 +147,7 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
 def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
     """
-    Plot the error ellipse at a point given it's covariance matrix.
+    Plot the error ellipse at a point given its covariance matrix.
 
     """
     # some sane defaults
