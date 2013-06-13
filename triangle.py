@@ -95,7 +95,8 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
             for q in quantiles:
                 ax.axvline(xsorted[int(q * len(xsorted))], ls="dashed",
                            color=kwargs.get("color", "k"))
-
+            print quantiles # Print quantiles if wanted.
+                
         # Set up the axes.
         ax.set_xlim(extents[i])
         if scale_hist:
