@@ -103,9 +103,8 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         extents = [[x.min(), x.max()] for x in xs]
 
     for i, x in enumerate(xs):
-        # Plot the histograms.
-        #ax = fig.add_subplot(K, K, i * (K + 1) + 1)
         ax = axes[i,i]
+        # Plot the histograms.
         n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
                 histtype="step", color=kwargs.get("color", "k"))
         if truths is not None:
@@ -141,7 +140,6 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
                 ax.set_xlabel(labels[i])
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
-        #for j, y in enumerate(xs[:i]):
         for j, y in enumerate(xs):
             ax = axes[i,j]
             if j > i:
@@ -151,7 +149,6 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
             elif j == i:
                 continue
                 
-            #ax = fig.add_subplot(K, K, (i * K + j) + 1)
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
                    plot_contours=plot_contours,
                    plot_datapoints=plot_datapoints,
