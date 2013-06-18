@@ -8,6 +8,7 @@ __version__ = "0.0.5"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
 __contributors__ = [    # Alphabetical by first name.
+                        "Adrian Price-Whelan @adrn",
                         "Brendon Brewer @eggplantbren",
                         "Ekta Patel @ekta1224",
                         "Emily Rice @emilurice",
@@ -25,33 +26,47 @@ import matplotlib.cm as cm
 
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=[], **kwargs):
+           scale_hist=False, quantiles=[], plot_contours=True, 
+           plot_datapoints=True, **kwargs):
     """
-    Make a *sick* corner plot showing the projections of a set of samples
-    drawn in a multi-dimensional space.
-
-    :param xs: ``(nsamples, ndim)``
+    Make a *sick* corner plot showing the projections of a data set in a 
+    multi-dimensional space. kwargs are passed to hist2d() or used for 
+    `matplotlib` styling.
+    
+    Parameters
+    ----------
+    xs : array_like (nsamples, ndim)
         The samples. This should be a 1- or 2-dimensional array. For a 1-D
         array this results in a simple histogram. For a 2-D array, the zeroth
         axis is the list of samples and the next axis are the dimensions of
         the space.
 
-    :param labels: ``ndim`` (optional)
+    labels : iterable (ndim,) (optional)
         A list of names for the dimensions.
-
-    :param truths: ``ndim`` (optional)
+    
+    extents : iterable (ndim,) (optional)
+        A list of length 2 tuples containing lower and upper bounds (extents)
+        for each dimension, e.g., [(0.,10.), (1.,5), etc.]
+    
+    truths : iterable (ndim,) (optional)
         A list of reference values to indicate on the plots.
 
-    :param truth_color: (optional)
+    truth_color : str (optional)
         A ``matplotlib`` style color for the ``truths`` makers.
-
-    :param quantiles: (optional)
-        A list of fractional quantiles to show on the 1-D histograms as
-        vertical dashed lines.
-
-    :param scale_hist: (optional)
+    
+    scale_hist : bool (optional)
         Should the 1-D histograms be scaled in such a way that the zero line
         is visible?
+    
+    quantiles : iterable (optional)
+        A list of fractional quantiles to show on the 1-D histograms as
+        vertical dashed lines.
+    
+    plot_contours : bool (optional)
+        Draw contours for dense regions of the plot.
+    
+    plot_datapoints : bool (optional)
+        Draw the individual data points.
 
     """
 
@@ -64,7 +79,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         xs = xs.T
     assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
                                        "dimensions than samples!"
-
+    
+    # backwards-compatibility
+    plot_contours = kwargs.get("smooth", plot_contours)
+    
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
@@ -117,7 +135,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
         for j, y in enumerate(xs[:i]):
             ax = fig.add_subplot(K, K, (i * K + j) + 1)
-            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], **kwargs)
+            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], 
+                   plot_contours=plot_contours,
+                   plot_datapoints=plot_datapoints,
+                   **kwargs)
 
             if truths is not None:
                 ax.plot(truths[j], truths[i], "s", color=truth_color)
@@ -182,7 +203,7 @@ def hist2d(x, y, *args, **kwargs):
     bins = kwargs.pop("bins", 50)
     color = kwargs.pop("color", "k")
     plot_datapoints = kwargs.get("plot_datapoints", True)
-    smooth = kwargs.get("smooth", True)
+    plot_contours = kwargs.get("plot_contours", True)
 
     cmap = cm.get_cmap("gray")
     cmap._init()
@@ -208,16 +229,16 @@ def hist2d(x, y, *args, **kwargs):
 
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
     X, Y = X[:-1], Y[:-1]
-
+    
     if plot_datapoints:
         ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
                 rasterized=True)
-        if smooth:
+        if plot_contours:
             ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
                 cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
                    N=2), antialiased=False)
 
-    if smooth:
+    if plot_contours:
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
         ax.contour(X1, Y1, H.T, V, colors=color)
 
