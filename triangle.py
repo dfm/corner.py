@@ -26,13 +26,13 @@ import matplotlib.cm as cm
 
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=[], plot_contours=True, 
+           scale_hist=False, quantiles=[], verbose=True, plot_contours=True,
            plot_datapoints=True, **kwargs):
     """
-    Make a *sick* corner plot showing the projections of a data set in a 
-    multi-dimensional space. kwargs are passed to hist2d() or used for 
+    Make a *sick* corner plot showing the projections of a data set in a
+    multi-dimensional space. kwargs are passed to hist2d() or used for
     `matplotlib` styling.
-    
+
     Parameters
     ----------
     xs : array_like (nsamples, ndim)
@@ -43,28 +43,31 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
     labels : iterable (ndim,) (optional)
         A list of names for the dimensions.
-    
+
     extents : iterable (ndim,) (optional)
         A list of length 2 tuples containing lower and upper bounds (extents)
         for each dimension, e.g., [(0.,10.), (1.,5), etc.]
-    
+
     truths : iterable (ndim,) (optional)
         A list of reference values to indicate on the plots.
 
     truth_color : str (optional)
         A ``matplotlib`` style color for the ``truths`` makers.
-    
+
     scale_hist : bool (optional)
         Should the 1-D histograms be scaled in such a way that the zero line
         is visible?
-    
+
     quantiles : iterable (optional)
         A list of fractional quantiles to show on the 1-D histograms as
         vertical dashed lines.
-    
+
+    verbose : bool (optional)
+        If true, print the values of the computed quantiles.
+
     plot_contours : bool (optional)
         Draw contours for dense regions of the plot.
-    
+
     plot_datapoints : bool (optional)
         Draw the individual data points.
 
@@ -79,10 +82,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         xs = xs.T
     assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
                                        "dimensions than samples!"
-    
+
     # backwards-compatibility
     plot_contours = kwargs.get("smooth", plot_contours)
-    
+
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
@@ -110,11 +113,14 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
             xsorted = sorted(x)
-            for q in quantiles:
-                ax.axvline(xsorted[int(q * len(xsorted))], ls="dashed",
-                           color=kwargs.get("color", "k"))
-            print quantiles # Print quantiles if wanted.
-                
+            qvalues = [xsorted[int(q * len(xsorted))] for q in quantiles]
+            for q in qvalues:
+                ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
+
+            if verbose:
+                print("Quantiles:")
+                print(zip(quantiles, qvalues))
+
         # Set up the axes.
         ax.set_xlim(extents[i])
         if scale_hist:
@@ -136,7 +142,7 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
         for j, y in enumerate(xs[:i]):
             ax = fig.add_subplot(K, K, (i * K + j) + 1)
-            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]], 
+            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
                    plot_contours=plot_contours,
                    plot_datapoints=plot_datapoints,
                    **kwargs)
@@ -230,7 +236,7 @@ def hist2d(x, y, *args, **kwargs):
 
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
     X, Y = X[:-1], Y[:-1]
-    
+
     if plot_datapoints:
         ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
                 rasterized=True)
