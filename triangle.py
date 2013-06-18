@@ -72,7 +72,7 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         Draw the individual data points.
     
     fig : matplotlib.Figure (optional)
-        
+        Overplot onto the provided figure object.
     
     """
 
