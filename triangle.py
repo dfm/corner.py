@@ -79,7 +79,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         xs = xs.T
     assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
                                        "dimensions than samples!"
-
+    
+    # backwards-compatibility
+    plot_contours = kwargs.get("smooth", plot_contours)
+    
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
