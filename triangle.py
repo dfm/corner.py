@@ -27,7 +27,7 @@ import matplotlib.cm as cm
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True, plot_contours=True,
-           plot_datapoints=True, **kwargs):
+           plot_datapoints=True, fig=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -70,7 +70,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
-
+    
+    fig : matplotlib.Figure (optional)
+        Overplot onto the provided figure object.
+    
     """
 
     # Deal with 1D sample lists.
@@ -93,7 +96,15 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
     whspace = 0.05         # w/hspace size
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
-    fig = pl.figure(figsize=(dim, dim))
+    
+    if fig is None:
+        fig,axes = pl.subplots(K, K, figsize=(dim, dim))
+    else:
+        try:
+            axes = np.array(fig.axes).reshape((K,K))
+        except:
+            raise ValueError("Provided figure has {0} axes, but data has "
+                             "dimensions K={1}".format(len(fig.axes), K))
     lb = lbdim / dim
     tr = (lbdim + plotdim) / dim
     fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
@@ -103,8 +114,8 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         extents = [[x.min(), x.max()] for x in xs]
 
     for i, x in enumerate(xs):
+        ax = axes[i,i]
         # Plot the histograms.
-        ax = fig.add_subplot(K, K, i * (K + 1) + 1)
         n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
                 histtype="step", color=kwargs.get("color", "k"))
         if truths is not None:
@@ -140,8 +151,15 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
                 ax.set_xlabel(labels[i])
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
-        for j, y in enumerate(xs[:i]):
-            ax = fig.add_subplot(K, K, (i * K + j) + 1)
+        for j, y in enumerate(xs):
+            ax = axes[i,j]
+            if j > i:
+                ax.set_visible(False)
+                ax.set_frame_on(False)
+                continue
+            elif j == i:
+                continue
+                
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
                    plot_contours=plot_contours,
                    plot_datapoints=plot_datapoints,
