@@ -27,7 +27,7 @@ import matplotlib.cm as cm
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True, plot_contours=True,
-           plot_datapoints=True, fig=None, **kwargs):
+           plot_datapoints=False, fig=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -115,9 +115,20 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
     for i, x in enumerate(xs):
         ax = axes[i,i]
-        # Plot the histograms.
+        
+        # Plot the histograms. If it's the second row histogram, rotate 90 degrees with orientation='horizontal'.
+        orientation = 'vertical'
+        if i==1:
+            orientation = 'horizontal'
+
         n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
-                histtype="step", color=kwargs.get("color", "k"))
+                histtype="step", color=kwargs.get("color", "k"), orientation=orientation)
+
+        print(orientation)
+        
+        # If it's the second row histogram, invert the y-axis (the old x-axis) 
+        #if i==1: ax.ylim(ax.ylim()[::-1])
+        
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
@@ -126,29 +137,36 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
             xsorted = sorted(x)
             qvalues = [xsorted[int(q * len(xsorted))] for q in quantiles]
             for q in qvalues:
-                ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
-
+                if i==0: ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
+                if i==1: ax.axhline(q, ls="dashed", color=kwargs.get("color", "k"))
+                    
             if verbose:
                 print("Quantiles:")
                 print(zip(quantiles, qvalues))
 
         # Set up the axes.
         ax.set_xlim(extents[i])
+        #if i==1: ax.set_ylim(ax.set_ylim()[::-1]) 
         if scale_hist:
             maxn = np.max(n)
-            ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
+            if i==0: ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
+            if i==1: ax.set_xlim(-0.1 * maxn, 1.1 * maxn)
         else:
-            ax.set_ylim(0, 1.1 * np.max(n))
+            if i==0: ax.set_ylim(0, 1.1 * np.max(n))
+            if i==1: ax.set_xlim(0, 1.1 * np.max(n))
         ax.set_yticklabels([])
-        ax.xaxis.set_major_locator(MaxNLocator(5))
-
+        ax.set_xticklabels([])
+        if i==0: ax.xaxis.set_major_locator(MaxNLocator(5))
+        if i==1: ax.yaxis.set_major_locator(MaxNLocator(5))
+            
         # Not so DRY.
         if i < K - 1:
             ax.set_xticklabels([])
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
-                ax.set_xlabel(labels[i])
+                if i==0: ax.set_xlabel(labels[i])
+                if i==1: ax.set_xlabel(' ')
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
         for j, y in enumerate(xs):
