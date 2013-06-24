@@ -124,11 +124,7 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
                 histtype="step", color=kwargs.get("color", "k"), orientation=orientation)
 
-        print(orientation)
-        
-        # If it's the second row histogram, invert the y-axis (the old x-axis) 
-        #if i==1: ax.ylim(ax.ylim()[::-1])
-        
+                
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
@@ -144,9 +140,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
                 print("Quantiles:")
                 print(zip(quantiles, qvalues))
 
+        # If it's the second row histogram, invert the y-axis (the old x-axis) and other stuff
+
         # Set up the axes.
         ax.set_xlim(extents[i])
-        #if i==1: ax.set_ylim(ax.set_ylim()[::-1]) 
         if scale_hist:
             maxn = np.max(n)
             if i==0: ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
