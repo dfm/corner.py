@@ -155,6 +155,7 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         ax.set_xticklabels([])
         if i==0: ax.xaxis.set_major_locator(MaxNLocator(5))
         if i==1: ax.yaxis.set_major_locator(MaxNLocator(5))
+        if i==1: ax.set_ylim(extents[i])
             
         # Not so DRY.
         if i < K - 1:
