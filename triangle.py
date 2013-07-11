@@ -7,15 +7,16 @@ __all__ = ["corner", "hist2d", "error_ellipse"]
 __version__ = "0.0.5"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
-__contributors__ = [    # Alphabetical by first name.
-                        "Adrian Price-Whelan @adrn",
-                        "Brendon Brewer @eggplantbren",
-                        "Ekta Patel @ekta1224",
-                        "Emily Rice @emilurice",
-                        "Geoff Ryan @geoffryan",
-                        "Phil Marshall @drphilmarshall",
-                        "Pierre Gratier @pirg",
-                   ]
+__contributors__ = [
+    # Alphabetical by first name.
+    "Adrian Price-Whelan @adrn",
+    "Brendon Brewer @eggplantbren",
+    "Ekta Patel @ekta1224",
+    "Emily Rice @emilurice",
+    "Geoff Ryan @geoffryan",
+    "Phil Marshall @drphilmarshall",
+    "Pierre Gratier @pirg",
+]
 
 import numpy as np
 import matplotlib.pyplot as pl
@@ -70,10 +71,10 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
-    
+
     fig : matplotlib.Figure (optional)
         Overplot onto the provided figure object.
-    
+
     """
 
     # Deal with 1D sample lists.
@@ -96,12 +97,12 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
     whspace = 0.05         # w/hspace size
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
-    
+
     if fig is None:
-        fig,axes = pl.subplots(K, K, figsize=(dim, dim))
+        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
         try:
-            axes = np.array(fig.axes).reshape((K,K))
+            axes = np.array(fig.axes).reshape((K, K))
         except:
             raise ValueError("Provided figure has {0} axes, but data has "
                              "dimensions K={1}".format(len(fig.axes), K))
@@ -113,11 +114,19 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
     if extents is None:
         extents = [[x.min(), x.max()] for x in xs]
 
+        # Check for parameters that never change.
+        m = [e[0] == e[1] for e in extents]
+        if np.any(m):
+            raise ValueError(("It looks like the parameter(s) in column(s) "
+                              "{0} have no dynamic range. Please provide an "
+                              "`extent` argument.")
+                             .format(",".join(np.arange(len(m))[m])))
+
     for i, x in enumerate(xs):
-        ax = axes[i,i]
+        ax = axes[i, i]
         # Plot the histograms.
         n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
-                histtype="step", color=kwargs.get("color", "k"))
+                          histtype="step", color=kwargs.get("color", "k"))
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
@@ -152,14 +161,14 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
         for j, y in enumerate(xs):
-            ax = axes[i,j]
+            ax = axes[i, j]
             if j > i:
                 ax.set_visible(False)
                 ax.set_frame_on(False)
                 continue
             elif j == i:
                 continue
-                
+
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
                    plot_contours=plot_contours,
                    plot_datapoints=plot_datapoints,
@@ -205,10 +214,10 @@ def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
     U, S, V = np.linalg.svd(cov)
     theta = np.degrees(np.arctan2(U[1, 0], U[0, 0]))
     ellipsePlot = Ellipse(xy=[x, y],
-            width=2 * np.sqrt(S[0]) * factor,
-            height=2 * np.sqrt(S[1]) * factor,
-            angle=theta,
-            facecolor=facecolor, edgecolor=edgecolor, **kwargs)
+                          width=2 * np.sqrt(S[0]) * factor,
+                          height=2 * np.sqrt(S[1]) * factor,
+                          angle=theta,
+                          facecolor=facecolor, edgecolor=edgecolor, **kwargs)
 
     if ax is None:
         ax = pl.gca()
@@ -237,7 +246,12 @@ def hist2d(x, y, *args, **kwargs):
 
     X = np.linspace(extent[0][0], extent[0][1], bins + 1)
     Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
-    H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y))
+    try:
+        H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y))
+    except ValueError:
+        raise ValueError("It looks like at least one of your sample columns "
+                         "have no dynamic range. You could try using the "
+                         "`extent` argument.")
 
     V = 1.0 - np.exp(-0.5 * np.arange(0.5, 2.1, 0.5) ** 2)
     Hflat = H.flatten()
@@ -260,8 +274,10 @@ def hist2d(x, y, *args, **kwargs):
                 rasterized=True)
         if plot_contours:
             ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
-                cmap=LinearSegmentedColormap.from_list("cmap", ([1] * 3, [1] * 3),
-                   N=2), antialiased=False)
+                        cmap=LinearSegmentedColormap.from_list("cmap",
+                                                               ([1] * 3,
+                                                                [1] * 3),
+                        N=2), antialiased=False)
 
     if plot_contours:
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
