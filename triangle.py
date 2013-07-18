@@ -236,6 +236,7 @@ def hist2d(x, y, *args, **kwargs):
     extent = kwargs.pop("extent", [[x.min(), x.max()], [y.min(), y.max()]])
     bins = kwargs.pop("bins", 50)
     color = kwargs.pop("color", "k")
+    linewidths = kwargs.pop("linewidths", None)
     plot_datapoints = kwargs.get("plot_datapoints", True)
     plot_contours = kwargs.get("plot_contours", True)
 
@@ -281,7 +282,7 @@ def hist2d(x, y, *args, **kwargs):
 
     if plot_contours:
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-        ax.contour(X1, Y1, H.T, V, colors=color)
+        ax.contour(X1, Y1, H.T, V, colors=color, linewidths=linewidths)
 
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
