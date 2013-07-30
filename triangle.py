@@ -120,8 +120,8 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
             raise ValueError(("It looks like the parameter(s) in column(s) "
                               "{0} have no dynamic range. Please provide an "
                               "`extent` argument.")
-                             .format(",".join(map(unicode,
-                                                  np.arange(len(m))[m]))))
+                             .format(", ".join(map("{0}".format,
+                                                   np.arange(len(m))[m]))))
 
     for i, x in enumerate(xs):
         ax = axes[i, i]
