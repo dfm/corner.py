@@ -115,7 +115,7 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
         extents = [[x.min(), x.max()] for x in xs]
 
         # Check for parameters that never change.
-        m = [e[0] == e[1] for e in extents]
+        m = np.array([e[0] == e[1] for e in extents], dtype=bool)
         if np.any(m):
             raise ValueError(("It looks like the parameter(s) in column(s) "
                               "{0} have no dynamic range. Please provide an "
