@@ -24,11 +24,16 @@ from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Ellipse
 import matplotlib.cm as cm
+try:
+    from astroML.density_estimation import bayesian_blocks as bb
+    has_bb = True
+except ImportError:
+    has_bb = False
 
 
 def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=[], verbose=True, plot_contours=True,
-           plot_datapoints=True, fig=None, **kwargs):
+           scale_hist=False, bblocks=False, quantiles=[], verbose=True,
+           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -58,6 +63,12 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
     scale_hist : bool (optional)
         Should the 1-D histograms be scaled in such a way that the zero line
         is visible?
+
+    bblocks : bool (optional)
+        Option to bin histogram data using an adaptive-width algorithm written
+        by Jake VanderPlas for astroML following Scargle et al. 2012
+        (http://adsabs.harvard.edu/abs/2012arXiv1207.5578S) - implemented
+        here as in astroML's "hist" plotting function
 
     quantiles : iterable (optional)
         A list of fractional quantiles to show on the 1-D histograms as
@@ -123,8 +134,22 @@ def corner(xs, labels=None, extents=None, truths=None, truth_color="#4682b4",
                              .format(", ".join(map("{0}".format,
                                                    np.arange(len(m))[m]))))
 
+    if bblocks:
+        if not has_bb:
+            raise ImportError("You can't bin in bayesian blocks without " \
+                              "installing astroML")
+
+        # have kwarg to send to hist2d
+        kwargs["bblocks"] = True
+
     for i, x in enumerate(xs):
         ax = axes[i, i]
+
+        # Get bin edges from bayesian_blocks
+        if bblocks:
+            x = x[(x >= extents[i][0]) & (x <= extents[i][1])]
+            kwargs["bins"] = bb(x)
+
         # Plot the histograms.
         n, b, p = ax.hist(x, bins=kwargs.get("bins", 50), range=extents[i],
                           histtype="step", color=kwargs.get("color", "k"))
@@ -246,8 +271,16 @@ def hist2d(x, y, *args, **kwargs):
     cmap._lut[:-3, :-1] = 0.
     cmap._lut[:-3, -1] = np.linspace(1, 0, cmap.N)
 
-    X = np.linspace(extent[0][0], extent[0][1], bins + 1)
-    Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
+    if kwargs.pop("bblocks", False):
+    # change binning if bayesian_blocks used
+        x = x[(x >= extent[0][0]) & (x <= extent[0][1])]
+        X = bb(x)
+        Y = bins  # these were already calculated above
+
+    else:
+        X = np.linspace(extent[0][0], extent[0][1], bins + 1)
+        Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
+
     try:
         H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y))
     except ValueError:
