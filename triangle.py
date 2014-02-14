@@ -53,7 +53,7 @@ def corner(xs, weights=None, labels=None, show_titles=True,
 
     show_titles : bool (optional)
         Displays a title above each 1-D histogram showing the 0.5 quantile
-        wih the upper and lower errors supplied by the quantiles argument
+        with the upper and lower errors supplied by the quantiles argument
         (Requires the label argument).
 
     extents : iterable (ndim,) (optional)
