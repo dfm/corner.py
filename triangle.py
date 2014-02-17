@@ -27,10 +27,10 @@ from matplotlib.patches import Ellipse
 import matplotlib.cm as cm
 
 
-def corner(xs, weights=None, labels=None, extents=None, truths=None,
-           truth_color="#4682b4", scale_hist=False, quantiles=[],
-           verbose=True, plot_contours=True, plot_datapoints=True,
-           fig=None, **kwargs):
+def corner(xs, weights=None, labels=None, show_titles=True,
+           extents=None, truths=None, truth_color="#4682b4",
+           scale_hist=False, quantiles=[], verbose=True,
+           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -50,6 +50,11 @@ def corner(xs, weights=None, labels=None, extents=None, truths=None,
 
     labels : iterable (ndim,) (optional)
         A list of names for the dimensions.
+
+    show_titles : bool (optional)
+        Displays a title above each 1-D histogram showing the 0.5 quantile
+        with the upper and lower errors supplied by the quantiles argument
+        (Requires the label argument).
 
     extents : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
@@ -109,7 +114,7 @@ def corner(xs, weights=None, labels=None, extents=None, truths=None,
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
-    trdim = 0.05 * factor  # size of top/right margin
+    trdim = 0.2 * factor   # size of top/right margin
     whspace = 0.05         # w/hspace size
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
@@ -162,8 +167,16 @@ def corner(xs, weights=None, labels=None, extents=None, truths=None,
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
+            q_50 = quantile(x, [0.5])[0]
             for q in qvalues:
                 ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
+
+            if show_titles and labels is not None:
+                title = (labels[i]+" = "+r"$"+r"%.2f" % q_50 + "_{-" +
+                         r"%.2f" % (q_50 - min(qvalues)) + "}^{+" +
+                         r"%.2f" % (max(qvalues) - q_50) + r"}$")
+                ax.set_title(title, fontsize=12)
+
             if verbose:
                 print("Quantiles:")
                 print(zip(quantiles, qvalues))
