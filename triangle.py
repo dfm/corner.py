@@ -148,7 +148,10 @@ def corner(xs, weights=None, labels=None, extents=None, truths=None,
                 extents[i] = quantile(xs[i], q, weights=weights)
 
     for i, x in enumerate(xs):
-        ax = axes[i, i]
+        if np.shape(xs)[0] == 1:
+            ax = axes
+        else:
+            ax = axes[i, i]
         # Plot the histograms.
         n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 50),
                           range=extents[i], histtype="step",
@@ -185,7 +188,10 @@ def corner(xs, weights=None, labels=None, extents=None, truths=None,
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
         for j, y in enumerate(xs):
-            ax = axes[i, j]
+            if np.shape(xs)[0] == 1:
+                ax = axes
+            else:
+                ax = axes[i, j]
             if j > i:
                 ax.set_visible(False)
                 ax.set_frame_on(False)
