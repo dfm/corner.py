@@ -27,8 +27,8 @@ from matplotlib.patches import Ellipse
 import matplotlib.cm as cm
 
 
-def corner(xs, weights=None, labels=None, show_titles=True,
-           extents=None, truths=None, truth_color="#4682b4",
+def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
+           title_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
            plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
     """
@@ -53,8 +53,14 @@ def corner(xs, weights=None, labels=None, show_titles=True,
 
     show_titles : bool (optional)
         Displays a title above each 1-D histogram showing the 0.5 quantile
-        with the upper and lower errors supplied by the quantiles argument
-        (Requires the label argument).
+        with the upper and lower errors supplied by the quantiles argument.
+
+    title_fmt : string (optional)
+        The format string for the quantiles given in titles.
+        (default: `.2f`)
+
+    title_args : dict (optional)
+        Any extra keyword arguments to send to the `add_title` command.
 
     extents : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
@@ -167,19 +173,31 @@ def corner(xs, weights=None, labels=None, show_titles=True,
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
-            q_50 = quantile(x, [0.5])[0]
             for q in qvalues:
                 ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
-
-            if show_titles and labels is not None:
-                title = (labels[i]+" = "+r"$"+r"%.2f" % q_50 + "_{-" +
-                         r"%.2f" % (q_50 - min(qvalues)) + "}^{+" +
-                         r"%.2f" % (max(qvalues) - q_50) + r"}$")
-                ax.set_title(title, fontsize=12)
 
             if verbose:
                 print("Quantiles:")
                 print(zip(quantiles, qvalues))
+
+            if show_titles:
+                # Compute the quantiles for the title. This might redo
+                # unneeded computation but who cares.
+                q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84],
+                                            weights=weights)
+                q_m, q_p = q_50-q_16, q_84-q_50
+
+                # Format the quantile display.
+                fmt = "{{0:{0}}}".format(title_fmt).format
+                title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+                title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+
+                # Add in the column name if it's given.
+                if labels is not None:
+                    title = "{0} = {1}".format(labels[i], title)
+
+                # Add the title to the axis.
+                ax.set_title(title, **title_args)
 
         # Set up the axes.
         ax.set_xlim(extents[i])
