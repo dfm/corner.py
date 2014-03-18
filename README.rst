@@ -45,3 +45,7 @@ With some other tweaks (see `demo.py
 something that looks awesome like:
 
 .. image:: https://raw.github.com/dfm/triangle.py/master/triangle.png
+
+By default, datapoints are shown as greyscale points with contours. 
+Contours are shown at 0.5, 1, 1.5, and 2 sigma.
+
