@@ -28,8 +28,8 @@ import matplotlib.cm as cm
 
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
-           title_args={}, extents=None, truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=[], verbose=True,
+           title_args={}, extents=None, zoom=None, truths=None,
+           truth_color="#4682b4", scale_hist=False, quantiles=[], verbose=True,
            plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
@@ -68,6 +68,11 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         giving the fraction of samples to include in bounds, e.g.,
         [(0.,10.), (1.,5), 0.999, etc.].
         If a fraction, the bounds are chosen to be equal-tailed.
+
+    zoom : float (optional)
+        Adjust the plot upper and lower bounds (extents) by zooming in or
+        out.  zoom=2.0 zooms in by a factor of 2, zoom=0.5 zooms out by a
+        factor of 2.
 
     truths : iterable (ndim,) (optional)
         A list of reference values to indicate on the plots.
@@ -157,6 +162,14 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             except TypeError:
                 q = [0.5 - 0.5*extents[i], 0.5 + 0.5*extents[i]]
                 extents[i] = quantile(xs[i], q, weights=weights)
+
+    if zoom is not None:
+        for i in xrange(len(extents)):
+            emin, emax = extents[i]
+            center = 0.5 * (emin + emax)
+            range_ = emax-emin
+            extents[i] = (center - zoom * 0.5 * range_,
+                          center + zoom * 0.5 * range_)
 
     for i, x in enumerate(xs):
         if np.shape(xs)[0] == 1:
