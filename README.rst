@@ -45,3 +45,22 @@ With some other tweaks (see `demo.py
 something that looks awesome like:
 
 .. image:: https://raw.github.com/dfm/triangle.py/master/triangle.png
+
+
+Attribution
+-----------
+
+.. image:: https://zenodo.org/badge/4729/dfm/triangle.py.png
+   :target: http://dx.doi.org/10.5281/zenodo.10598
+
+If you make use of this code, please `cite it
+<http://dx.doi.org/10.5281/zenodo.10598>`_.
+
+
+License
+-------
+
+Copyright 2013, 2014 Dan Foreman-Mackey
+
+triangle.py is free software made available under the BSD License.
+For details see the LICENSE file.
