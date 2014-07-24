@@ -50,11 +50,11 @@ something that looks awesome like:
 Attribution
 -----------
 
-.. image:: https://zenodo.org/badge/4729/dfm/triangle.py.png
-   :target: http://dx.doi.org/10.5281/zenodo.10598
+.. image:: https://zenodo.org/badge/doi/10.5281/zenodo.11020.png  
+   :target: http://dx.doi.org/10.5281/zenodo.11020
 
 If you make use of this code, please `cite it
-<http://dx.doi.org/10.5281/zenodo.10598>`_.
+<http://dx.doi.org/10.5281/zenodo.11020>`_.
 
 
 License
