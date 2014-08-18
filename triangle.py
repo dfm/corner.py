@@ -49,7 +49,8 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         equal weight.
 
     labels : iterable (ndim,) (optional)
-        A list of names for the dimensions.
+        A list of names for the dimensions. If a ``xs`` is a
+        ``pandas.DataFrame``, labels will default to column names.
 
     show_titles : bool (optional)
         Displays a title above each 1-D histogram showing the 0.5 quantile
@@ -113,6 +114,10 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             raise ValueError('weights must be 1-D')
         if xs.shape[1] != weights.shape[0]:
             raise ValueError('lengths of weights must match number of samples')
+
+    if labels is None:
+        # try filling in labels from pandas.DataFrame columns
+        labels = getattr(xs, 'columns', None)
 
     # backwards-compatibility
     plot_contours = kwargs.get("smooth", plot_contours)
