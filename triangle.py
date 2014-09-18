@@ -30,7 +30,8 @@ import matplotlib.cm as cm
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
            title_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
-           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
+           plot_contours=True, plot_datapoints=True, fig=None,
+           max_n_ticks=5, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -91,6 +92,9 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
+
+    max_n_ticks: int (optional)
+        maximum number of ticks to try to use
 
     fig : matplotlib.Figure (optional)
         Overplot onto the provided figure object.
@@ -167,6 +171,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 50),
                           range=extents[i], histtype="step",
                           color=kwargs.get("color", "k"))
+
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
@@ -207,11 +212,16 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         else:
             ax.set_ylim(0, 1.1 * np.max(n))
         ax.set_yticklabels([])
-        ax.xaxis.set_major_locator(MaxNLocator(5))
+
+        ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks,
+                                               prune='lower'))
+        ax.xaxis.set_ticks_position('top')
+        [l.set_rotation(45) for l in ax.get_xticklabels()]
 
         # Not so DRY.
         if i < K - 1:
-            ax.set_xticklabels([])
+            pass
+            #ax.set_xticklabels([])
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
@@ -240,8 +250,8 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                 ax.axvline(truths[j], color=truth_color)
                 ax.axhline(truths[i], color=truth_color)
 
-            ax.xaxis.set_major_locator(MaxNLocator(5))
-            ax.yaxis.set_major_locator(MaxNLocator(5))
+            ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks))
+            ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks))
 
             if i < K - 1:
                 ax.set_xticklabels([])
