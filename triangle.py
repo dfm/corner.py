@@ -178,7 +178,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
 
             if verbose:
                 print("Quantiles:")
-                print(zip(quantiles, qvalues))
+                print([item for item in zip(quantiles, qvalues)])
 
             if show_titles:
                 # Compute the quantiles for the title. This might redo
