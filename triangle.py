@@ -28,7 +28,7 @@ import matplotlib.cm as cm
 
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
-           title_args={}, extents=None, truths=None, truth_color="#4682b4",
+           title_args={}, labels_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
            plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
     """
@@ -215,7 +215,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
-                ax.set_xlabel(labels[i])
+                ax.set_xlabel(labels[i],**labels_args)
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
         for j, y in enumerate(xs):
@@ -248,7 +248,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             else:
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
                 if labels is not None:
-                    ax.set_xlabel(labels[j])
+                    ax.set_xlabel(labels[j],**labels_args)
                     ax.xaxis.set_label_coords(0.5, -0.3)
 
             if j > 0:
@@ -256,7 +256,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             else:
                 [l.set_rotation(45) for l in ax.get_yticklabels()]
                 if labels is not None:
-                    ax.set_ylabel(labels[i])
+                    ax.set_ylabel(labels[i],**labels_args)
                     ax.yaxis.set_label_coords(-0.3, 0.5)
 
     return fig
