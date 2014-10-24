@@ -26,15 +26,27 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Ellipse
 import matplotlib.cm as cm
 
+default_point_kwargs = dict(marker="o",
+                            linestyle='none',
+                            color='k',
+                            markersize=1.5,
+                            zorder=-1,
+                            alpha=0.1,
+                            rasterized=True)
+
+default_contour_kwargs = dict(bins=50, colors='k')
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
            title_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
-           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
+           plot_contours=True, plot_datapoints=True, fig=None,
+           hist_kwargs=dict(color='k', bins=50),
+           contour_kwargs=dict(),
+           point_kwargs=dict(), **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
-    multi-dimensional space. kwargs are passed to hist2d() or used for
-    `matplotlib` styling.
+    multi-dimensional space. contour_kwargs are passed to hist2d(), point_kwargs
+    are passed to point plotting or used for `matplotlib` styling.
 
     Parameters
     ----------
@@ -117,6 +129,13 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     # backwards-compatibility
     plot_contours = kwargs.get("smooth", plot_contours)
 
+    # set default kwargs
+    for k,v in default_point_kwargs.items():
+        point_kwargs[k] = point_kwargs.get(k, default_point_kwargs[k])
+
+    for k,v in default_contour_kwargs.items():
+        contour_kwargs[k] = contour_kwargs.get(k, default_contour_kwargs[k])
+
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
@@ -164,9 +183,8 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         else:
             ax = axes[i, i]
         # Plot the histograms.
-        n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 50),
-                          range=extents[i], histtype="step",
-                          color=kwargs.get("color", "k"))
+        n, b, p = ax.hist(x, weights=weights, range=extents[i],
+                          histtype="step", **hist_kwargs)
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
@@ -174,7 +192,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
             for q in qvalues:
-                ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
+                ax.axvline(q, ls="dashed", color=hist_kwargs.get("color", "k"))
 
             if verbose:
                 print("Quantiles:")
@@ -231,9 +249,10 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                 continue
 
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
+                   hist_kwargs=hist_kwargs, point_kwargs=point_kwargs,
                    plot_contours=plot_contours,
                    plot_datapoints=plot_datapoints,
-                   weights=weights, **kwargs)
+                   weights=weights)
 
             if truths is not None:
                 ax.plot(truths[j], truths[i], "s", color=truth_color)
@@ -305,18 +324,16 @@ def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
 
     return ellipsePlot
 
-
-def hist2d(x, y, *args, **kwargs):
+def hist2d(x, y, point_kwargs=default_point_kwargs,
+           contour_kwargs=default_contour_kwargs, *args, **kwargs):
     """
     Plot a 2-D histogram of samples.
 
     """
     ax = kwargs.pop("ax", pl.gca())
-
     extent = kwargs.pop("extent", [[x.min(), x.max()], [y.min(), y.max()]])
-    bins = kwargs.pop("bins", 50)
-    color = kwargs.pop("color", "k")
-    linewidths = kwargs.pop("linewidths", None)
+
+    bins = contour_kwargs.get("bins", 50)
     plot_datapoints = kwargs.get("plot_datapoints", True)
     plot_contours = kwargs.get("plot_contours", True)
 
@@ -352,8 +369,8 @@ def hist2d(x, y, *args, **kwargs):
     X, Y = X[:-1], Y[:-1]
 
     if plot_datapoints:
-        ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
-                rasterized=True)
+        ax.plot(x, y, **point_kwargs)
+
         if plot_contours:
             ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
                         cmap=LinearSegmentedColormap.from_list("cmap",
@@ -363,7 +380,7 @@ def hist2d(x, y, *args, **kwargs):
 
     if plot_contours:
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-        ax.contour(X1, Y1, H.T, V, colors=color, linewidths=linewidths)
+        ax.contour(X1, Y1, H.T, V, **contour_kwargs)
 
     data = np.vstack([x, y])
     mu = np.mean(data, axis=1)
