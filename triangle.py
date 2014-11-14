@@ -30,7 +30,7 @@ import matplotlib.cm as cm
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
            title_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
-           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
+           plot_contours=True, plot_datapoints=True, fig=None, labelpad=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -94,6 +94,11 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
 
     fig : matplotlib.Figure (optional)
         Overplot onto the provided figure object.
+        
+    labelpad : float (optional)
+        If given, set the labelpad parameter when adding the x and y labels to
+        control space between the ticklabels and the axes labels.
+        Default uses fixed coordinates for the axes labels.
 
     """
 
@@ -248,16 +253,22 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             else:
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
                 if labels is not None:
-                    ax.set_xlabel(labels[j])
-                    ax.xaxis.set_label_coords(0.5, -0.3)
+                    if labelpad is None:
+                        ax.set_xlabel(labels[j])
+                        ax.xaxis.set_label_coords(0.5, -0.3)
+                    else:
+                        ax.set_xlabel(labels[j], labelpad=labelpad)
 
             if j > 0:
                 ax.set_yticklabels([])
             else:
                 [l.set_rotation(45) for l in ax.get_yticklabels()]
                 if labels is not None:
-                    ax.set_ylabel(labels[i])
-                    ax.yaxis.set_label_coords(-0.3, 0.5)
+                    if labelpad is None:
+                        ax.set_ylabel(labels[i])
+                        ax.yaxis.set_label_coords(-0.3, 0.5)
+                    else:
+                        ax.set_ylabel(labels[i], labelpad=labelpad)
 
     return fig
 
