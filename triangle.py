@@ -30,7 +30,7 @@ import matplotlib.cm as cm
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
            title_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
-           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
+           plot_contours=True, plot_datapoints=True, fig=None, pcolor_cmap=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -233,7 +233,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
                    plot_contours=plot_contours,
                    plot_datapoints=plot_datapoints,
-                   weights=weights, **kwargs)
+                   weights=weights, pcolor_cmap=pcolor_cmap, **kwargs)
 
             if truths is not None:
                 ax.plot(truths[j], truths[i], "s", color=truth_color)
@@ -306,7 +306,7 @@ def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
     return ellipsePlot
 
 
-def hist2d(x, y, *args, **kwargs):
+def hist2d(x, y, pcolor_cmap, *args, **kwargs):
     """
     Plot a 2-D histogram of samples.
 
@@ -362,6 +362,10 @@ def hist2d(x, y, *args, **kwargs):
                         N=2), antialiased=False)
 
     if plot_contours:
+        if pcolor_cmap is None:
+            cmap = cmap
+        else:
+            cmap = pcolor_cmap
         ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
         ax.contour(X1, Y1, H.T, V, colors=color, linewidths=linewidths)
 
@@ -373,3 +377,13 @@ def hist2d(x, y, *args, **kwargs):
 
     ax.set_xlim(extent[0])
     ax.set_ylim(extent[1])
+
+if __name__ == '__main__':
+    # Some fake data
+    mean = [0,0]
+    cov = [[1,0],[0,100]]
+    x,y = np.random.multivariate_normal(mean,cov,5000).T
+    A = np.array(zip(x,y))
+    # Call to corner plot, with pcolor_cmap argument
+    fig = corner(A, labels=["$m$", "$b$"],pcolor_cmap=cm.Spectral)
+    pl.show()
