@@ -377,13 +377,3 @@ def hist2d(x, y, pcolor_cmap, *args, **kwargs):
 
     ax.set_xlim(extent[0])
     ax.set_ylim(extent[1])
-
-if __name__ == '__main__':
-    # Some fake data
-    mean = [0,0]
-    cov = [[1,0],[0,100]]
-    x,y = np.random.multivariate_normal(mean,cov,5000).T
-    A = np.array(zip(x,y))
-    # Call to corner plot, with pcolor_cmap argument
-    fig = corner(A, labels=["$m$", "$b$"],pcolor_cmap=cm.Spectral)
-    pl.show()
