@@ -30,7 +30,8 @@ import matplotlib.cm as cm
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
            title_args={}, extents=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=[], verbose=True,
-           plot_contours=True, plot_datapoints=True, fig=None, pcolor_cmap=None, **kwargs):
+           plot_contours=True, plot_datapoints=True, fig=None, pcolor_cmap=None,
+           **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -325,8 +326,8 @@ def hist2d(x, y, pcolor_cmap, *args, **kwargs):
     cmap._lut[:-3, :-1] = 0.
     cmap._lut[:-3, -1] = np.linspace(1, 0, cmap.N)
 
-    X = np.linspace(extent[0][0], extent[0][1], bins + 1)
-    Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
+    X = np.linspace(extent[0][0], extent[0][1]*1.1, bins + 1)
+    Y = np.linspace(extent[1][0], extent[1][1]*1.1, bins + 1)
     try:
         H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y),
                                  weights=kwargs.get('weights', None))
