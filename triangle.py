@@ -28,8 +28,8 @@ import matplotlib.cm as cm
 
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
-           title_args={}, extents=None, truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=[], verbose=True,
+           title_args=None, extents=None, truths=None, truth_color="#4682b4",
+           scale_hist=False, quantiles=None, verbose=True,
            plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
@@ -96,6 +96,11 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         Overplot onto the provided figure object.
 
     """
+    if quantiles is None:
+        quantiles = []
+
+    if title_args is None:
+        title_args = {}
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
