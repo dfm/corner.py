@@ -131,13 +131,15 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     dim = lbdim + plotdim + trdim
 
     if fig is None:
-        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+        fig, axes = pl.subplots(K, K, figsize=(dim, dim), tight_layout=False)
     else:
         try:
             axes = np.array(fig.axes).reshape((K, K))
         except:
             raise ValueError("Provided figure has {0} axes, but data has "
                              "dimensions K={1}".format(len(fig.axes), K))
+        fig.set_tight_layout(False)
+
     lb = lbdim / dim
     tr = (lbdim + plotdim) / dim
     fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
