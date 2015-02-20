@@ -169,6 +169,9 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         else:
             ax = axes[i, i]
         # Plot the histograms.
+
+        # if x is a maskedarray, makes sure hist function only takes the non-masked data
+        if isinstance(x, np.ma.core.MaskedArray): x = x.compressed()
         n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 50),
                           range=extents[i], histtype="step",
                           color=kwargs.get("color", "k"))
@@ -332,6 +335,9 @@ def hist2d(x, y, *args, **kwargs):
 
     X = np.linspace(extent[0][0], extent[0][1], bins + 1)
     Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
+    # if x is a maskedarray, makes sure hist function only takes the non-masked data
+    if isinstance(x, np.ma.core.MaskedArray): x = x.compressed()
+    if isinstance(y, np.ma.core.MaskedArray): y = y.compressed()
     try:
         H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y),
                                  weights=kwargs.get('weights', None))
