@@ -374,7 +374,10 @@ def hist2d(x, y, *args, **kwargs):
     mu = np.mean(data, axis=1)
     cov = np.cov(data)
     if kwargs.pop("plot_ellipse", False):
-        error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
+        props = kwargs.pop('ellipse_prop', [0.683, 0.954] )
+        factors = np.sqrt( -2* np.log( [1 - prop for prop in props]) )
+        for factor in factors:
+            error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed" , factor=factor )
 
     ax.set_xlim(extent[0])
     ax.set_ylim(extent[1])
