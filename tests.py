@@ -13,11 +13,12 @@ import triangle
 FIGURE_PATH = "test_figures"
 
 
-def _run_hist2d(nm, N=50000, **kwargs):
+def _run_hist2d(nm, N=50000, seed=1234, **kwargs):
     if not os.path.exists(FIGURE_PATH):
         os.makedirs(FIGURE_PATH)
 
     # Generate some fake data.
+    np.random.seed(seed)
     x = np.random.randn(N)
     y = np.random.randn(N)
 
@@ -33,3 +34,5 @@ if __name__ == "__main__":
     _run_hist2d("levels1", levels=[0.68, 0.95])
     _run_hist2d("levels2", levels=[0.5, 0.75])
     _run_hist2d("filled", fill_contours=True)
+    _run_hist2d("smooth1", bins=50)
+    _run_hist2d("smooth2", bins=50, smooth=(1.0, 1.5))

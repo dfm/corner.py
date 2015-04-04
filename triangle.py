@@ -24,6 +24,11 @@ import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 
+try:
+    from scipy.ndimage import gaussian_filter
+except ImportError:
+    gaussian_filter = None
+
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
            title_args=None, extents=None, truths=None, truth_color="#4682b4",
@@ -284,8 +289,8 @@ def quantile(x, q, weights=None):
         return np.interp(q, cdf, xsorted).tolist()
 
 
-def hist2d(x, y, bins=20, range=None, weights=None, levels=None, ax=None,
-           color=None, plot_datapoints=True, plot_density=True,
+def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
+           ax=None, color=None, plot_datapoints=True, plot_density=True,
            plot_contours=True, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
            **kwargs):
@@ -337,6 +342,11 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, ax=None,
         raise ValueError("It looks like at least one of your sample columns "
                          "have no dynamic range. You could try using the "
                          "'range' argument.")
+
+    if smooth is not None:
+        if gaussian_filter is None:
+            raise ImportError("Please install scipy for smoothing")
+        H = gaussian_filter(H, smooth)
 
     # Compute the density levels.
     Hflat = H.flatten()
