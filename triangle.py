@@ -2,7 +2,7 @@
 
 from __future__ import print_function, absolute_import, unicode_literals
 
-__all__ = ["corner", "hist2d", "error_ellipse"]
+__all__ = ["corner", "hist2d"]
 __version__ = "0.1.1"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
@@ -23,8 +23,6 @@ import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
-from matplotlib.patches import Ellipse
-import matplotlib.cm as cm
 
 
 def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
@@ -286,31 +284,6 @@ def quantile(x, q, weights=None):
         return np.interp(q, cdf, xsorted).tolist()
 
 
-def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
-    """
-    Plot the error ellipse at a point given its covariance matrix.
-
-    """
-    # some sane defaults
-    facecolor = kwargs.pop('facecolor', 'none')
-    edgecolor = kwargs.pop('edgecolor', 'k')
-
-    x, y = mu
-    U, S, V = np.linalg.svd(cov)
-    theta = np.degrees(np.arctan2(U[1, 0], U[0, 0]))
-    ellipsePlot = Ellipse(xy=[x, y],
-                          width=2 * np.sqrt(S[0]) * factor,
-                          height=2 * np.sqrt(S[1]) * factor,
-                          angle=theta,
-                          facecolor=facecolor, edgecolor=edgecolor, **kwargs)
-
-    if ax is None:
-        ax = pl.gca()
-    ax.add_patch(ellipsePlot)
-
-    return ellipsePlot
-
-
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, ax=None,
            color=None, plot_datapoints=True, plot_density=True,
            plot_contours=True, fill_contours=False,
@@ -419,11 +392,3 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, ax=None,
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])
-
-
-if __name__ == "__main__":
-    # Test the 2D histogram.
-    x, y = np.random.randn(5000), np.random.randn(5000)
-    fig, ax = pl.subplots(1, 1, figsize=(8, 8))
-    hist2d(x, y, ax=ax)
-    fig.savefig("test.png")
