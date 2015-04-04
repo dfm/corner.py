@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function, absolute_import, unicode_literals
@@ -19,10 +18,11 @@ __contributors__ = [
     "Pierre Gratier @pirg",
 ]
 
+import logging
 import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.patches import Ellipse
 import matplotlib.cm as cm
 
@@ -311,70 +311,119 @@ def error_ellipse(mu, cov, ax=None, factor=1.0, **kwargs):
     return ellipsePlot
 
 
-def hist2d(x, y, *args, **kwargs):
+def hist2d(x, y, bins=20, range=None, weights=None, levels=None, ax=None,
+           color=None, plot_datapoints=True, plot_density=True,
+           plot_contours=True, fill_contours=False,
+           contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
+           **kwargs):
     """
     Plot a 2-D histogram of samples.
 
     """
-    ax = kwargs.pop("ax", pl.gca())
+    if ax is None:
+        ax = pl.gca()
 
-    extent = kwargs.pop("extent", [[x.min(), x.max()], [y.min(), y.max()]])
-    bins = kwargs.pop("bins", 50)
-    color = kwargs.pop("color", "k")
-    linewidths = kwargs.pop("linewidths", None)
-    plot_datapoints = kwargs.get("plot_datapoints", True)
-    plot_contours = kwargs.get("plot_contours", True)
+    # Set the default range based on the data range if not provided.
+    if range is None:
+        if "extent" in kwargs:
+            logging.warn("Deprecated keyword argument 'extent'. "
+                         "Use 'range' instead.")
+            range = kwargs["extent"]
+        else:
+            range = [[x.min(), x.max()], [y.min(), y.max()]]
 
-    cmap = cm.get_cmap("gray")
-    cmap._init()
-    cmap._lut[:-3, :-1] = 0.
-    cmap._lut[:-3, -1] = np.linspace(1, 0, cmap.N)
+    # Set up the default plotting arguments.
+    if color is None:
+        color = "k"
 
-    X = np.linspace(extent[0][0], extent[0][1], bins + 1)
-    Y = np.linspace(extent[1][0], extent[1][1], bins + 1)
+    # Choose the default "sigma" contour levels.
+    if levels is None:
+        levels = 1.0 - np.exp(-0.5 * np.arange(0.5, 2.1, 0.5) ** 2)
+
+    # This is the color map for the density plot, over-plotted to indicate the
+    # density of the points near the center.
+    density_cmap = LinearSegmentedColormap.from_list(
+        "density_cmap", [color, (1, 1, 1, 0)])
+
+    # This color map is used to hide the points at the high density areas.
+    white_cmap = LinearSegmentedColormap.from_list(
+        "white_cmap", [(1, 1, 1), (1, 1, 1)], N=2)
+
+    # This "color map" is the list of colors for the contour levels if the
+    # contours are filled.
+    rgba_color = colorConverter.to_rgba(color)
+    contour_cmap = [rgba_color] + [list(rgba_color) for l in levels]
+    for i, l in enumerate(levels):
+        contour_cmap[i+1][-1] *= float(len(levels) - i) / (len(levels)+1)
+
+    # We'll make the 2D histogram to directly estimate the density.
     try:
-        H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=(X, Y),
-                                 weights=kwargs.get('weights', None))
+        H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=bins,
+                                 range=range, weights=weights)
     except ValueError:
         raise ValueError("It looks like at least one of your sample columns "
                          "have no dynamic range. You could try using the "
-                         "`extent` argument.")
+                         "'range' argument.")
 
-    V = 1.0 - np.exp(-0.5 * np.arange(0.5, 2.1, 0.5) ** 2)
+    # Compute the density levels.
     Hflat = H.flatten()
     inds = np.argsort(Hflat)[::-1]
     Hflat = Hflat[inds]
     sm = np.cumsum(Hflat)
     sm /= sm[-1]
-
-    for i, v0 in enumerate(V):
+    V = np.empty(len(levels))
+    for i, v0 in enumerate(levels):
         try:
             V[i] = Hflat[sm <= v0][-1]
         except:
             V[i] = Hflat[0]
 
+    # Compute the bin centers.
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
     X, Y = X[:-1], Y[:-1]
 
     if plot_datapoints:
-        ax.plot(x, y, "o", color=color, ms=1.5, zorder=-1, alpha=0.1,
-                rasterized=True)
-        if plot_contours:
-            ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
-                        cmap=LinearSegmentedColormap.from_list("cmap",
-                                                               ([1] * 3,
-                                                                [1] * 3),
-                        N=2), antialiased=False)
+        if data_kwargs is None:
+            data_kwargs = dict()
+        data_kwargs["color"] = data_kwargs.get("color", color)
+        data_kwargs["ms"] = data_kwargs.get("ms", 2.0)
+        data_kwargs["mec"] = data_kwargs.get("mec", "none")
+        data_kwargs["alpha"] = data_kwargs.get("alpha", 0.1)
+        ax.plot(x, y, "o", zorder=-1, rasterized=True, **data_kwargs)
 
+    # Plot the base fill to hide the densest data points.
+    if plot_contours or plot_density:
+        ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
+                    cmap=white_cmap, antialiased=False)
+
+    if plot_contours and fill_contours:
+        if contourf_kwargs is None:
+            contourf_kwargs = dict()
+        contourf_kwargs["colors"] = contourf_kwargs.get("colors", contour_cmap)
+        contourf_kwargs["antialiased"] = contourf_kwargs.get("antialiased",
+                                                             False)
+        ax.contourf(X1, Y1, H.T, np.concatenate([[H.max()], V, [0]]),
+                    **contourf_kwargs)
+
+    # Plot the density map. This can't be plotted at the same time as the
+    # contour fills.
+    elif plot_density:
+        ax.pcolor(X, Y, H.max() - H.T, cmap=density_cmap)
+
+    # Plot the contour edge colors.
     if plot_contours:
-        ax.pcolor(X, Y, H.max() - H.T, cmap=cmap)
-        ax.contour(X1, Y1, H.T, V, colors=color, linewidths=linewidths)
+        if contour_kwargs is None:
+            contour_kwargs = dict()
+        contour_kwargs["colors"] = contour_kwargs.get("colors", color)
+        ax.contour(X1, Y1, H.T, V, **contour_kwargs)
 
-    data = np.vstack([x, y])
-    mu = np.mean(data, axis=1)
-    cov = np.cov(data)
-    if kwargs.pop("plot_ellipse", False):
-        error_ellipse(mu, cov, ax=ax, edgecolor="r", ls="dashed")
+    ax.set_xlim(range[0])
+    ax.set_ylim(range[1])
 
-    ax.set_xlim(extent[0])
-    ax.set_ylim(extent[1])
+
+if __name__ == "__main__":
+    # Test the 2D histogram.
+    x, y = np.random.randn(5000), np.random.randn(5000)
+    fig, ax = pl.subplots(1, 1, figsize=(8, 8))
+    hist2d(x, y, ax=ax)
+    fig.savefig("test.png")

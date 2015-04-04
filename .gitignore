@@ -5,3 +5,4 @@
 *.pdf
 dist
 build
+test_figures
