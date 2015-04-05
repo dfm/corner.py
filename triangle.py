@@ -10,13 +10,14 @@ __contributors__ = [
     # Alphabetical by first name.
     "Adrian Price-Whelan @adrn",
     "Brendon Brewer @eggplantbren",
-    "Guillaume @ceyzeriat",
     "Ekta Patel @ekta1224",
     "Emily Rice @emilurice",
     "Geoff Ryan @geoffryan",
+    "Guillaume @ceyzeriat",
     "Kyle Barbary @kbarbary",
     "Phil Marshall @drphilmarshall",
     "Pierre Gratier @pirg",
+    "Wolfgang Kerzendorf @wkerzendorf",
 ]
 
 import logging
