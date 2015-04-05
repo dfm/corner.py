@@ -58,7 +58,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         equal weight.
 
     labels : iterable (ndim,) (optional)
-        A list of names for the dimensions.
+        A list of names for the dimensions. If a ``xs`` is a
+        ``pandas.DataFrame``, labels will default to column names.
 
     show_titles : bool (optional)
         Displays a title above each 1-D histogram showing the 0.5 quantile
@@ -168,6 +169,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     except TypeError:
         if len(bins) != len(range):
             raise ValueError("Dimension mismatch between bins and range")
+
+    # Try filling in labels from pandas.DataFrame columns.
+    if labels is None:
+        labels = getattr(xs, "columns", None)
 
     # Some magic numbers for pretty axis layout.
     K = len(xs)
