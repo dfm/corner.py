@@ -15,6 +15,7 @@ __contributors__ = [
     "Geoff Ryan @geoffryan",
     "Guillaume @ceyzeriat",
     "Kyle Barbary @kbarbary",
+    "Marco Tazzari @mtazzari",
     "Phil Marshall @drphilmarshall",
     "Pierre Gratier @pirg",
     "Stephan Hoyer @shoyer",
@@ -315,7 +316,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             else:
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
                 if labels is not None:
-                    ax.set_xlabel(labels[j])
+                    ax.set_xlabel(labels[j], **label_kwargs)
                     ax.xaxis.set_label_coords(0.5, -0.3)
 
             if j > 0:
