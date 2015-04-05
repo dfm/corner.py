@@ -37,7 +37,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=True, fig=None,
-           hist_kwargs=None, **hist2d_kwargs):
+           max_n_ticks=5, hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -258,7 +258,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         else:
             ax.set_ylim(0, 1.1 * np.max(n))
         ax.set_yticklabels([])
-        ax.xaxis.set_major_locator(MaxNLocator(5))
+        ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
 
         # Not so DRY.
         if i < K - 1:
@@ -292,8 +292,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.axvline(truths[j], color=truth_color)
                 ax.axhline(truths[i], color=truth_color)
 
-            ax.xaxis.set_major_locator(MaxNLocator(5))
-            ax.yaxis.set_major_locator(MaxNLocator(5))
+            ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
+            ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
 
             if i < K - 1:
                 ax.set_xticklabels([])
