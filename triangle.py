@@ -30,10 +30,12 @@ except ImportError:
     gaussian_filter = None
 
 
-def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
-           title_args=None, extents=None, truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=None, verbose=True,
-           plot_contours=True, plot_datapoints=True, fig=None, **kwargs):
+def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
+           show_titles=False, title_fmt=".2f", title_args=None,
+           truths=None, truth_color="#4682b4",
+           scale_hist=False, quantiles=None, verbose=True, fig=None,
+           hist_kwargs=None,
+           **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -101,7 +103,6 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     """
     if quantiles is None:
         quantiles = []
-
     if title_args is None:
         title_args = {}
 
@@ -115,16 +116,51 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
                                        "dimensions than samples!"
 
+    # Parse the weight array.
     if weights is not None:
         weights = np.asarray(weights)
         if weights.ndim != 1:
-            raise ValueError('weights must be 1-D')
+            raise ValueError("Weights must be 1-D")
         if xs.shape[1] != weights.shape[0]:
-            raise ValueError('lengths of weights must match number of samples')
+            raise ValueError("Lengths of weights must match number of samples")
 
-    # backwards-compatibility
-    plot_contours = kwargs.get("smooth", plot_contours)
+    # Parse the parameter ranges.
+    if range is None:
+        if "extents" in hist2d_kwargs:
+            logging.warn("Deprecated keyword argument 'extents'. "
+                         "Use 'range' instead.")
+            range = hist2d_kwargs.pop("extents")
+        else:
+            range = [[x.min(), x.max()] for x in xs]
+            # Check for parameters that never change.
+            m = np.array([e[0] == e[1] for e in range], dtype=bool)
+            if np.any(m):
+                raise ValueError(("It looks like the parameter(s) in "
+                                  "column(s) {0} have no dynamic range. "
+                                  "Please provide a `range` argument.")
+                                 .format(", ".join(map(
+                                     "{0}".format, np.arange(len(m))[m]))))
 
+    else:
+        # If any of the extents are percentiles, convert them to ranges.
+        for i, _ in enumerate(range):
+            try:
+                emin, emax = range[i]
+            except TypeError:
+                q = [0.5 - 0.5*range[i], 0.5 + 0.5*range[i]]
+                range[i] = quantile(xs[i], q, weights=weights)
+
+    if len(range) != xs.shape[0]:
+        raise ValueError("Dimension mismatch between samples and range")
+
+    # Parse the bin specifications.
+    try:
+        bins = [float(bins) for _ in range]
+    except TypeError:
+        if len(bins) != len(range):
+            raise ValueError("Dimension mismatch between bins and range")
+
+    # Some magic numbers for pretty axis layout.
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
@@ -133,6 +169,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
 
+    # Create a new figure if one wasn't provided.
     if fig is None:
         fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
@@ -141,30 +178,18 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         except:
             raise ValueError("Provided figure has {0} axes, but data has "
                              "dimensions K={1}".format(len(fig.axes), K))
+
+    # Format the figure.
     lb = lbdim / dim
     tr = (lbdim + plotdim) / dim
     fig.subplots_adjust(left=lb, bottom=lb, right=tr, top=tr,
                         wspace=whspace, hspace=whspace)
 
-    if extents is None:
-        extents = [[x.min(), x.max()] for x in xs]
-
-        # Check for parameters that never change.
-        m = np.array([e[0] == e[1] for e in extents], dtype=bool)
-        if np.any(m):
-            raise ValueError(("It looks like the parameter(s) in column(s) "
-                              "{0} have no dynamic range. Please provide an "
-                              "`extent` argument.")
-                             .format(", ".join(map("{0}".format,
-                                                   np.arange(len(m))[m]))))
-    else:
-        # If any of the extents are percentiles, convert them to ranges.
-        for i in range(len(extents)):
-            try:
-                emin, emax = extents[i]
-            except TypeError:
-                q = [0.5 - 0.5*extents[i], 0.5 + 0.5*extents[i]]
-                extents[i] = quantile(xs[i], q, weights=weights)
+    # Set up the default histogram keywords.
+    if hist_kwargs is None:
+        hist_kwargs = dict()
+    hist_kwargs["color"] = hist_kwargs.get("color", color)
+    hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
     for i, x in enumerate(xs):
         if np.shape(xs)[0] == 1:
@@ -172,9 +197,8 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         else:
             ax = axes[i, i]
         # Plot the histograms.
-        n, b, p = ax.hist(x, weights=weights, bins=kwargs.get("bins", 50),
-                          range=extents[i], histtype="step",
-                          color=kwargs.get("color", "k"))
+        n, b, p = ax.hist(x, bins=bins[i], weights=weights, range=range[i],
+                          **hist_kwargs)
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 
@@ -182,7 +206,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
             for q in qvalues:
-                ax.axvline(q, ls="dashed", color=kwargs.get("color", "k"))
+                ax.axvline(q, ls="dashed", color=color)
 
             if verbose:
                 print("Quantiles:")
@@ -208,7 +232,7 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
                 ax.set_title(title, **title_args)
 
         # Set up the axes.
-        ax.set_xlim(extents[i])
+        ax.set_xlim(range[i])
         if scale_hist:
             maxn = np.max(n)
             ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
@@ -238,10 +262,8 @@ def corner(xs, weights=None, labels=None, show_titles=False, title_fmt=".2f",
             elif j == i:
                 continue
 
-            hist2d(y, x, ax=ax, extent=[extents[j], extents[i]],
-                   plot_contours=plot_contours,
-                   plot_datapoints=plot_datapoints,
-                   weights=weights, **kwargs)
+            hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
+                   color=color, **hist2d_kwargs)
 
             if truths is not None:
                 ax.plot(truths[j], truths[i], "s", color=truth_color)
