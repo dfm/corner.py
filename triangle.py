@@ -31,7 +31,8 @@ except ImportError:
 
 
 def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
-           smooth=None, show_titles=False, title_fmt=".2f", title_args=None,
+           smooth=None, smooth1d=None,
+           show_titles=False, title_fmt=".2f", title_args=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=True, fig=None,
            hist_kwargs=None, **hist2d_kwargs):
@@ -188,7 +189,8 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
     if hist_kwargs is None:
         hist_kwargs = dict()
     hist_kwargs["color"] = hist_kwargs.get("color", color)
-    hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
+    if smooth1d is None:
+        hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
     for i, x in enumerate(xs):
         if np.shape(xs)[0] == 1:
@@ -196,8 +198,19 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
         else:
             ax = axes[i, i]
         # Plot the histograms.
-        n, b, p = ax.hist(x, bins=bins[i], weights=weights, range=range[i],
-                          **hist_kwargs)
+        if smooth1d is None:
+            n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
+                              range=range[i], **hist_kwargs)
+        else:
+            if gaussian_filter is None:
+                raise ImportError("Please install scipy for smoothing")
+            n, b = np.histogram(x, bins=bins[i], weights=weights,
+                                range=range[i])
+            n = gaussian_filter(n, smooth1d)
+            x0 = np.array(zip(b[:-1], b[1:])).flatten()
+            y0 = np.array(zip(n, n)).flatten()
+            ax.plot(x0, y0, **hist_kwargs)
+
         if truths is not None:
             ax.axvline(truths[i], color=truth_color)
 

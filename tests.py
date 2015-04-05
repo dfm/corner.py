@@ -65,6 +65,7 @@ def test_corner():
     _run_corner("overplot", seed=15, color="b", fig=fig, fill_contours=True)
     _run_corner("smooth1", bins=50)
     _run_corner("smooth2", bins=50, smooth=1.0)
+    _run_corner("smooth1d", bins=50, smooth=1.0, smooth1d=1.0)
     _run_corner("titles1", show_titles=True)
 
 
