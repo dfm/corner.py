@@ -10,6 +10,7 @@ __contributors__ = [
     # Alphabetical by first name.
     "Adrian Price-Whelan @adrn",
     "Brendon Brewer @eggplantbren",
+    "Guillaume @ceyzeriat",
     "Ekta Patel @ekta1224",
     "Emily Rice @emilurice",
     "Geoff Ryan @geoffryan",
@@ -193,6 +194,10 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
         hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
     for i, x in enumerate(xs):
+        # Deal with masked arrays.
+        if hasattr(x, "compressed"):
+            x = x.compressed()
+
         if np.shape(xs)[0] == 1:
             ax = axes
         else:
@@ -273,6 +278,9 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
             elif j == i:
                 continue
 
+            # Deal with masked arrays.
+            if hasattr(y, "compressed"):
+                y = y.compressed()
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
                    color=color, smooth=smooth, **hist2d_kwargs)
 
