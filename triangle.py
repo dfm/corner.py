@@ -179,13 +179,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     # Create a new figure if one wasn't provided.
     if fig is None:
-        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+        fig, axes = pl.subplots(K, K, figsize=(dim, dim), tight_layout=False)
     else:
         try:
             axes = np.array(fig.axes).reshape((K, K))
         except:
             raise ValueError("Provided figure has {0} axes, but data has "
                              "dimensions K={1}".format(len(fig.axes), K))
+        fig.set_tight_layout(False)
 
     # Format the figure.
     lb = lbdim / dim
