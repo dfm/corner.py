@@ -17,6 +17,7 @@ __contributors__ = [
     "Kyle Barbary @kbarbary",
     "Phil Marshall @drphilmarshall",
     "Pierre Gratier @pirg",
+    "Stephan Hoyer @shoyer",
     "Will Vousden @willvousden",
     "Wolfgang Kerzendorf @wkerzendorf",
 ]
