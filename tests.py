@@ -67,6 +67,7 @@ def test_corner():
     _run_corner("smooth2", bins=50, smooth=1.0)
     _run_corner("smooth1d", bins=50, smooth=1.0, smooth1d=1.0)
     _run_corner("titles1", show_titles=True)
+    _run_corner("top-ticks", top_ticks=True)
 
 
 if __name__ == "__main__":

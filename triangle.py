@@ -36,8 +36,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            labels=None, label_kwargs=None,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
-           scale_hist=False, quantiles=None, verbose=True, fig=None,
-           max_n_ticks=5, hist_kwargs=None, **hist2d_kwargs):
+           scale_hist=False, quantiles=None, verbose=False, fig=None,
+           max_n_ticks=5, top_ticks=False, hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -98,6 +98,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
+
+    max_n_ticks: int (optional)
+        maximum number of ticks to try to use
 
     fig : matplotlib.Figure (optional)
         Overplot onto the provided figure object.
@@ -260,9 +263,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         ax.set_yticklabels([])
         ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
 
-        # Not so DRY.
         if i < K - 1:
-            ax.set_xticklabels([])
+            if top_ticks:
+                ax.xaxis.set_ticks_position("top")
+                [l.set_rotation(45) for l in ax.get_xticklabels()]
+            else:
+                ax.set_xticklabels([])
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
