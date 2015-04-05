@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function
 
-__all__ = []
+__all__ = ["test_hist2d", "test_corner"]
 
 import os
 import numpy as np
@@ -65,8 +65,12 @@ def test_corner():
     _run_corner("overplot", seed=15, color="b", fig=fig, fill_contours=True)
     _run_corner("smooth1", bins=50)
     _run_corner("smooth2", bins=50, smooth=1.0)
+    _run_corner("titles1", show_titles=True)
 
 
 if __name__ == "__main__":
+    print("Testing 'hist2d'")
     test_hist2d()
+
+    print("Testing 'corner'")
     test_corner()

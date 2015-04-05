@@ -3,7 +3,7 @@
 from __future__ import print_function, absolute_import, unicode_literals
 
 __all__ = ["corner", "hist2d"]
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
 __contributors__ = [
@@ -211,24 +211,23 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
                 print("Quantiles:")
                 print([item for item in zip(quantiles, qvalues)])
 
-            if show_titles:
-                # Compute the quantiles for the title. This might redo
-                # unneeded computation but who cares.
-                q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84],
-                                            weights=weights)
-                q_m, q_p = q_50-q_16, q_84-q_50
+        if show_titles:
+            # Compute the quantiles for the title. This might redo
+            # unneeded computation but who cares.
+            q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84], weights=weights)
+            q_m, q_p = q_50-q_16, q_84-q_50
 
-                # Format the quantile display.
-                fmt = "{{0:{0}}}".format(title_fmt).format
-                title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
-                title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+            # Format the quantile display.
+            fmt = "{{0:{0}}}".format(title_fmt).format
+            title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+            title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
 
-                # Add in the column name if it's given.
-                if labels is not None:
-                    title = "{0} = {1}".format(labels[i], title)
+            # Add in the column name if it's given.
+            if labels is not None:
+                title = "{0} = {1}".format(labels[i], title)
 
-                # Add the title to the axis.
-                ax.set_title(title, **title_args)
+            # Add the title to the axis.
+            ax.set_title(title, **title_args)
 
         # Set up the axes.
         ax.set_xlim(range[i])
