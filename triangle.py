@@ -31,9 +31,10 @@ except ImportError:
     gaussian_filter = None
 
 
-def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
+def corner(xs, bins=20, range=None, weights=None, color="k",
            smooth=None, smooth1d=None,
-           show_titles=False, title_fmt=".2f", title_args=None,
+           labels=None, label_kwargs=None,
+           show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=True, fig=None,
            hist_kwargs=None, **hist2d_kwargs):
@@ -104,8 +105,10 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
     """
     if quantiles is None:
         quantiles = []
-    if title_args is None:
-        title_args = {}
+    if title_kwargs is None:
+        title_kwargs = dict()
+    if label_kwargs is None:
+        label_kwargs = dict()
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
@@ -245,7 +248,7 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
                 title = "{0} = {1}".format(labels[i], title)
 
             # Add the title to the axis.
-            ax.set_title(title, **title_args)
+            ax.set_title(title, **title_kwargs)
 
         # Set up the axes.
         ax.set_xlim(range[i])
@@ -263,7 +266,7 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
-                ax.set_xlabel(labels[i])
+                ax.set_xlabel(labels[i], **label_kwargs)
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
         for j, y in enumerate(xs):
@@ -305,7 +308,7 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
             else:
                 [l.set_rotation(45) for l in ax.get_yticklabels()]
                 if labels is not None:
-                    ax.set_ylabel(labels[i])
+                    ax.set_ylabel(labels[i], **label_kwargs)
                     ax.yaxis.set_label_coords(-0.3, 0.5)
 
     return fig
