@@ -63,6 +63,8 @@ def test_corner():
     fig = _run_corner("color-filled", color="g", fill_contours=True,
                       ret=True)
     _run_corner("overplot", seed=15, color="b", fig=fig, fill_contours=True)
+    _run_corner("smooth1", bins=50)
+    _run_corner("smooth2", bins=50, smooth=1.0)
 
 
 if __name__ == "__main__":

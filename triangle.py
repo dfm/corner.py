@@ -31,11 +31,10 @@ except ImportError:
 
 
 def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
-           show_titles=False, title_fmt=".2f", title_args=None,
+           smooth=None, show_titles=False, title_fmt=".2f", title_args=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=True, fig=None,
-           hist_kwargs=None,
-           **hist2d_kwargs):
+           hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -263,7 +262,7 @@ def corner(xs, bins=20, range=None, weights=None, labels=None, color="k",
                 continue
 
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                   color=color, **hist2d_kwargs)
+                   color=color, smooth=smooth, **hist2d_kwargs)
 
             if truths is not None:
                 ax.plot(truths[j], truths[i], "s", color=truth_color)
