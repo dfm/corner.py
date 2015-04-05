@@ -14,6 +14,7 @@ __contributors__ = [
     "Emily Rice @emilurice",
     "Geoff Ryan @geoffryan",
     "Guillaume @ceyzeriat",
+    "Kelle Cruz @kelle",
     "Kyle Barbary @kbarbary",
     "Marco Tazzari @mtazzari",
     "Phil Marshall @drphilmarshall",
