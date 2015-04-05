@@ -119,6 +119,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     if label_kwargs is None:
         label_kwargs = dict()
 
+    # Try filling in labels from pandas.DataFrame columns.
+    if labels is None:
+        labels = getattr(xs, "columns", None)
+
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
     if len(xs.shape) == 1:
@@ -172,10 +176,6 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     except TypeError:
         if len(bins) != len(range):
             raise ValueError("Dimension mismatch between bins and range")
-
-    # Try filling in labels from pandas.DataFrame columns.
-    if labels is None:
-        labels = getattr(xs, "columns", None)
 
     # Some magic numbers for pretty axis layout.
     K = len(xs)

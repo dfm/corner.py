@@ -6,6 +6,7 @@ __all__ = ["test_hist2d", "test_corner"]
 
 import os
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as pl
 
 import triangle
@@ -14,6 +15,8 @@ FIGURE_PATH = "test_figures"
 
 
 def _run_hist2d(nm, N=50000, seed=1234, **kwargs):
+    print(" .. {0}".format(nm))
+
     if not os.path.exists(FIGURE_PATH):
         os.makedirs(FIGURE_PATH)
 
@@ -40,12 +43,22 @@ def test_hist2d():
                 levels=[0.68, 0.95], color="g", bins=50, smooth=1.)
 
 
-def _run_corner(nm, N=10000, seed=1234, ndim=3, ret=False, **kwargs):
+def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
+                **kwargs):
+    print(" .. {0}".format(nm))
+
+    if not os.path.exists(FIGURE_PATH):
+        os.makedirs(FIGURE_PATH)
+
     np.random.seed(seed)
     data1 = np.random.randn(ndim*4*N/5.).reshape([4*N/5., ndim])
     data2 = (5 * np.random.rand(ndim)[None, :]
              + np.random.randn(ndim*N/5.).reshape([N/5., ndim]))
     data = np.vstack([data1, data2])
+    if pandas:
+        data = pd.DataFrame.from_items(zip(map("d{0}".format, range(ndim)),
+                                           data.T))
+    print(data.columns.values)
 
     fig = triangle.corner(data, **kwargs)
     fig.savefig(os.path.join(FIGURE_PATH, "triangle_{0}.png".format(nm)))
@@ -68,6 +81,7 @@ def test_corner():
     _run_corner("smooth1d", bins=50, smooth=1.0, smooth1d=1.0)
     _run_corner("titles1", show_titles=True)
     _run_corner("top-ticks", top_ticks=True)
+    _run_corner("pandas", pandas=True)
 
 
 if __name__ == "__main__":
