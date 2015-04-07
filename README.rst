@@ -47,7 +47,8 @@ something that looks awesome like:
 
 By default, data points are shown as grayscale points with contours.
 Contours are shown at 0.5, 1, 1.5, and 2 sigma. To start experimenting with
-alternatives, check out [demo.py](https://github.com/drphilmarshall/triangle.py/blob/master/demo.py) 
+alternatives, check out `demo.py
+<https://github.com/drphilmarshall/triangle.py/blob/master/demo.py>`_) 
 
 Attribution
 -----------
