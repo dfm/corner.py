@@ -40,14 +40,14 @@ like this:
     figure = triangle.corner(samples)
     figure.savefig("triangle.png")
 
-With some other tweaks (see `demo.py
-<https://github.com/dfm/triangle.py/blob/master/demo.py>`_) you can get
+With some other tweaks you can get
 something that looks awesome like:
 
 .. image:: https://raw.github.com/dfm/triangle.py/master/triangle.png
 
 By default, data points are shown as grayscale points with contours.
-Contours are shown at 0.5, 1, 1.5, and 2 sigma.
+Contours are shown at 0.5, 1, 1.5, and 2 sigma. To start experimenting with
+alternatives, check out [demo.py](https://github.com/drphilmarshall/triangle.py/blob/master/demo.py) 
 
 Attribution
 -----------
