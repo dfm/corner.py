@@ -429,18 +429,26 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
 
     # Extend the array for the sake of the contours at the plot edges.
-    H2 = np.zeros((H.shape[0] + 2, H.shape[1] + 2))
-    H2[1:-1, 1:-1] = H
-    H2[1:-1, 0] = H[:, 0]
-    H2[1:-1, -1] = H[:, -1]
-    H2[0, 1:-1] = H[0]
-    H2[-1, 1:-1] = H[-1]
-    H2[0, 0] = H[0, 0]
-    H2[0, -1] = H[0, -1]
-    H2[-1, 0] = H[-1, 0]
-    H2[-1, -1] = H[-1, -1]
-    X2 = np.concatenate(([range[0][0]], X1, [range[0][-1]]))
-    Y2 = np.concatenate(([range[1][0]], Y1, [range[1][-1]]))
+    H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
+    H2[2:-2, 2:-2] = H
+    H2[2:-2, 1] = H[:, 0]
+    H2[2:-2, -2] = H[:, -1]
+    H2[1, 2:-2] = H[0]
+    H2[-2, 2:-2] = H[-1]
+    H2[1, 1] = H[0, 0]
+    H2[1, -2] = H[0, -1]
+    H2[-2, 1] = H[-1, 0]
+    H2[-2, -2] = H[-1, -1]
+    X2 = np.concatenate([
+        X1[0] + np.array([-2, -1]) * np.diff(X1[:2]),
+        X1,
+        X1[-1] + np.array([1, 2]) * np.diff(X1[-2:]),
+    ])
+    Y2 = np.concatenate([
+        Y1[0] + np.array([-2, -1]) * np.diff(Y1[:2]),
+        Y1,
+        Y1[-1] + np.array([1, 2]) * np.diff(Y1[-2:]),
+    ])
 
     if plot_datapoints:
         if data_kwargs is None:
