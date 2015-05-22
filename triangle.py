@@ -121,7 +121,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     # Try filling in labels from pandas.DataFrame columns.
     if labels is None:
-        labels = getattr(xs, "columns", None)
+        try:
+            labels = xs.columns
+        except AttributeError:
+            pass
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
@@ -424,7 +427,28 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     # Compute the bin centers.
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
-    X, Y = X[:-1], Y[:-1]
+
+    # Extend the array for the sake of the contours at the plot edges.
+    H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
+    H2[2:-2, 2:-2] = H
+    H2[2:-2, 1] = H[:, 0]
+    H2[2:-2, -2] = H[:, -1]
+    H2[1, 2:-2] = H[0]
+    H2[-2, 2:-2] = H[-1]
+    H2[1, 1] = H[0, 0]
+    H2[1, -2] = H[0, -1]
+    H2[-2, 1] = H[-1, 0]
+    H2[-2, -2] = H[-1, -1]
+    X2 = np.concatenate([
+        X1[0] + np.array([-2, -1]) * np.diff(X1[:2]),
+        X1,
+        X1[-1] + np.array([1, 2]) * np.diff(X1[-2:]),
+    ])
+    Y2 = np.concatenate([
+        Y1[0] + np.array([-2, -1]) * np.diff(Y1[:2]),
+        Y1,
+        Y1[-1] + np.array([1, 2]) * np.diff(Y1[-2:]),
+    ])
 
     if plot_datapoints:
         if data_kwargs is None:
@@ -437,7 +461,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     # Plot the base fill to hide the densest data points.
     if plot_contours or plot_density:
-        ax.contourf(X1, Y1, H.T, [V[-1], H.max()],
+        ax.contourf(X2, Y2, H2.T, [V[-1], H.max()],
                     cmap=white_cmap, antialiased=False)
 
     if plot_contours and fill_contours:
@@ -446,7 +470,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         contourf_kwargs["colors"] = contourf_kwargs.get("colors", contour_cmap)
         contourf_kwargs["antialiased"] = contourf_kwargs.get("antialiased",
                                                              False)
-        ax.contourf(X1, Y1, H.T, np.concatenate([[H.max()], V, [0]]),
+        ax.contourf(X2, Y2, H2.T, np.concatenate([[H.max()], V, [0]]),
                     **contourf_kwargs)
 
     # Plot the density map. This can't be plotted at the same time as the
@@ -459,7 +483,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         if contour_kwargs is None:
             contour_kwargs = dict()
         contour_kwargs["colors"] = contour_kwargs.get("colors", color)
-        ax.contour(X1, Y1, H.T, V, **contour_kwargs)
+        ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])

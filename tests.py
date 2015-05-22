@@ -32,6 +32,9 @@ def _run_hist2d(nm, N=50000, seed=1234, **kwargs):
 
 
 def test_hist2d():
+    _run_hist2d("cutoff", range=[(0, 4), (0, 2.5)])
+    _run_hist2d("cutoff2", range=[(-4, 4), (-0.1, 0.1)], N=100000,
+                fill_contours=True, smooth=1)
     _run_hist2d("basic")
     _run_hist2d("color", color="g")
     _run_hist2d("levels1", levels=[0.68, 0.95])
@@ -58,7 +61,6 @@ def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
     if pandas:
         data = pd.DataFrame.from_items(zip(map("d{0}".format, range(ndim)),
                                            data.T))
-    print(data.columns.values)
 
     fig = triangle.corner(data, **kwargs)
     fig.savefig(os.path.join(FIGURE_PATH, "triangle_{0}.png".format(nm)))
