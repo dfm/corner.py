@@ -302,7 +302,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if hasattr(y, "compressed"):
                 y = y.compressed()
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                   color=color, smooth=smooth, **hist2d_kwargs)
+                   color=color, smooth=smooth, bins=[bins[j], bins[i]], **hist2d_kwargs)
 
             if truths is not None:
                 ax.plot(truths[j], truths[i], "s", color=truth_color)
