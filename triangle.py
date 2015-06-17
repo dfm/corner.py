@@ -102,6 +102,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     plot_contours : bool (optional)
         Draw contours for dense regions of the plot.
 
+    no_fill_contours : bool (optional)
+        Add no filling at all to the contours (unlike setting ``fill_contours=False``,
+        which still adds a white fill at the densest points)
+
     plot_datapoints : bool (optional)
         Draw the individual data points.
 
@@ -355,7 +359,7 @@ def quantile(x, q, weights=None):
 
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            ax=None, color=None, plot_datapoints=True, plot_density=True,
-           plot_contours=True, fill_contours=False,
+           plot_contours=True, no_fill_contours=False, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
            **kwargs):
     """
@@ -460,7 +464,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         ax.plot(x, y, "o", zorder=-1, rasterized=True, **data_kwargs)
 
     # Plot the base fill to hide the densest data points.
-    if plot_contours or plot_density:
+    if (plot_contours or plot_density) and not no_fill_contours:
         ax.contourf(X2, Y2, H2.T, [V[-1], H.max()],
                     cmap=white_cmap, antialiased=False)
 
