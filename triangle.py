@@ -29,6 +29,7 @@ import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
+from matplotlib.ticker import ScalarFormatter
 
 try:
     from scipy.ndimage import gaussian_filter
@@ -42,7 +43,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
-           max_n_ticks=5, top_ticks=False, hist_kwargs=None, **hist2d_kwargs):
+           max_n_ticks=5, top_ticks=False, use_math_text=False,
+           hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -75,7 +77,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     title_args : dict (optional)
         Any extra keyword arguments to send to the `add_title` command.
 
-    extents : iterable (ndim,) (optional)
+    range : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
         lower and upper bounds (extents) or a float in range (0., 1.)
         giving the fraction of samples to include in bounds, e.g.,
@@ -101,6 +103,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     plot_contours : bool (optional)
         Draw contours for dense regions of the plot.
+
+    use_math_text : bool (optional)
+        If true then axis tick labels for very large or small exponents will be
+        displayed as powers of 10 rather than using `e`
 
     no_fill_contours : bool (optional)
         Add no filling at all to the contours (unlike setting ``fill_contours=False``,
@@ -293,6 +299,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.set_xlabel(labels[i], **label_kwargs)
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
+            # use MathText for axes ticks
+            ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+
         for j, y in enumerate(xs):
             if np.shape(xs)[0] == 1:
                 ax = axes
@@ -327,6 +336,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                     ax.set_xlabel(labels[j], **label_kwargs)
                     ax.xaxis.set_label_coords(0.5, -0.3)
 
+                # use MathText for axes ticks
+                ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+
             if j > 0:
                 ax.set_yticklabels([])
             else:
@@ -334,6 +346,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 if labels is not None:
                     ax.set_ylabel(labels[i], **label_kwargs)
                     ax.yaxis.set_label_coords(-0.3, 0.5)
+
+                # use MathText for axes ticks
+                ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
 
     return fig
 
