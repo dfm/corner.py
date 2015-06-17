@@ -112,6 +112,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         Add no filling at all to the contours (unlike setting ``fill_contours=False``,
         which still adds a white fill at the densest points)
 
+    bins2d : int (optional)
+        Set the number of bins in the 2D histogram for density/contour plots (default: 20)
+
     plot_datapoints : bool (optional)
         Draw the individual data points.
 
@@ -317,7 +320,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             # Deal with masked arrays.
             if hasattr(y, "compressed"):
                 y = y.compressed()
-            hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
+                
+            # set histogram bins for contour/density plots
+            bins2d = 20
+            if "bins2d" in hist2d_kwargs:
+                bins2d = hist2d_kwargs["bins2d"]
+            hist2d(y, x, bins=bins2d, ax=ax, range=[range[j], range[i]], weights=weights,
                    color=color, smooth=smooth, **hist2d_kwargs)
 
             if truths is not None:
