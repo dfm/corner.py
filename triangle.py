@@ -83,7 +83,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         If a fraction, the bounds are chosen to be equal-tailed.
 
     truths : iterable (ndim,) (optional)
-        A list of reference values to indicate on the plots.
+        A list of reference values to indicate on the plots.  Individual
+        values can be omitted by using ``None``.
 
     truth_color : str (optional)
         A ``matplotlib`` style color for the ``truths`` makers.
@@ -236,7 +237,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             y0 = np.array(zip(n, n)).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
-        if truths is not None:
+        if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
 
         # Plot quantiles if wanted.
@@ -308,9 +309,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                    color=color, smooth=smooth, bins=[bins[j], bins[i]], **hist2d_kwargs)
 
             if truths is not None:
-                ax.plot(truths[j], truths[i], "s", color=truth_color)
-                ax.axvline(truths[j], color=truth_color)
-                ax.axhline(truths[i], color=truth_color)
+                if truths[i] is not None and truths[j] is not None:
+                    ax.plot(truths[j], truths[i], "s", color=truth_color)
+                if truths[j] is not None:
+                    ax.axvline(truths[j], color=truth_color)
+                if truths[i] is not None:
+                    ax.axhline(truths[i], color=truth_color)
 
             ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
             ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
