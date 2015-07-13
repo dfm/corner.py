@@ -185,7 +185,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     K = len(xs)
     factor = 2.0           # size of one side of one panel
     lbdim = 0.5 * factor   # size of left/bottom margin
-    trdim = 0.2 * factor   # size of top/right margin
+    trdim = 0.3 * factor   # size of top/right margin
     whspace = 0.05         # w/hspace size
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
@@ -305,6 +305,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             # Deal with masked arrays.
             if hasattr(y, "compressed"):
                 y = y.compressed()
+
+            # Plot the histogram:
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
                    color=color, smooth=smooth, bins=[bins[j], bins[i]], **hist2d_kwargs)
 
