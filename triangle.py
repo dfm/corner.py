@@ -42,12 +42,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
-           max_n_ticks=5, top_ticks=False, hist_kwargs=None, **hist2d_kwargs):
+           max_n_ticks=5, top_ticks=False, hist_kwargs=None, priors=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
     `matplotlib` styling.
-
     Parameters
     ----------
     xs : array_like (nsamples, ndim)
@@ -55,63 +54,47 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         array this results in a simple histogram. For a 2-D array, the zeroth
         axis is the list of samples and the next axis are the dimensions of
         the space.
-
     weights : array_like (nsamples,)
         The weight of each sample. If `None` (default), samples are given
         equal weight.
-
     labels : iterable (ndim,) (optional)
         A list of names for the dimensions. If a ``xs`` is a
         ``pandas.DataFrame``, labels will default to column names.
-
     show_titles : bool (optional)
         Displays a title above each 1-D histogram showing the 0.5 quantile
         with the upper and lower errors supplied by the quantiles argument.
-
     title_fmt : string (optional)
         The format string for the quantiles given in titles.
         (default: `.2f`)
-
     title_args : dict (optional)
         Any extra keyword arguments to send to the `add_title` command.
-
     extents : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
         lower and upper bounds (extents) or a float in range (0., 1.)
         giving the fraction of samples to include in bounds, e.g.,
         [(0.,10.), (1.,5), 0.999, etc.].
         If a fraction, the bounds are chosen to be equal-tailed.
-
     truths : iterable (ndim,) (optional)
         A list of reference values to indicate on the plots.  Individual
         values can be omitted by using ``None``.
-
     truth_color : str (optional)
         A ``matplotlib`` style color for the ``truths`` makers.
-
     scale_hist : bool (optional)
         Should the 1-D histograms be scaled in such a way that the zero line
         is visible?
-
     quantiles : iterable (optional)
         A list of fractional quantiles to show on the 1-D histograms as
         vertical dashed lines.
-
     verbose : bool (optional)
         If true, print the values of the computed quantiles.
-
     plot_contours : bool (optional)
         Draw contours for dense regions of the plot.
-
     plot_datapoints : bool (optional)
         Draw the individual data points.
-
     max_n_ticks: int (optional)
         maximum number of ticks to try to use
-
     fig : matplotlib.Figure (optional)
         Overplot onto the provided figure object.
-
     """
     if quantiles is None:
         quantiles = []
@@ -211,8 +194,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     if hist_kwargs is None:
         hist_kwargs = dict()
     hist_kwargs["color"] = hist_kwargs.get("color", color)
-    if smooth1d is None:
-        hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
+    #if smooth1d is None:
+    #    hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
+
+    if priors is not None:
+        if len(priors)!=K:
+            raise ValueError("Length of priors parameter doesn't match length of data")
 
     for i, x in enumerate(xs):
         # Deal with masked arrays.
@@ -224,18 +211,19 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         else:
             ax = axes[i, i]
         # Plot the histograms.
-        if smooth1d is None:
-            n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
-                              range=range[i], **hist_kwargs)
-        else:
+        n, b = np.histogram(x, bins=bins[i], weights=weights,
+                            range=range[i])
+        if priors is not None:
+            if not callable(priors[i][0]) or not isinstance(priors[i][1], dict):
+                raise ValueError("Priors parameter must be a list of tuple(callable, dict)")
+            n *= priors[i][0]((b[1:]+b[:-1])/2., **priors[i][1])
+        if smooth1d is not None:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
-            n, b = np.histogram(x, bins=bins[i], weights=weights,
-                                range=range[i])
             n = gaussian_filter(n, smooth1d)
-            x0 = np.array(zip(b[:-1], b[1:])).flatten()
-            y0 = np.array(zip(n, n)).flatten()
-            ax.plot(x0, y0, **hist_kwargs)
+        x0 = np.array(zip(b[:-1], b[1:])).flatten()
+        y0 = np.array(zip(n, n)).flatten()
+        ax.plot(x0, y0, **hist_kwargs)
 
         if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
@@ -306,7 +294,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if hasattr(y, "compressed"):
                 y = y.compressed()
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                   color=color, smooth=smooth, bins=[bins[j], bins[i]], **hist2d_kwargs)
+                   color=color, smooth=smooth, bins=[bins[j], bins[i]], priors=[priors[j], priors[i]], **hist2d_kwargs)
 
             if truths is not None:
                 if truths[i] is not None and truths[j] is not None:
@@ -341,11 +329,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 def quantile(x, q, weights=None):
     """
     Like numpy.percentile, but:
-
     * Values of q are quantiles [0., 1.] rather than percentiles [0., 100.]
     * scalar q not supported (q must be iterable)
     * optional weights on x
-
     """
     if weights is None:
         return np.percentile(x, [100. * qi for qi in q])
@@ -361,10 +347,9 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            ax=None, color=None, plot_datapoints=True, plot_density=True,
            plot_contours=True, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
-           **kwargs):
+           priors=None, **kwargs):
     """
     Plot a 2-D histogram of samples.
-
     """
     if ax is None:
         ax = pl.gca()
@@ -411,6 +396,17 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
                          "have no dynamic range. You could try using the "
                          "'range' argument.")
 
+    # Compute the bin centers.
+    X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
+
+    # apply priors
+    if priors is not None:
+        if not callable(priors[0][0]) or not isinstance(priors[0][1], dict) or not callable(priors[1][0]) or not isinstance(priors[1][1], dict):
+            raise ValueError("Priors parameter must be a list of tuple(callable, dict)")
+        xp = priors[0][0](Y1, **priors[0][1])
+        yp = priors[1][0](X1, **priors[1][1])
+        H *= np.asarray(np.matrix(xp).T * yp)
+
     if smooth is not None:
         if gaussian_filter is None:
             raise ImportError("Please install scipy for smoothing")
@@ -429,8 +425,6 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         except:
             V[i] = Hflat[0]
 
-    # Compute the bin centers.
-    X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
 
     # Extend the array for the sake of the contours at the plot edges.
     H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
