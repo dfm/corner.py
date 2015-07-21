@@ -84,6 +84,7 @@ def test_corner():
     _run_corner("titles1", show_titles=True)
     _run_corner("top-ticks", top_ticks=True)
     _run_corner("pandas", pandas=True)
+    _run_corner("truths", truths=[0.0, None, 0.15])
 
 
 if __name__ == "__main__":

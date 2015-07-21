@@ -85,7 +85,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         If a fraction, the bounds are chosen to be equal-tailed.
 
     truths : iterable (ndim,) (optional)
-        A list of reference values to indicate on the plots.
+        A list of reference values to indicate on the plots.  Individual
+        values can be omitted by using ``None``.
 
     truth_color : str (optional)
         A ``matplotlib`` style color for the ``truths`` makers.
@@ -111,9 +112,6 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     no_fill_contours : bool (optional)
         Add no filling at all to the contours (unlike setting ``fill_contours=False``,
         which still adds a white fill at the densest points)
-
-    bins2d : int (optional)
-        Set the number of bins in the 2D histogram for density/contour plots (default: 20)
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
@@ -249,7 +247,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             y0 = np.array(zip(n, n)).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
-        if truths is not None:
+        if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
 
         # Plot quantiles if wanted.
@@ -320,18 +318,17 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             # Deal with masked arrays.
             if hasattr(y, "compressed"):
                 y = y.compressed()
-                
-            # set histogram bins for contour/density plots
-            bins2d = 20
-            if "bins2d" in hist2d_kwargs:
-                bins2d = hist2d_kwargs["bins2d"]
-            hist2d(y, x, bins=bins2d, ax=ax, range=[range[j], range[i]], weights=weights,
-                   color=color, smooth=smooth, **hist2d_kwargs)
+
+            hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
+                   color=color, smooth=smooth, bins=[bins[j], bins[i]], **hist2d_kwargs)
 
             if truths is not None:
-                ax.plot(truths[j], truths[i], "s", color=truth_color)
-                ax.axvline(truths[j], color=truth_color)
-                ax.axhline(truths[i], color=truth_color)
+                if truths[i] is not None and truths[j] is not None:
+                    ax.plot(truths[j], truths[i], "s", color=truth_color)
+                if truths[j] is not None:
+                    ax.axvline(truths[j], color=truth_color)
+                if truths[i] is not None:
+                    ax.axhline(truths[i], color=truth_color)
 
             ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
             ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
