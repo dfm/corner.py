@@ -491,3 +491,57 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])
+
+
+def format_exponents_in_label(fig):
+    """ Helper routine to move the axis exponents to the axis label
+
+    Moves the ScalarFormatter exponent from the axes to the label. In general
+    this is done by appending `[10^{n}]` to the axis label. If the axis label
+    specifies units such as `time [s]`, then this will produce `time [10^{n}s]`
+
+    Note: For best results the figure should be produced with
+          `formatter.use_mathtext=True`.
+    """
+
+    # Force all the labels to be drawn
+    pl.draw()
+
+    def update_label(old_label, exponent_text):
+        """ Method to transform given label into the new label """
+        if exponent_text == "":
+            return old_label
+        try:
+            units = old_label[old_label.index("[") + 1:old_label.rindex("]")]
+        except ValueError:
+            units = ""
+
+        label = old_label.replace("[{}]".format(units), "")
+        exponent_text = exponent_text.replace("\\times", "")
+        s = r"{} [{} {}]".format(label, exponent_text, units)
+        s = s.replace("-", "\\textrm{-}")
+        return s
+
+    def format_exponents_in_label_single_ax(ax, axis='both'):
+        """ Routine for a single axes instance """
+
+        axes_instances = []
+        if axis in ['x', 'both']:
+            axes_instances.append(ax.xaxis)
+        if axis in ['y', 'both']:
+            axes_instances.append(ax.yaxis)
+
+        for axi in axes_instances:
+            exponent_text = axi.get_offset_text().get_text()
+            exponent_text = exponent_text.replace("\\mathdefault", "")
+            label = axi.get_label().get_text()
+            axi.offsetText.set_visible(False)
+            axi.set_label_text(update_label(label, exponent_text))
+
+    axes = fig.get_axes()
+    ndim = int(np.sqrt(len(axes)))
+    axes = np.array(fig.get_axes()).reshape(ndim, ndim)
+    for ax in axes[:, 0]:
+        format_exponents_in_label_single_ax(ax, axis="y")
+    for ax in axes[-1, :]:
+        format_exponents_in_label_single_ax(ax, axis="x")
