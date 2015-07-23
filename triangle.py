@@ -75,9 +75,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     title_args : dict (optional)
         Any extra keyword arguments to send to the `add_title` command.
 
-    extents : iterable (ndim,) (optional)
+    range : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
-        lower and upper bounds (extents) or a float in range (0., 1.)
+        lower and upper bounds or a float in range (0., 1.)
         giving the fraction of samples to include in bounds, e.g.,
         [(0.,10.), (1.,5), 0.999, etc.].
         If a fraction, the bounds are chosen to be equal-tailed.
@@ -164,6 +164,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     else:
         # If any of the extents are percentiles, convert them to ranges.
+        # Also make sure it's a normal list.
+        range = list(range)
         for i, _ in enumerate(range):
             try:
                 emin, emax = range[i]
