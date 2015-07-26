@@ -14,6 +14,7 @@ __contributors__ = [
     "Emily Rice @emilurice",
     "Geoff Ryan @geoffryan",
     "Guillaume @ceyzeriat",
+    "Gregory Ashton @ga7g08",
     "Kelle Cruz @kelle",
     "Kyle Barbary @kbarbary",
     "Marco Tazzari @mtazzari",
@@ -308,7 +309,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if hasattr(y, "compressed"):
                 y = y.compressed()
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                   color=color, smooth=smooth, bins=[bins[j], bins[i]], **hist2d_kwargs)
+                   color=color, smooth=smooth, bins=[bins[j], bins[i]],
+                   **hist2d_kwargs)
 
             if truths is not None:
                 if truths[i] is not None and truths[j] is not None:
