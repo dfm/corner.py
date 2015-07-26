@@ -30,6 +30,7 @@ import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
+from matplotlib.ticker import ScalarFormatter
 
 try:
     from scipy.ndimage import gaussian_filter
@@ -43,7 +44,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
-           max_n_ticks=5, top_ticks=False, hist_kwargs=None, **hist2d_kwargs):
+           max_n_ticks=5, top_ticks=False, use_math_text=False,
+           hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -103,6 +105,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     plot_contours : bool (optional)
         Draw contours for dense regions of the plot.
+
+    use_math_text : bool (optional)
+        If true then axis tick labels for very large or small exponents will be
+        displayed as powers of 10 rather than using `e`
+
+    no_fill_contours : bool (optional)
+        Add no filling at all to the contours (unlike setting ``fill_contours=False``,
+        which still adds a white fill at the densest points)
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
@@ -292,6 +302,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.set_xlabel(labels[i], **label_kwargs)
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
+            # use MathText for axes ticks
+            ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+
         for j, y in enumerate(xs):
             if np.shape(xs)[0] == 1:
                 ax = axes
@@ -308,6 +321,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             # Deal with masked arrays.
             if hasattr(y, "compressed"):
                 y = y.compressed()
+
             hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
                    color=color, smooth=smooth, bins=[bins[j], bins[i]],
                    **hist2d_kwargs)
@@ -331,6 +345,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                     ax.set_xlabel(labels[j], **label_kwargs)
                     ax.xaxis.set_label_coords(0.5, -0.3)
 
+                # use MathText for axes ticks
+                ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+
             if j > 0:
                 ax.set_yticklabels([])
             else:
@@ -338,6 +355,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 if labels is not None:
                     ax.set_ylabel(labels[i], **label_kwargs)
                     ax.yaxis.set_label_coords(-0.3, 0.5)
+
+                # use MathText for axes ticks
+                ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
 
     return fig
 
@@ -363,7 +383,7 @@ def quantile(x, q, weights=None):
 
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            ax=None, color=None, plot_datapoints=True, plot_density=True,
-           plot_contours=True, fill_contours=False,
+           plot_contours=True, no_fill_contours=False, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
            **kwargs):
     """
@@ -468,7 +488,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         ax.plot(x, y, "o", zorder=-1, rasterized=True, **data_kwargs)
 
     # Plot the base fill to hide the densest data points.
-    if plot_contours or plot_density:
+    if (plot_contours or plot_density) and not no_fill_contours:
         ax.contourf(X2, Y2, H2.T, [V[-1], H.max()],
                     cmap=white_cmap, antialiased=False)
 
