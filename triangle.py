@@ -18,6 +18,7 @@ __contributors__ = [
     "Kelle Cruz @kelle",
     "Kyle Barbary @kbarbary",
     "Marco Tazzari @mtazzari",
+    "Matt Pitkin @mattpitkin",
     "Phil Marshall @drphilmarshall",
     "Pierre Gratier @pirg",
     "Stephan Hoyer @shoyer",
