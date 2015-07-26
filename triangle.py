@@ -108,11 +108,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     use_math_text : bool (optional)
         If true then axis tick labels for very large or small exponents will be
-        displayed as powers of 10 rather than using `e`
+        displayed as powers of 10 rather than using `e`.
 
     no_fill_contours : bool (optional)
-        Add no filling at all to the contours (unlike setting ``fill_contours=False``,
-        which still adds a white fill at the densest points)
+        Add no filling at all to the contours (unlike setting
+        ``fill_contours=False``, which still adds a white fill at the densest
+        points).
 
     plot_datapoints : bool (optional)
         Draw the individual data points.
@@ -303,7 +304,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
             # use MathText for axes ticks
-            ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+            ax.xaxis.set_major_formatter(
+                ScalarFormatter(useMathText=use_math_text))
 
         for j, y in enumerate(xs):
             if np.shape(xs)[0] == 1:
@@ -346,7 +348,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                     ax.xaxis.set_label_coords(0.5, -0.3)
 
                 # use MathText for axes ticks
-                ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+                ax.xaxis.set_major_formatter(
+                    ScalarFormatter(useMathText=use_math_text))
 
             if j > 0:
                 ax.set_yticklabels([])
@@ -357,7 +360,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                     ax.yaxis.set_label_coords(-0.3, 0.5)
 
                 # use MathText for axes ticks
-                ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=use_math_text))
+                ax.yaxis.set_major_formatter(
+                    ScalarFormatter(useMathText=use_math_text))
 
     return fig
 
