@@ -86,6 +86,11 @@ def test_corner():
     _run_corner("pandas", pandas=True)
     _run_corner("truths", truths=[0.0, None, 0.15])
 
+    fig = _run_corner("tight", ret=True)
+    pl.tight_layout()
+    fig.savefig(os.path.join(FIGURE_PATH, "triangle_tight.png"))
+    pl.close(fig)
+
 
 if __name__ == "__main__":
     print("Testing 'hist2d'")
