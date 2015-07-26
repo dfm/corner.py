@@ -88,6 +88,8 @@ def test_corner():
     _run_corner("top-ticks", top_ticks=True)
     _run_corner("pandas", pandas=True)
     _run_corner("truths", truths=[0.0, None, 0.15])
+    _run_corner("no-fill-contours", no_fill_contours=True)
+
     # _run_corner("mathtext", factor=1e8, use_math_text=True)
 
     fig = _run_corner("tight", ret=True)
