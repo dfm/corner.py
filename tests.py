@@ -47,7 +47,7 @@ def test_hist2d():
 
 
 def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
-                **kwargs):
+                factor=None, **kwargs):
     print(" .. {0}".format(nm))
 
     if not os.path.exists(FIGURE_PATH):
@@ -58,6 +58,9 @@ def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
     data2 = (5 * np.random.rand(ndim)[None, :]
              + np.random.randn(ndim*N/5.).reshape([N/5., ndim]))
     data = np.vstack([data1, data2])
+    if factor is not None:
+        data[:, 0] *= factor
+        data[:, 1] /= factor
     if pandas:
         data = pd.DataFrame.from_items(zip(map("d{0}".format, range(ndim)),
                                            data.T))
@@ -85,6 +88,14 @@ def test_corner():
     _run_corner("top-ticks", top_ticks=True)
     _run_corner("pandas", pandas=True)
     _run_corner("truths", truths=[0.0, None, 0.15])
+    _run_corner("no-fill-contours", no_fill_contours=True)
+
+    # _run_corner("mathtext", factor=1e8, use_math_text=True)
+
+    fig = _run_corner("tight", ret=True)
+    pl.tight_layout()
+    fig.savefig(os.path.join(FIGURE_PATH, "triangle_tight.png"))
+    pl.close(fig)
 
 
 if __name__ == "__main__":
