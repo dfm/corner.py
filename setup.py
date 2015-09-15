@@ -18,7 +18,7 @@ setup(
     version=version,
     author="Daniel Foreman-Mackey",
     author_email="danfm@nyu.edu",
-    url="https://github.com/dfm/triangle.py",
+    url="https://github.com/dfm/corner.py",
     py_modules=["corner"],
     description="Make some beautiful corner plots of samples.",
     long_description=open("README.rst").read(),

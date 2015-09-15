@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as pl
 
-import triangle
+import corner
 
 FIGURE_PATH = "test_figures"
 
@@ -26,7 +26,7 @@ def _run_hist2d(nm, N=50000, seed=1234, **kwargs):
     y = np.random.randn(N)
 
     fig, ax = pl.subplots(1, 1, figsize=(8, 8))
-    triangle.hist2d(x, y, ax=ax, **kwargs)
+    corner.hist2d(x, y, ax=ax, **kwargs)
     fig.savefig(os.path.join(FIGURE_PATH, "hist2d_{0}.png".format(nm)))
     pl.close(fig)
 
@@ -65,8 +65,8 @@ def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
         data = pd.DataFrame.from_items(zip(map("d{0}".format, range(ndim)),
                                            data.T))
 
-    fig = triangle.corner(data, **kwargs)
-    fig.savefig(os.path.join(FIGURE_PATH, "triangle_{0}.png".format(nm)))
+    fig = corner.corner(data, **kwargs)
+    fig.savefig(os.path.join(FIGURE_PATH, "corner_{0}.png".format(nm)))
     if ret:
         return fig
     else:
@@ -83,7 +83,7 @@ def test_corner():
     _run_corner("overplot", seed=15, color="b", fig=fig, fill_contours=True)
     _run_corner("smooth1", bins=50)
     _run_corner("smooth2", bins=50, smooth=1.0)
-    _run_corner("smooth1d", bins=50, smooth=1.0, smooth1d=1.0)
+    # _run_corner("smooth1d", bins=50, smooth=1.0, smooth1d=1.0)
     _run_corner("titles1", show_titles=True)
     _run_corner("top-ticks", top_ticks=True)
     _run_corner("pandas", pandas=True)
@@ -94,7 +94,7 @@ def test_corner():
 
     fig = _run_corner("tight", ret=True)
     pl.tight_layout()
-    fig.savefig(os.path.join(FIGURE_PATH, "triangle_tight.png"))
+    fig.savefig(os.path.join(FIGURE_PATH, "corner_tight.png"))
     pl.close(fig)
 
 

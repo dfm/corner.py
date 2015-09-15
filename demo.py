@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-import triangle
+import corner
 
 # Set up the parameters of the problem.
 ndim, nsamples = 3, 50000
@@ -14,8 +14,8 @@ data2 = (5 * np.random.rand(ndim)[None, :]
 data = np.vstack([data1, data2])
 
 # Plot it.
-figure = triangle.corner(data, labels=[r"$x$", r"$y$", r"$\log \alpha$",
-                                       r"$\Gamma \, [\mathrm{parsec}]$"],
+figure = corner.corner(data, labels=[r"$x$", r"$y$", r"$\log \alpha$",
+                                     r"$\Gamma \, [\mathrm{parsec}]$"],
                          truths=[0.0, 0.0, 0.0],
                          quantiles=[0.16, 0.5, 0.84],
                          show_titles=True, title_args={"fontsize": 12})
