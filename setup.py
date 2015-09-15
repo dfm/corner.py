@@ -10,16 +10,16 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
 # Hackishly synchronize the version.
-version = re.findall(r"__version__ = \"(.*?)\"", open("triangle.py").read())[0]
+version = re.findall(r"__version__ = \"(.*?)\"", open("corner.py").read())[0]
 
 
 setup(
-    name="triangle_plot",
+    name="corner",
     version=version,
     author="Daniel Foreman-Mackey",
     author_email="danfm@nyu.edu",
     url="https://github.com/dfm/triangle.py",
-    py_modules=["triangle"],
+    py_modules=["corner"],
     description="Make some beautiful corner plots of samples.",
     long_description=open("README.rst").read(),
     package_data={"": ["LICENSE"]},
