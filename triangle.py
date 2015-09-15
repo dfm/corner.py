@@ -3,7 +3,7 @@
 from __future__ import print_function, absolute_import, unicode_literals
 
 __all__ = ["corner", "hist2d"]
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 import logging
 from corner import corner, hist2d
