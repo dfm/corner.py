@@ -60,13 +60,29 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         axis is the list of samples and the next axis are the dimensions of
         the space.
 
+    bins : int or array_like (ndim,) (optional)
+        The number of bins to use in histograms, either as a fixed value for
+        all dimensions, or as a list of integers for each dimension.
+
     weights : array_like (nsamples,)
         The weight of each sample. If `None` (default), samples are given
         equal weight.
 
+    color : str (optional)
+        A ``matplotlib`` style color for all histograms.
+
+    smooth, smooth1d : float (optional)
+       The standard deviation for Gaussian kernel passed to
+       `scipy.ndimage.gaussian_filter` to smooth the 2-D and 1-D histograms
+       respectively. If `None` (default), no smoothing is applied.
+
     labels : iterable (ndim,) (optional)
         A list of names for the dimensions. If a ``xs`` is a
         ``pandas.DataFrame``, labels will default to column names.
+
+    label_kwargs : dict (optional)
+        Any extra keyword arguments to send to the `set_xlabel` and
+        `set_ylabel` methods.
 
     show_titles : bool (optional)
         Displays a title above each 1-D histogram showing the 0.5 quantile
@@ -76,8 +92,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         The format string for the quantiles given in titles.
         (default: `.2f`)
 
-    title_args : dict (optional)
-        Any extra keyword arguments to send to the `add_title` command.
+    title_kwargs : dict (optional)
+        Any extra keyword arguments to send to the `set_title` command.
 
     range : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
@@ -108,23 +124,24 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         Draw contours for dense regions of the plot.
 
     use_math_text : bool (optional)
-        If true then axis tick labels for very large or small exponents will be
-        displayed as powers of 10 rather than using `e`.
-
-    no_fill_contours : bool (optional)
-        Add no filling at all to the contours (unlike setting
-        ``fill_contours=False``, which still adds a white fill at the densest
-        points).
-
-    plot_datapoints : bool (optional)
-        Draw the individual data points.
+        If true, then axis tick labels for very large or small exponents will
+        be displayed as powers of 10 rather than using `e`.
 
     max_n_ticks: int (optional)
-        maximum number of ticks to try to use
+        Maximum number of ticks to try to use
+
+    top_ticks : bool (optional)
+        If true, label the top ticks of each axis
 
     fig : matplotlib.Figure (optional)
         Overplot onto the provided figure object.
 
+    hist_kwargs : dict (optional)
+        Any extra keyword arguments to send to the 1-D histogram plots.
+
+    **hist2d_kwargs : (optional)
+        Any remaining keyword arguments are sent to `corner.hist2d` to generate
+        the 2-D histogram plots.
     """
     if quantiles is None:
         quantiles = []
@@ -394,6 +411,43 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     """
     Plot a 2-D histogram of samples.
 
+    Parameters
+    ----------
+    x, y : array_like (nsamples,)
+       The samples.
+
+    levels : array_like
+        The contour levels to draw.
+
+    ax : matplotlib.Axes (optional)
+        A axes instance on which to add the 2-D histogram.
+
+    plot_datapoints : bool (optional)
+        Draw the individual data points.
+
+    plot_density : bool (optional)
+        Draw the density colormap.
+
+    plot_contours : bool (optional)
+        Draw the contours.
+
+    no_fill_contours : bool (optional)
+        Add no filling at all to the contours (unlike setting
+        ``fill_contours=False``, which still adds a white fill at the densest
+        points).
+
+    fill_contours : bool (optional)
+        Fill the contours.
+
+    contour_kwargs : dict (optional)
+        Any additional keyword arguments to pass to the `contour` method.
+
+    contourf_kwargs : dict (optional)
+        Any additional keyword arguments to pass to the `contourf` method.
+
+    data_kwargs : dict (optional)
+        Any additional keyword arguments to pass to the `plot` method when
+        adding the individual data points.
     """
     if ax is None:
         ax = pl.gca()
