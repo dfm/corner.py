@@ -46,6 +46,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False,
+           shared_axis=False,
            hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
@@ -207,7 +208,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     # Create a new figure if one wasn't provided.
     if fig is None:
-        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+        if shared_axis:
+            fig = pl.figure(figsize=(dim, dim))
+            axes = np.empty((dim, dim), dtype=object)
+        else:
+            fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
         try:
             axes = np.array(fig.axes).reshape((K, K))
@@ -236,7 +241,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         if np.shape(xs)[0] == 1:
             ax = axes
         else:
-            ax = axes[i, i]
+            if shared_axis:
+                ax = fig.add_subplot(K, K, 1+(K+1)*i)
+                axes[i, i] = ax
+            else:
+                ax = axes[i, i]
         # Plot the histograms.
         if smooth1d is None:
             n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
@@ -312,7 +321,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if np.shape(xs)[0] == 1:
                 ax = axes
             else:
-                ax = axes[i, j]
+                if shared_axis:
+                    if j < i:
+                        ax = fig.add_subplot(K, K, 1+K*i+j, sharex=axes[j, j])
+                    else:
+                        ax = fig.add_subplot(K, K, 1+K*i+j)
+                    axes[i, j] = ax
+                else:
+                    ax = axes[i, j]
             if j > i:
                 ax.set_frame_on(False)
                 ax.set_xticks([])
