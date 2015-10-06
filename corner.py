@@ -306,7 +306,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.xaxis.set_ticks_position("top")
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
             else:
-                ax.set_xticklabels([])
+                pl.setp(ax.get_xticklabels(), visible=False)
+                # ax.set_xticklabels([])
         else:
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
@@ -357,7 +358,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
 
             if i < K - 1:
-                ax.set_xticklabels([])
+                pl.setp(ax.get_xticklabels(), visible=False)
+                # ax.set_xticklabels([])
             else:
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
                 if labels is not None:
