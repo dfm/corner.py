@@ -112,6 +112,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         If true then axis tick labels for very large or small exponents will be
         displayed as powers of 10 rather than using `e`.
 
+    shared_axis : bool (optional)
+        If true the x-axis of all the quantities are shared, which helps when 
+        viewing the plot interactively.
+
     no_fill_contours : bool (optional)
         Add no filling at all to the contours (unlike setting
         ``fill_contours=False``, which still adds a white fill at the densest
