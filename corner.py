@@ -73,11 +73,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         with the upper and lower errors supplied by the quantiles argument.
 
     title_fmt : string (optional)
-        The format string for the quantiles given in titles.
-        (default: `.2f`)
+        The format string for the quantiles given in titles. If you explicitly
+        set ``show_titles=True`` and ``title_fmt=None``, the labels will be
+        shown as the titles. (default: ``.2f``)
 
     title_args : dict (optional)
-        Any extra keyword arguments to send to the `add_title` command.
+        Any extra keyword arguments to send to the ``set_title`` method.
 
     range : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
@@ -247,8 +248,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             n, b = np.histogram(x, bins=bins[i], weights=weights,
                                 range=range[i])
             n = gaussian_filter(n, smooth1d)
-            x0 = np.array(zip(b[:-1], b[1:])).flatten()
-            y0 = np.array(zip(n, n)).flatten()
+            x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
+            y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
         if truths is not None and truths[i] is not None:
@@ -265,22 +266,28 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 print([item for item in zip(quantiles, qvalues)])
 
         if show_titles:
-            # Compute the quantiles for the title. This might redo
-            # unneeded computation but who cares.
-            q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84], weights=weights)
-            q_m, q_p = q_50-q_16, q_84-q_50
+            title = None
+            if title_fmt is not None:
+                # Compute the quantiles for the title. This might redo
+                # unneeded computation but who cares.
+                q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84],
+                                            weights=weights)
+                q_m, q_p = q_50-q_16, q_84-q_50
 
-            # Format the quantile display.
-            fmt = "{{0:{0}}}".format(title_fmt).format
-            title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
-            title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+                # Format the quantile display.
+                fmt = "{{0:{0}}}".format(title_fmt).format
+                title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+                title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
 
-            # Add in the column name if it's given.
-            if labels is not None:
-                title = "{0} = {1}".format(labels[i], title)
+                # Add in the column name if it's given.
+                if labels is not None:
+                    title = "{0} = {1}".format(labels[i], title)
 
-            # Add the title to the axis.
-            ax.set_title(title, **title_kwargs)
+            elif labels is not None:
+                title = "{0}".format(labels[i])
+
+            if title is not None:
+                ax.set_title(title, **title_kwargs)
 
         # Set up the axes.
         ax.set_xlim(range[i])
