@@ -49,6 +49,57 @@ something that looks awesome like:
 By default, data points are shown as grayscale points with contours.
 Contours are shown at 0.5, 1, 1.5, and 2 sigma.
 
+For more usage examples, take a look at `tests.py
+<https://github.com/dfm/corner.py/blob/master/tests.py>`_.
+
+
+Documentation
+-------------
+
+All the options are documented in the docstrings for the ``corner`` and
+``hist2d`` functions. These can be viewed in a Python shell using:
+
+::
+
+    import corner
+    print(corner.corner.__doc__)
+
+or, in IPython using:
+
+::
+
+    import corner
+    corner.corner?
+
+
+A note about "sigmas"
++++++++++++++++++++++
+
+We are regularly asked about the "sigma" levels in the 2D histograms. These
+are not the 68%, *etc.* values that we're used to for 1D distributions. In two
+dimensions, a Gaussian density is given by:
+
+::
+
+    pdf(r) = exp(-(r/s)^2/2) / (2*pi*s^2)
+
+The integral under this density is:
+
+::
+
+    cdf(x) = Integral(r * exp(-(r/s)^2/2) / s^2, {r, 0, x})
+           = 1 - exp(-(x/s)^2/2)
+
+This means that within "1-sigma", the Gaussian contains ``1-exp(-0.5) ~ 0.393``
+or 39.3% of the volume. Therefore the relevant 1-sigma levels for a 2D
+histogram of samples is 39% not 68%. If you must use 68% of the mass, use the
+``levels`` keyword argument.
+
+The `"sigma-demo" notebook
+<https://github.com/dfm/corner.py/blob/master/sigma-demo.ipynb>`_ visually
+demonstrates the difference between these choices of levels.
+
+
 Attribution
 -----------
 
