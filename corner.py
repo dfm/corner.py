@@ -27,6 +27,8 @@ __contributors__ = [
 ]
 
 import logging
+import sys
+import types
 import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
@@ -581,3 +583,44 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])
+
+
+#----------------------------------------------------------------------
+# Following is a hack to make the module callable:
+
+
+def _normalize_string(s):
+    """Normalize string for Python 2/3 Compatibility"""
+    if sys.version_info[0] == 2:
+        return s.encode('ascii', 'ignore')
+    else:
+        return s
+
+
+class _CornerCallableModule(types.ModuleType):
+    __doc__ = corner.__doc__
+
+    corner = staticmethod(corner)
+    hist2d = staticmethod(hist2d)
+    modname = _normalize_string('corner')
+
+    def __init__(self):
+        super(_CornerCallableModule, self).__init__(self.modname)
+        self._mod_to_replace = sys.modules[self.modname]
+        sys.modules[self.modname] = self
+
+    def __call__(self, *args, **kwargs):
+        return corner(*args, **kwargs)
+
+    def __getattr__(self, attr):
+        return getattr(self._mod_to_replace, attr)
+
+    def __dir__(self):
+        return dir(self._mod_to_replace)
+
+    @property
+    def __spec__(self):
+        return self._mod_to_replace.__spec__
+
+
+_CornerCallableModule()

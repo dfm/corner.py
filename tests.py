@@ -65,7 +65,7 @@ def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
         data = pd.DataFrame.from_items(zip(map("d{0}".format, range(ndim)),
                                            data.T))
 
-    fig = corner.corner(data, **kwargs)
+    fig = corner(data, **kwargs)
     fig.savefig(os.path.join(FIGURE_PATH, "corner_{0}.png".format(nm)))
     if ret:
         return fig
