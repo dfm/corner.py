@@ -35,8 +35,10 @@ from matplotlib.ticker import ScalarFormatter
 
 try:
     from scipy.ndimage import gaussian_filter
+    from scipy.stats import gaussian_kde
 except ImportError:
     gaussian_filter = None
+    gaussian_kde = None
 
 
 def corner(xs, bins=20, range=None, weights=None, color="k",
@@ -170,7 +172,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                          "Use 'range' instead.")
             range = hist2d_kwargs.pop("extents")
         else:
-            range = [[x.min(), x.max()] for x in xs]
+            range = [[np.nanmin(x), np.nanmax(x)] for x in xs]
             # Check for parameters that never change.
             m = np.array([e[0] == e[1] for e in range], dtype=bool)
             if np.any(m):
@@ -254,6 +256,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         if smooth1d is None:
             n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
                               range=range[i], **hist_kwargs)
+            x_grid = np.linspace(*range[i])
+            pdf = kde_scipy(x, x_grid)
+            ax.plot(x_grid, pdf, lw=2, color=hist_kwargs.get("color", 'g'))
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
@@ -318,9 +323,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.set_xlabel(labels[i], **label_kwargs)
                 ax.xaxis.set_label_coords(0.5, -0.3)
 
+
             # use MathText for axes ticks
             ax.xaxis.set_major_formatter(
                 ScalarFormatter(useMathText=use_math_text))
+            ax.get_xaxis().get_major_formatter().set_useOffset(False)
 
         for j, y in enumerate(xs):
             if np.shape(xs)[0] == 1:
@@ -373,6 +380,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 # use MathText for axes ticks
                 ax.xaxis.set_major_formatter(
                     ScalarFormatter(useMathText=use_math_text))
+                ax.get_xaxis().get_major_formatter().set_useOffset(False)
 
             if j > 0:
                 ax.set_yticklabels([])
@@ -411,8 +419,8 @@ def quantile(x, q, weights=None):
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            ax=None, color=None, plot_datapoints=True, plot_density=True,
            plot_contours=True, no_fill_contours=False, fill_contours=False,
-           contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
-           **kwargs):
+           contour_kwargs=None, contourf_kwargs=None, hexbin_kwargs=None,
+           data_kwargs=None, **kwargs):
     """
     Plot a 2-D histogram of samples.
 
@@ -531,7 +539,13 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     # Plot the density map. This can't be plotted at the same time as the
     # contour fills.
     elif plot_density:
-        ax.pcolor(X, Y, H.max() - H.T, cmap=density_cmap)
+        if hexbin_kwargs is None:
+            hexbin_kwargs = dict()
+        hexbin_kwargs["antialiased"] = hexbin_kwargs.get("antialiased", False)
+
+        # ax.pcolor(X, Y, H.max() - H.T, cmap=density_cmap)
+        ax.hexbin(x, y, gridsize=50, #, xscale='log', yscale='log',
+                  **hexbin_kwargs)
 
     # Plot the contour edge colors.
     if plot_contours:
@@ -542,3 +556,17 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])
+
+
+def kde_scipy(x, x_grid, bandwidth=None, **kwargs):
+    """Kernel Density Estimation with Scipy"""
+    # Note that scipy weights its bandwidth by the covariance of the
+    # input data.  To make the results comparable to the other methods,
+    # we divide the bandwidth by the sample standard deviation here.
+    if bandwidth is None:
+        if x.ptp() > 10*x.std():
+            # print ('here')
+            bandwidth = 0.1/x.std(ddof=1)
+    kde = gaussian_kde(x, bw_method=bandwidth, **kwargs)
+    # print (kde.factor)
+    return kde.evaluate(x_grid)
