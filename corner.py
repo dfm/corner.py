@@ -518,6 +518,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
             V[i] = Hflat[sm <= v0][-1]
         except:
             V[i] = Hflat[0]
+    V.sort()
 
     # Compute the bin centers.
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
@@ -555,7 +556,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     # Plot the base fill to hide the densest data points.
     if (plot_contours or plot_density) and not no_fill_contours:
-        ax.contourf(X2, Y2, H2.T, [V[-1], H.max()],
+        ax.contourf(X2, Y2, H2.T, [V.min(), H.max()],
                     cmap=white_cmap, antialiased=False)
 
     if plot_contours and fill_contours:
@@ -564,7 +565,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         contourf_kwargs["colors"] = contourf_kwargs.get("colors", contour_cmap)
         contourf_kwargs["antialiased"] = contourf_kwargs.get("antialiased",
                                                              False)
-        ax.contourf(X2, Y2, H2.T, np.concatenate([[H.max()], V, [0]]),
+        ax.contourf(X2, Y2, H2.T, np.concatenate([[0], V, [H.max()]]),
                     **contourf_kwargs)
 
     # Plot the density map. This can't be plotted at the same time as the
