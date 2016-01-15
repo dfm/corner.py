@@ -521,9 +521,12 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
             V[i] = Hflat[0]
     V.sort()
     m = np.diff(V) == 0
+    if np.any(m):
+        logging.warning("Too few points to create valid contours")
     while np.any(m):
         V[np.where(m)[0][0]] *= 1.0 - 1e-4
         m = np.diff(V) == 0
+    V.sort()
 
     # Compute the bin centers.
     X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
