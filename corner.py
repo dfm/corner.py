@@ -573,7 +573,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         contourf_kwargs["colors"] = contourf_kwargs.get("colors", contour_cmap)
         contourf_kwargs["antialiased"] = contourf_kwargs.get("antialiased",
                                                              False)
-        ax.contourf(X2, Y2, H2.T, np.concatenate([[0], V, [H.max()]]),
+        ax.contourf(X2, Y2, H2.T, np.concatenate([[0], V, [H.max()*(1+1e-4)]]),
                     **contourf_kwargs)
 
     # Plot the density map. This can't be plotted at the same time as the
