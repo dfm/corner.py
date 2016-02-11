@@ -103,11 +103,11 @@ demonstrates the difference between these choices of levels.
 Attribution
 -----------
 
-.. image:: https://zenodo.org/badge/doi/10.5281/zenodo.11020.png
-   :target: http://dx.doi.org/10.5281/zenodo.11020
+.. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg
+   :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
 
 If you make use of this code, please `cite it
-<http://dx.doi.org/10.5281/zenodo.11020>`_.
+<https://zenodo.org/badge/latestdoi/4729/dfm/corner.py>`_.
 
 
 License
