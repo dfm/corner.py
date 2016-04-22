@@ -434,8 +434,10 @@ def sigprint(number,nsig,dostop=False):
         place = decplace(number) - nsig + 1
         decval = 10**place
         outnum = np.round(np.float(number) / decval) * decval
-        if place >= 0: place=0
-        fmt='.'+str(int(abs(place)))+'f'
+        ## Need to get the place again in case say 0.97 was rounded up to 1.0
+        finalplace = decplace(outnum) - nsig + 1 
+        if finalplace >= 0: finalplace=0
+        fmt='.'+str(int(abs(finalplace)))+'f'
     else:
         stringnsig = str(int(nsig-1))
         fmt = '.'+stringnsig+'e'
