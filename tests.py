@@ -2,14 +2,15 @@
 
 from __future__ import division, print_function
 
-__all__ = ["test_hist2d", "test_corner"]
-
 import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as pl
 
 import corner
+
+__all__ = ["test_hist2d", "test_corner"]
+
 
 FIGURE_PATH = "test_figures"
 
@@ -57,9 +58,9 @@ def _run_corner(nm, pandas=False, N=10000, seed=1234, ndim=3, ret=False,
         os.makedirs(FIGURE_PATH)
 
     np.random.seed(seed)
-    data1 = np.random.randn(ndim*4*N/5.).reshape([4*N/5., ndim])
-    data2 = (5 * np.random.rand(ndim)[None, :]
-             + np.random.randn(ndim*N/5.).reshape([N/5., ndim]))
+    data1 = np.random.randn(ndim*4*N//5).reshape([4*N//5, ndim])
+    data2 = (5 * np.random.rand(ndim)[None, :] +
+             np.random.randn(ndim*N//5).reshape([N//5, ndim]))
     data = np.vstack([data1, data2])
     if factor is not None:
         data[:, 0] *= factor

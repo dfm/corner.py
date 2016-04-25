@@ -15,6 +15,7 @@ __contributors__ = [
     "Geoff Ryan @geoffryan",
     "Guillaume @ceyzeriat",
     "Gregory Ashton @ga7g08",
+    "Hanno Rein @hannorein",
     "Kelle Cruz @kelle",
     "Kyle Barbary @kbarbary",
     "Marco Tazzari @mtazzari",
