@@ -16,6 +16,7 @@ __contributors__ = [
     "Geoff Ryan @geoffryan",
     "Guillaume @ceyzeriat",
     "Gregory Ashton @ga7g08",
+    "Hanno Rein @hannorein",
     "Kelle Cruz @kelle",
     "Kyle Barbary @kbarbary",
     "Marco Tazzari @mtazzari",
@@ -215,7 +216,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     # Parse the bin specifications.
     try:
-        bins = [float(bins) for _ in range]
+        bins = [int(bins) for _ in range]
     except TypeError:
         if len(bins) != len(range):
             raise ValueError("Dimension mismatch between bins and range")
