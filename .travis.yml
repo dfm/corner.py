@@ -6,40 +6,13 @@ env:
     global:
         - MATPLOTLIB_VERSION=1.5.1
 
-matrix:
-    include:
-        # # Python 2.7
-        # - os: linux
-        #   env: PYTHON_VERSION=2.7 NUMPY_VERSION=1.7
-        # - os: linux
-        #   env: PYTHON_VERSION=2.7 NUMPY_VERSION=1.8
-        # - os: linux
-        #   env: PYTHON_VERSION=2.7 NUMPY_VERSION=1.9
-
-        # # Python 3.4
-        # - os: linux
-        #   env: PYTHON_VERSION=3.4 NUMPY_VERSION=1.8
-        # - os: linux
-        #   env: PYTHON_VERSION=3.4 NUMPY_VERSION=1.9
-
-        # Python 3.5
-        - os: linux
-          env: PYTHON_VERSION=3.5
-
-        # # Mac OS X
-        # - os: osx
-        #   env: PYTHON_VERSION=2.7
-        # - os: osx
-        #   env: PYTHON_VERSION=3.4
-        # - os: osx
-        #   env: PYTHON_VERSION=3.5
+    matrix:
+        - PYTHON_VERSION=2.7
+        - PYTHON_VERSION=3.4
+        - PYTHON_VERSION=3.5
 
 install:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        wget https://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh;
-      else
-        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-      fi
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
     - bash miniconda.sh -b -p $HOME/miniconda
     - export PATH=$HOME/miniconda/bin:$PATH
     - hash -r
@@ -49,7 +22,6 @@ install:
 
     - conda create --yes -n test python=$PYTHON_VERSION matplotlib=$MATPLOTLIB_VERSION numpy scipy nose setuptools
     - source activate test
-    # - pip install pytest-cov coveralls
 
 before_script: # configure a headless display to test plot generation
     - "export DISPLAY=:99.0"
@@ -58,6 +30,3 @@ before_script: # configure a headless display to test plot generation
 
 script:
     - nosetests corner
-
-# after_success:
-#     - coveralls
