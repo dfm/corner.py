@@ -24,7 +24,7 @@ setup(
     author="Daniel Foreman-Mackey",
     author_email="foreman.mackey@gmail.com",
     url="https://github.com/dfm/corner.py",
-    py_modules=["corner"],
+    packages=["corner"],
     description="Make some beautiful corner plots of samples.",
     long_description=open("README.rst").read(),
     package_data={"": ["LICENSE"]},
