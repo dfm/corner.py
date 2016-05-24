@@ -3,7 +3,7 @@
 from __future__ import print_function, absolute_import, unicode_literals
 
 __all__ = ["corner", "hist2d"]
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013-2015 Daniel Foreman-Mackey"
 __contributors__ = [
