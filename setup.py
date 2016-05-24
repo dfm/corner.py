@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import re
 import os
 import sys
 from setuptools import setup
@@ -9,15 +8,21 @@ if sys.argv[-1] == "publish":
     os.system("python setup.py sdist upload")
     sys.exit()
 
-# Hackishly synchronize the version.
-version = re.findall(r"__version__ = \"(.*?)\"", open("corner.py").read())[0]
+# Hackishly inject a constant into builtins to enable importing of the
+# package before the dependencies are installed.
+if sys.version_info[0] < 3:
+    import __builtin__ as builtins
+else:
+    import builtins
+builtins.__CORNER_SETUP__ = True
+import corner  # NOQA
 
 
 setup(
     name="corner",
-    version=version,
+    version=corner.__version__,
     author="Daniel Foreman-Mackey",
-    author_email="danfm@nyu.edu",
+    author_email="foreman.mackey@gmail.com",
     url="https://github.com/dfm/corner.py",
     py_modules=["corner"],
     description="Make some beautiful corner plots of samples.",

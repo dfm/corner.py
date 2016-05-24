@@ -1,32 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, absolute_import, unicode_literals
-
-__all__ = ["corner", "hist2d"]
-__version__ = "1.0.3"
-__author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
-__copyright__ = "Copyright 2013-2015 Daniel Foreman-Mackey"
-__contributors__ = [
-    # Alphabetical by first name.
-    "Adrian Price-Whelan @adrn",
-    "Brendon Brewer @eggplantbren",
-    "Ekta Patel @ekta1224",
-    "Emily Rice @emilurice",
-    "Geoff Ryan @geoffryan",
-    "Guillaume @ceyzeriat",
-    "Gregory Ashton @ga7g08",
-    "Hanno Rein @hannorein",
-    "Kelle Cruz @kelle",
-    "Kyle Barbary @kbarbary",
-    "Marco Tazzari @mtazzari",
-    "Matt Pitkin @mattpitkin",
-    "Phil Marshall @drphilmarshall",
-    "Pierre Gratier @pirg",
-    "Stephan Hoyer @shoyer",
-    "Víctor Zabalza @zblz",
-    "Will Vousden @willvousden",
-    "Wolfgang Kerzendorf @wkerzendorf",
-]
+from __future__ import print_function, absolute_import
 
 import logging
 import numpy as np
@@ -39,6 +13,8 @@ try:
     from scipy.ndimage import gaussian_filter
 except ImportError:
     gaussian_filter = None
+
+__all__ = ["corner", "hist2d", "quantile"]
 
 
 def corner(xs, bins=20, range=None, weights=None, color="k",
