@@ -20,10 +20,10 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-TUTORIALS = tutorials/sigmas.rst
+PAGES = pages/sigmas.rst pages/quickstart.rst
 
-tutorials/%.rst: _static/notebooks/%.ipynb
-	cd tutorials;jupyter nbconvert --template tutorial_rst --to rst --output-dir . ../$<
+pages/%.rst: _static/notebooks/%.ipynb
+	cd pages;jupyter nbconvert --template page_rst --to rst --output-dir . ../$<
 
 .PHONY: help
 help:
@@ -57,7 +57,7 @@ help:
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILDDIR)/* $(TUTORIALS)
+	rm -rf $(BUILDDIR)/* $(PAGES)
 
 .PHONY: html
 html:
@@ -66,7 +66,7 @@ html:
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 .PHONY: dirhtml
-dirhtml: $(TUTORIALS)
+dirhtml: $(PAGES)
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml."
