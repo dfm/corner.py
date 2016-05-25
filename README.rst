@@ -1,6 +1,15 @@
 corner.py
 =========
 
+.. image:: https://travis-ci.org/dfm/corner.py.svg?branch=tests
+    :target: https://travis-ci.org/dfm/corner.py
+
+.. image:: https://coveralls.io/repos/github/dfm/corner.py/badge.svg?branch=tests
+    :target: https://coveralls.io/github/dfm/corner.py?branch=tests
+
+.. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg
+    :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
+
 Make some beautiful corner plots.
 
 Corner plot /ˈkôrnər plät/ (noun):
