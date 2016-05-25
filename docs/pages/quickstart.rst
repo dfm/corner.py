@@ -2,7 +2,7 @@
 .. module:: george
 
 .. note:: This page was generated from an IPython notebook that can be
-          downloaded `here <../../_static/notebooks/quickstart.ipynb>`_.
+          downloaded `here <https://github.com/dfm/corner.py/blob/master/docs/_static/notebooks/quickstart.ipynb>`_.
 
 .. _quickstart:
 
@@ -60,6 +60,6 @@ The following snippet demonstrates a few more bells and whistles:
 .. image:: quickstart_files/quickstart_4_0.png
 
 
-The `API documentation <../../api/>`__ gives more details about all the
+The `API documentation <../api.html>`__ gives more details about all the
 arguments available for customization.
 

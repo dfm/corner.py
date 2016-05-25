@@ -4,7 +4,7 @@
 .. module:: george
 
 .. note:: This page was generated from an IPython notebook that can be
-          downloaded `here <../../_static/notebooks/{{ resources.metadata.name }}.ipynb>`_.
+          downloaded `here <https://github.com/dfm/corner.py/blob/master/docs/_static/notebooks/{{ resources.metadata.name }}.ipynb>`_.
 
 .. _{{resources.metadata.name}}:
 {% endblock %}
