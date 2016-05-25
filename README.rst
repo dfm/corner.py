@@ -10,4 +10,6 @@ corner.py
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
     :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Read `the documentation <http://corner.readthedocs.io/>`_.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
