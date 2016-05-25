@@ -1,3 +1,5 @@
 _*
+!_static
+!*.png
 modules
 examples

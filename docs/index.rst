@@ -21,23 +21,19 @@ Built by `Dan Foreman-Mackey <http://dan.iel.fm>`_ and collaborators (see
 the 2-clause BSD license (see ``LICENSE``).
 
 
-Installation
-------------
+Getting started
+---------------
 
-Just run
+To install, just run
 
 .. code-block:: bash
 
     pip install corner
 
-to get the most recent stable version.
+to get the most recent stable version or `get it on GitHub
+<https://github.com/dfm/corner.py>`_.
 
-
-Usage
------
-
-The main entry point is the ``corner.corner`` function. You'll just use it
-like this:
+The only user-facing function is ``corner.corner`` and you use it like this:
 
 .. code-block:: python
 
@@ -49,45 +45,22 @@ like this:
     figure = corner.corner(samples)
     figure.savefig("corner.png")
 
-With some other tweaks (see `demo.py
+With a few other tweaks (see `demo.py
 <https://github.com/dfm/corner.py/blob/master/demo.py>`_) you can get
-something that looks awesome like:
+something that looks like:
 
 .. image:: _static/corner.png
 
-By default, data points are shown as grayscale points with contours.
-Contours are shown at 0.5, 1, 1.5, and 2 sigma.
 
-For more usage examples, take a look at `tests.py
-<https://github.com/dfm/corner.py/blob/master/tests.py>`_.
+User guide
+----------
 
+.. toctree::
+   :maxdepth: 2
 
-A note about "sigmas"
-+++++++++++++++++++++
+   tutorials/sigmas
+   api
 
-We are regularly asked about the "sigma" levels in the 2D histograms. These
-are not the 68%, *etc.* values that we're used to for 1D distributions. In two
-dimensions, a Gaussian density is given by:
-
-.. code-block:: python
-
-    pdf(r) = exp(-(r/s)^2/2) / (2*pi*s^2)
-
-The integral under this density is:
-
-.. code-block:: python
-
-    cdf(x) = Integral(r * exp(-(r/s)^2/2) / s^2, {r, 0, x})
-           = 1 - exp(-(x/s)^2/2)
-
-This means that within "1-sigma", the Gaussian contains ``1-exp(-0.5) ~ 0.393``
-or 39.3% of the volume. Therefore the relevant 1-sigma levels for a 2D
-histogram of samples is 39% not 68%. If you must use 68% of the mass, use the
-``levels`` keyword argument.
-
-The `"sigma-demo" notebook
-<https://github.com/dfm/corner.py/blob/master/sigma-demo.ipynb>`_ visually
-demonstrates the difference between these choices of levels.
 
 
 Attribution
@@ -107,10 +80,3 @@ Copyright 2013-2016 Dan Foreman-Mackey
 
 corner.py is free software made available under the BSD License.
 For details see the LICENSE file.
-
-
-API
----
-
-.. autofunction:: corner.corner
-.. autofunction:: corner.hist2d
