@@ -9,10 +9,10 @@ Corner plot /ˈkôrnər plät/ (noun):
     high dimensional spaces. It is awesome. I promise.
 
 
-.. image:: http://img.shields.io/travis/dfm/corner.py/tests.svg?style=flat
+.. image:: http://img.shields.io/travis/dfm/corner.py/master.svg?style=flat
     :target: https://travis-ci.org/dfm/corner.py
-.. image:: https://coveralls.io/repos/github/dfm/corner.py/badge.svg?branch=tests&style=flat
-    :target: https://coveralls.io/github/dfm/corner.py?branch=tests&style=flat
+.. image:: https://coveralls.io/repos/github/dfm/corner.py/badge.svg?branch=master&style=flat
+    :target: https://coveralls.io/github/dfm/corner.py?branch=master&style=flat
 .. image:: http://img.shields.io/badge/license-BSD-blue.svg?style=flat
     :target: https://github.com/dfm/corner.py/blob/master/LICENSE
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
