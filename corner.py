@@ -12,6 +12,7 @@ __contributors__ = [
     "Brendon Brewer @eggplantbren",
     "Ekta Patel @ekta1224",
     "Emily Rice @emilurice",
+    "Everett Schlawin @eas342",
     "Geoff Ryan @geoffryan",
     "Guillaume @ceyzeriat",
     "Gregory Ashton @ga7g08",
@@ -43,9 +44,9 @@ except ImportError:
 
 def corner(xs, bins=20, range=None, weights=None, color="k",
            smooth=None, smooth1d=None,
-           labels=None, label_kwargs=None,
+           labels=None, label_kwargs=None, 
            show_titles=False, title_fmt=".2f", title_kwargs=None,
-           truths=None, truth_color="#4682b4",
+           auto_bars=False, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False,
            hist_kwargs=None, **hist2d_kwargs):
@@ -97,6 +98,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     title_kwargs : dict (optional)
         Any extra keyword arguments to send to the `set_title` command.
+
+    auto_bars : bool (optional)
+        Automatically format the error bars and central value based on the
+        uncertainties
 
     range : iterable (ndim,) (optional)
         A list where each element is either a length 2 tuple containing
@@ -293,10 +298,16 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                                             weights=weights)
                 q_m, q_p = q_50-q_16, q_84-q_50
 
-                # Format the quantile display.
-                fmt = "{{0:{0}}}".format(title_fmt).format
-                title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
-                title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+                if auto_bars == True:
+                    minerr = np.min(np.abs([q_m,q_p]))
+                    val_txt, errtxt = roundfromErr(q_50,minerr)
+                    q_m_txt, q_p_txt = sigprint(q_m,2), sigprint(q_p,2)
+                    title = r"$"+val_txt+r"_{-"+q_m_txt+r"}^{+"+q_p_txt+r"}$"
+                else:
+                    # Format the quantile display.
+                    fmt = "{{0:{0}}}".format(title_fmt).format
+                    title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+                    title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
 
                 # Add in the column name if it's given.
                 if labels is not None:
@@ -411,6 +422,62 @@ def quantile(x, q, weights=None):
         cdf /= cdf[-1]
         return np.interp(q, cdf, xsorted).tolist()
 
+def sigprint(number,nsig,dostop=False):
+    """
+    Returns a string with the given number of significant digits.
+    For numbers >= 1e5, and less than 0.001, it does exponential notation
+    This is almost what ":.3g".format(x) does, but in the case
+    of '{:.3g}'.format(2189), we want 2190 not 2.19e3. Also in the case of
+    '{:.3g}'.format(1), we want 1.00, not 1
+    """
+    
+    if ((abs(number) >= 1e-3) and (abs(number) < 1e5)) or number ==0:
+        place = decplace(number) - nsig + 1
+        decval = 10**place
+        outnum = np.round(np.float(number) / decval) * decval
+        ## Need to get the place again in case say 0.97 was rounded up to 1.0
+        finalplace = decplace(outnum) - nsig + 1 
+        if finalplace >= 0: finalplace=0
+        fmt='.'+str(int(abs(finalplace)))+'f'
+    else:
+        stringnsig = str(int(nsig-1))
+        fmt = '.'+stringnsig+'e'
+        outnum=number
+    wholefmt = "{0:"+fmt+"}"
+    
+    return wholefmt.format(outnum)
+
+def decplace(number):
+    """
+    Finds the decimal place of the leading digit of a number. For 0, it assumes
+    a value of 0 (the one's digit)
+    """
+    if number == 0:
+        place = 0
+    else:
+        place = np.floor(np.log10(np.abs(number)))
+    return place
+
+def roundfromErr(number,error,numsigErr=2):
+    """
+    Rounds a number appropriately from the error bars and returns a string.
+    Example: roundval, rounderr = roundfromErr(123.441,12.447) gives
+    123 and 12, for 123 +/- 12
+    
+    Parameters
+    ----------
+    numsigErr : int
+        The number of significant figures to show in the error
+    """
+    ## Decimal place of last significant digit
+    decplaceUse = decplace(error) + 1 - numsigErr
+    numsigVal = decplace(number) - decplaceUse + 1
+
+    valuestring = sigprint(number,numsigVal)
+    errstring = sigprint(error,numsigErr)
+    
+    return valuestring, errstring
+    
 
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            ax=None, color=None, plot_datapoints=True, plot_density=True,
