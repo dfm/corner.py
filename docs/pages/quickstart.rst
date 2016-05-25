@@ -60,6 +60,6 @@ The following snippet demonstrates a few more bells and whistles:
 .. image:: quickstart_files/quickstart_4_0.png
 
 
-The `gallery <../gallery>`__ and `API documentation <../../api/>`__ give
-more details about all the arguments available for customization.
+The `API documentation <../../api/>`__ gives more details about all the
+arguments available for customization.
 
