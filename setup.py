@@ -27,7 +27,7 @@ setup(
     packages=["corner"],
     description="Make some beautiful corner plots of samples.",
     long_description=open("README.rst").read(),
-    package_data={"": ["LICENSE"]},
+    package_data={"": ["README.rst", "LICENSE"]},
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
