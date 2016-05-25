@@ -1,0 +1,5 @@
+name: corner.py
+
+dependencies:
+  - numpy
+  - matplotlib
