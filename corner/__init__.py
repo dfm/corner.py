@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__version__ = "1.0.4.dev0"
+__version__ = "2.0.0"
 __author__ = "Dan Foreman-Mackey (foreman.mackey@gmail.com)"
 __copyright__ = "Copyright 2013-2016 Daniel Foreman-Mackey and contributors"
 __contributors__ = [

@@ -10,15 +10,6 @@
 Getting started
 ===============
 
-To install, just run
-
-::
-
-    pip install corner
-
-to get the most recent stable version or `get the development version on
-GitHub <https://github.com/dfm/corner.py>`__.
-
 The only user-facing function in the module is ``corner.corner`` and, in
 its simplest form, you use it like this:
 
