@@ -1,0 +1,17 @@
+{
+  "@context": "https://raw.githubusercontent.com/mbjones/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    "Daniel Foreman-Mackey"
+  ],
+  "identifier": "http://dx.doi.org/10.5281/zenodo.53155",
+  "codeRepository": "https://github.com/dfm/corner.py",
+  "datePublished": "2016-05-26",
+  "dateModified": "2016-05-26",
+  "dateCreated": "2016-05-26",
+  "description": "Scatterplot matrices in Python",
+  "keywords": "Python, data analysis, visualization",
+  "license": "BSD",
+  "title": "corner.py: Scatterplot matrices in Python",
+  "version": "v2.0.0"
+}
