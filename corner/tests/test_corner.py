@@ -93,3 +93,7 @@ def test_no_fill_contours():
 def test_tight():
     _run_corner(ret=True)
     pl.tight_layout()
+
+@image_comparison(baseline_images=["reverse"], extensions=["png"])
+def test_reverse():
+    _run_corner(ndim=2, range=[(4, -4), (-5, 5)])

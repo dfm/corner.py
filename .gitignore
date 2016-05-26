@@ -7,3 +7,4 @@ dist
 build
 test_figures
 .coverage
+!corner/tests/baseline_images/*/*.png

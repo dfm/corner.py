@@ -236,12 +236,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         # Plot the histograms.
         if smooth1d is None:
             n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
-                              range=range[i], **hist_kwargs)
+                              range=np.sort(range[i]), **hist_kwargs)
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
             n, b = np.histogram(x, bins=bins[i], weights=weights,
-                                range=range[i])
+                                range=np.sort(range[i]))
             n = gaussian_filter(n, smooth1d)
             x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
@@ -476,7 +476,8 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     # We'll make the 2D histogram to directly estimate the density.
     try:
         H, X, Y = np.histogram2d(x.flatten(), y.flatten(), bins=bins,
-                                 range=range, weights=weights)
+                                 range=list(map(np.sort, range)),
+                                 weights=weights)
     except ValueError:
         raise ValueError("It looks like at least one of your sample columns "
                          "have no dynamic range. You could try using the "
