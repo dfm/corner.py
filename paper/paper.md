@@ -26,7 +26,7 @@ Development of *corner* happens on GitHub and any issues can be raised there
 [@corner_github].
 *corner* has been used extensively in the astronomical literature and it has
 occasionally been cited as `corner.py` or using its previous name
-`triangle.py` [@adsabs].
+`triangle.py`.
 The source code for *corner* has been archived to Zenodo and it has the DOI
 [@corner_archive]
 
