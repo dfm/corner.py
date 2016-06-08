@@ -17,7 +17,7 @@ Using pip
 The easiest way to install the most recent stable version of ``corner`` is
 with `pip <http://www.pip-installer.org/>`_:
 
-.. code-block::
+.. code-block:: bash
 
     pip install corner
 
