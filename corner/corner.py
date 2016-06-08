@@ -121,6 +121,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     **hist2d_kwargs
         Any remaining keyword arguments are sent to `corner.hist2d` to generate
         the 2-D histogram plots.
+
     """
     if quantiles is None:
         quantiles = []
@@ -371,21 +372,55 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
 def quantile(x, q, weights=None):
     """
-    Like numpy.percentile, but:
+    Compute sample quantiles with support for weighted samples.
 
-    * Values of q are quantiles [0., 1.] rather than percentiles [0., 100.]
-    * scalar q not supported (q must be iterable)
-    * optional weights on x
+    Note
+    ----
+    When ``weights`` is ``None``, this method simply calls numpy's percentile
+    function with the values of ``q`` multiplied by 100.
+
+    Parameters
+    ----------
+    x : array_like[nsamples,]
+       The samples.
+
+    q : array_like[nquantiles,]
+       The list of quantiles to compute. These should all be in the range
+       ``[0, 1]``.
+
+    weights : Optional[array_like[nsamples,]]
+        An optional weight corresponding to each sample. These
+
+    Returns
+    -------
+    quantiles : array_like[nquantiles,]
+        The sample quantiles computed at ``q``.
+
+    Raises
+    ------
+    ValueError
+        For invalid quantiles; ``q`` not in ``[0, 1]`` or dimension mismatch
+        between ``x`` and ``weights``.
 
     """
+    x = np.atleast_1d(x)
+    q = np.atleast_1d(q)
+
+    if np.any(q < 0.0) or np.any(q > 1.0):
+        raise ValueError("Quantiles must be between 0 and 1")
+
     if weights is None:
-        return np.percentile(x, [100. * qi for qi in q])
+        return np.percentile(x, 100.0 * q)
     else:
+        weights = np.atleast_1d(weights)
+        if len(x) != len(weights):
+            raise ValueError("Dimension mismatch: len(weights) != len(x)")
         idx = np.argsort(x)
-        xsorted = x[idx]
-        cdf = np.add.accumulate(weights[idx])
+        sw = weights[idx]
+        cdf = np.cumsum(sw)[:-1]
         cdf /= cdf[-1]
-        return np.interp(q, cdf, xsorted).tolist()
+        cdf = np.append(0, cdf)
+        return np.interp(q, cdf, x[idx]).tolist()
 
 
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
@@ -436,6 +471,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     data_kwargs : dict
         Any additional keyword arguments to pass to the `plot` method when
         adding the individual data points.
+
     """
     if ax is None:
         ax = pl.gca()
