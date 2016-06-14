@@ -7,6 +7,7 @@ __contributors__ = [
     # Alphabetical by first name.
     "Adrian Price-Whelan @adrn",
     "Brendon Brewer @eggplantbren",
+    "Brigitta Sipocz @bsipocz",
     "Ekta Patel @ekta1224",
     "Emily Rice @emilurice",
     "Geoff Ryan @geoffryan",
