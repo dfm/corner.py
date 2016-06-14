@@ -55,22 +55,19 @@ Documentation
 Attribution
 -----------
 
-If you make use of this code, please `cite it
-<https://zenodo.org/badge/latestdoi/4729/dfm/corner.py>`_ following your
-journal's software citation policy.
-For example, the `new software policy for the AAS jornals
-<http://journals.aas.org/policy/software.html>`_ would allow *corner* to be
-cited using the following BibTeX entry:
+If you make use of this code, please cite `the JOSS paper
+<http://dx.doi.org/10.21105/joss.00024>`_:
 
 .. code-block:: tex
 
-    @misc{Foreman-Mackey:2016,
+    @article{corner,
         Author = {Daniel Foreman-Mackey},
-        Doi = {10.5281/zenodo.45906},
-        Month = feb,
-        Title = {corner.py: corner.py v1.0.2},
-        Url = {http://dx.doi.org/10.5281/zenodo.45906},
-        Year = 2016
+        Doi = {10.21105/joss.00024},
+        Title = {corner.py: Scatterplot matrices in Python},
+        Journal = {The Journal of Open Source Software},
+        Year = 2016,
+        Volume = 24,
+        Url = {http://dx.doi.org/10.5281/zenodo.45906}
     }
 
 
