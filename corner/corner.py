@@ -410,7 +410,7 @@ def quantile(x, q, weights=None):
         raise ValueError("Quantiles must be between 0 and 1")
 
     if weights is None:
-        return np.percentile(x, 100.0 * q)
+        return np.percentile(x, list(100.0 * q))
     else:
         weights = np.atleast_1d(weights)
         if len(x) != len(weights):
