@@ -252,7 +252,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
             n, b = np.histogram(x, bins=bins[i], weights=weights,
-                                range=np.sort(range[i]), density=True)
+                                range=np.sort(range[i]))
             n = gaussian_filter(n, smooth1d)
             x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
