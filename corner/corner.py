@@ -22,6 +22,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            labels=None, label_kwargs=None,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
+           priors=None, prior_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False,
            hist_kwargs=None, **hist2d_kwargs):
@@ -87,6 +88,15 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     truth_color : str
         A ``matplotlib`` style color for the ``truths`` makers.
+
+    priors : iterable (ndim, )
+        A list of callables representing priors for each parameter.  If
+        ``None``, then individual parameters can be ignored.  The callable
+        need not be numpy-vectorized, and must be able to be called as ``pr(x)``, with 
+        no additional arguments.
+
+    prior_color : str
+        A ``matplotlib`` style color for the prior plots.
 
     scale_hist : bool
         Should the 1-D histograms be scaled in such a way that the zero line
@@ -242,7 +252,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
             n, b = np.histogram(x, bins=bins[i], weights=weights,
-                                range=np.sort(range[i]))
+                                range=np.sort(range[i]), density=True)
             n = gaussian_filter(n, smooth1d)
             x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
@@ -250,6 +260,15 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
         if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
+
+        # Plot priors
+        if priors is not None:
+            if priors[i] is not None:
+                prior_xmin, prior_xmax = np.sort(range[i])
+                prior_xgrid = np.linspace(prior_xmin, prior_xmax, 100)
+                prior_ygrid = np.array([priors[i](xi) for xi in prior_xgrid])
+                scale_factor = n.max() / prior_ygrid.max()
+                ax.plot(prior_xgrid, prior_ygrid*scale_factor, color=prior_color)
 
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
