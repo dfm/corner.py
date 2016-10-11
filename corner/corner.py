@@ -22,7 +22,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            labels=None, label_kwargs=None,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
-           priors=None, prior_color="#4682b4",
+           priors=None, prior_color="#ff7f0e",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False,
            hist_kwargs=None, **hist2d_kwargs):
