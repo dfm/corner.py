@@ -6,6 +6,7 @@ import logging
 import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import NullLocator
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import ScalarFormatter
 
@@ -293,7 +294,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         else:
             ax.set_ylim(0, 1.1 * np.max(n))
         ax.set_yticklabels([])
-        ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
+        if max_n_ticks==0:
+            ax.xaxis.set_major_locator(NullLocator())
+            ax.yaxis.set_major_locator(NullLocator())
+        else:
+            ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
 
         if i < K - 1:
             if top_ticks:
@@ -340,8 +345,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 if truths[i] is not None:
                     ax.axhline(truths[i], color=truth_color)
 
-            ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
-            ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
+            if max_n_ticks==0:
+                ax.xaxis.set_major_locator(NullLocator())
+                ax.yaxis.set_major_locator(NullLocator())
+            else:
+                ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
+                ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
 
             if i < K - 1:
                 ax.set_xticklabels([])
