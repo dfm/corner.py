@@ -8,6 +8,7 @@ import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator, NullLocator
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import ScalarFormatter
+import pdb
 
 try:
     from scipy.ndimage import gaussian_filter
@@ -468,7 +469,6 @@ def sigprint(number,nsig,dostop=False):
         fmt = '.'+stringnsig+'e'
         outnum=number
     wholefmt = "{0:"+fmt+"}"
-    
     return wholefmt.format(outnum)
 
 def decplace(number):
@@ -496,7 +496,10 @@ def roundfromErr(number,error,numsigErr=2):
     ## Decimal place of last significant digit
     decplaceUse = decplace(error) + 1 - numsigErr
     numsigVal = decplace(number) - decplaceUse + 1
-
+    if numsigVal < 1:
+        ## Make sure that at least 1 significant figure is shown
+        ## IE if it's 1 +/- 350 we want to show at least 1 +/- 350
+        numsigVal = 1
     valuestring = sigprint(number,numsigVal)
     errstring = sigprint(error,numsigErr)
     
