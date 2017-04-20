@@ -25,6 +25,15 @@ __contributors__ = [
     "Will Vousden @willvousden",
     "Wolfgang Kerzendorf @wkerzendorf",
 ]
+__bibtex__ = """@article{corner,
+    Author = {Daniel Foreman-Mackey},
+    Doi = {10.21105/joss.00024},
+    Title = {corner.py: Scatterplot matrices in Python},
+    Journal = {The Journal of Open Source Software},
+    Year = 2016,
+    Volume = 24,
+    Url = {http://dx.doi.org/10.5281/zenodo.45906}
+}"""
 
 try:
     __CORNER_SETUP__
