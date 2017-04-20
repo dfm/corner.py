@@ -15,3 +15,18 @@ corner.py
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Read `the documentation <http://corner.readthedocs.io/>`_.
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+If you make use of this code, please cite `the JOSS paper
+<http://dx.doi.org/10.21105/joss.00024>`_:
+
+.. code-block:: tex
+
+    @article{corner,
+        Author = {Daniel Foreman-Mackey},
+        Doi = {10.21105/joss.00024},
+        Title = {corner.py: Scatterplot matrices in Python},
+        Journal = {The Journal of Open Source Software},
+        Year = 2016,
+        Volume = 24,
+        Url = {http://dx.doi.org/10.5281/zenodo.45906}
+    }
