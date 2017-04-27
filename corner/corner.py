@@ -24,6 +24,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False,
+           get_1sigma_data=False,
            hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
@@ -332,10 +333,16 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             # Deal with masked arrays.
             if hasattr(y, "compressed"):
                 y = y.compressed()
-
-            hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                   color=color, smooth=smooth, bins=[bins[j], bins[i]],
-                   **hist2d_kwargs)
+    
+            if get_1sigma_data:
+                (x_1s, y_1s) = hist2d(y, x, ax=ax, range=[range[j], range[i]], 
+                                      weights=weights, color=color, smooth=smooth, 
+                                      bins=[bins[j], bins[i]], get_1sigma_data, 
+                                      **hist2d_kwargs)
+            else:
+                hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
+                      color=color, smooth=smooth, bins=[bins[j], bins[i]],
+                      get_1sigma_data, **hist2d_kwargs)
 
             if truths is not None:
                 if truths[i] is not None and truths[j] is not None:
@@ -438,7 +445,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            ax=None, color=None, plot_datapoints=True, plot_density=True,
            plot_contours=True, no_fill_contours=False, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
-           **kwargs):
+           get_1sigma_data=False, **kwargs):
     """
     Plot a 2-D histogram of samples.
 
@@ -618,3 +625,12 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])
+    
+    if get_1sigma_data:
+        # 1-sigma level
+        one_sigma_lvl = V[-1]
+        # select and return data points among X2, Y2 
+        # that are within the 1-sigma contour
+        X2_1s = X2[ np.where(H2 > one_sigma_lvl)[0] ]
+        Y2_1s = Y2[ np.where(H2 > one_sigma_lvl)[1] ]
+        return (X2_1s, Y2_1s)
