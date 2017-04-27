@@ -385,7 +385,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax.yaxis.set_major_formatter(
                     ScalarFormatter(useMathText=use_math_text))
 
-    return fig
+    return fig if not get_1sigma_data else (fig, (x_1s, y_1s))
 
 
 def quantile(x, q, weights=None):
