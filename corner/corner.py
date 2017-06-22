@@ -105,7 +105,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     use_math_text : bool
         If true, then axis tick labels for very large or small exponents will
         be displayed as powers of 10 rather than using `e`.
-
+        
+    reverse : bool
+        If true, plot the corner plot starting in the upper-right corner instead 
+        of the usual bottom-left corner
+        
     max_n_ticks: int
         Maximum number of ticks to try to use
 
