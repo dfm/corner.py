@@ -23,7 +23,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
-           max_n_ticks=5, top_ticks=False, use_math_text=False,
+           max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
            hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
@@ -105,7 +105,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     use_math_text : bool
         If true, then axis tick labels for very large or small exponents will
         be displayed as powers of 10 rather than using `e`.
-
+        
+    reverse : bool
+        If true, plot the corner plot starting in the upper-right corner instead 
+        of the usual bottom-left corner
+        
     max_n_ticks: int
         Maximum number of ticks to try to use
 
@@ -196,8 +200,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     # Some magic numbers for pretty axis layout.
     K = len(xs)
     factor = 2.0           # size of one side of one panel
-    lbdim = 0.5 * factor   # size of left/bottom margin
-    trdim = 0.2 * factor   # size of top/right margin
+    if reverse:
+        lbdim = 0.2 * factor   # size of left/bottom margin
+        trdim = 0.5 * factor   # size of top/right margin
+    else:
+        lbdim = 0.5 * factor   # size of left/bottom margin
+        trdim = 0.2 * factor   # size of top/right margin
     whspace = 0.05         # w/hspace size
     plotdim = factor * K + factor * (K - 1.) * whspace
     dim = lbdim + plotdim + trdim
@@ -233,7 +241,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         if np.shape(xs)[0] == 1:
             ax = axes
         else:
-            ax = axes[i, i]
+            if reverse:
+                ax = axes[K-i-1, K-i-1]
+            else:
+                ax = axes[i, i]
         # Plot the histograms.
         if smooth1d is None:
             n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
@@ -283,7 +294,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 title = "{0}".format(labels[i])
 
             if title is not None:
-                ax.set_title(title, **title_kwargs)
+                if reverse:
+                    ax.set_xlabel(title, **title_kwargs)
+                else:
+                    ax.set_title(title, **title_kwargs)
 
         # Set up the axes.
         ax.set_xlim(range[i])
@@ -307,10 +321,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             else:
                 ax.set_xticklabels([])
         else:
+            if reverse:
+                ax.xaxis.tick_top()
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
-                ax.set_xlabel(labels[i], **label_kwargs)
-                ax.xaxis.set_label_coords(0.5, -0.3)
+                if reverse:
+                    ax.set_title(labels[i], y=1.25, **label_kwargs)
+                else:
+                    ax.set_xlabel(labels[i], **label_kwargs)
 
             # use MathText for axes ticks
             ax.xaxis.set_major_formatter(
@@ -320,7 +338,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if np.shape(xs)[0] == 1:
                 ax = axes
             else:
-                ax = axes[i, j]
+                if reverse:
+                    ax = axes[K-i-1, K-j-1]
+                else:
+                    ax = axes[i, j]
             if j > i:
                 ax.set_frame_on(False)
                 ax.set_xticks([])
@@ -357,10 +378,15 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if i < K - 1:
                 ax.set_xticklabels([])
             else:
+                if reverse:
+                    ax.xaxis.tick_top()
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
                 if labels is not None:
                     ax.set_xlabel(labels[j], **label_kwargs)
-                    ax.xaxis.set_label_coords(0.5, -0.3)
+                    if reverse:
+                        ax.xaxis.set_label_coords(0.5, 1.4)
+                    else:
+                        ax.xaxis.set_label_coords(0.5, -0.3)
 
                 # use MathText for axes ticks
                 ax.xaxis.set_major_formatter(
@@ -369,10 +395,16 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             if j > 0:
                 ax.set_yticklabels([])
             else:
+                if reverse:
+                    ax.yaxis.tick_right()
                 [l.set_rotation(45) for l in ax.get_yticklabels()]
                 if labels is not None:
-                    ax.set_ylabel(labels[i], **label_kwargs)
-                    ax.yaxis.set_label_coords(-0.3, 0.5)
+                    if reverse:
+                        ax.set_ylabel(labels[i], rotation=-90, **label_kwargs)
+                        ax.yaxis.set_label_coords(1.3, 0.5)
+                    else:
+                        ax.set_ylabel(labels[i], **label_kwargs)
+                        ax.yaxis.set_label_coords(-0.3, 0.5)
 
                 # use MathText for axes ticks
                 ax.yaxis.set_major_formatter(
