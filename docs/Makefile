@@ -20,7 +20,7 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-PAGES = pages/sigmas.rst pages/quickstart.rst
+PAGES = pages/sigmas.rst pages/quickstart.rst pages/custom.rst
 
 pages/%.rst: _static/notebooks/%.ipynb
 	cd pages;jupyter nbconvert --template page_rst --to rst --output-dir . ../$<

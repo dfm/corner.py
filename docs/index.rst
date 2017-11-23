@@ -48,6 +48,7 @@ Documentation
    install
    pages/quickstart
    pages/sigmas
+   pages/custom
    api
 
 
