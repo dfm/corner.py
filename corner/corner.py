@@ -24,7 +24,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
-           hist_kwargs=None, **hist2d_kwargs):
+           hist_kwargs=None, priors=None, prior_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -121,6 +121,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     hist_kwargs : dict
         Any extra keyword arguments to send to the 1-D histogram plots.
+
+    priors : iterable (ndim,)
+        A list of functions used to plot another probability distribution on
+        top of the 1-D histograms. Individual priors can be omitted by using
+        ``None``. Priors are only calculated over the range of the posteriors.
+    
+    prior_kwargs : dict
+        Any extra keyword arguments to send to the prior histogram plots.
 
     **hist2d_kwargs
         Any remaining keyword arguments are sent to `corner.hist2d` to generate
@@ -233,6 +241,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     if smooth1d is None:
         hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
+    if prior_kwargs is None:
+        prior_kwargs = {"linestyle": ":", "linewidth": 1, "color": "gray"}
+
     for i, x in enumerate(xs):
         # Deal with masked arrays.
         if hasattr(x, "compressed"):
@@ -247,7 +258,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax = axes[i, i]
         # Plot the histograms.
         if smooth1d is None:
-            n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
+            n, b, _ = ax.hist(x, bins=bins[i], weights=weights,
                               range=np.sort(range[i]), **hist_kwargs)
         else:
             if gaussian_filter is None:
@@ -258,6 +269,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
+
+        if priors is not None and priors[i] is not None:
+            prior = priors[i](b)
+            prior *= np.sum(n) / np.sum(prior)
+            ax.plot(b, prior, zorder=1, **prior_kwargs)
 
         if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
