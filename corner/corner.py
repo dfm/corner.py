@@ -129,6 +129,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     
     prior_kwargs : dict
         Any extra keyword arguments to send to the prior histogram plots.
+        The default style is a thin, gray, dotted line.
 
     **hist2d_kwargs
         Any remaining keyword arguments are sent to `corner.hist2d` to generate
@@ -241,6 +242,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     if smooth1d is None:
         hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
+    # Set up the defaults for plotting priors
+    if priors is None:
+        priors = [None] * xs.shape[0]
+
     if prior_kwargs is None:
         prior_kwargs = {"linestyle": ":", "linewidth": 1, "color": "gray"}
 
@@ -270,7 +275,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
-        if priors is not None and priors[i] is not None:
+        if priors[i] is not None:
             prior = priors[i](b)
             prior *= np.sum(n) / np.sum(prior)
             ax.plot(b, prior, zorder=1, **prior_kwargs)
