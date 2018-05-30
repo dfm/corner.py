@@ -261,22 +261,22 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax = axes[i, i]
         # Plot the histograms.
         if smooth1d is None:
-            n, b, _ = ax.hist(x, bins=bins[i], weights=weights,
-                              range=np.sort(range[i]), **hist_kwargs)
+            n, bin_edges, _ = ax.hist(x, bins=bins[i], weights=weights,
+                                      range=np.sort(range[i]), **hist_kwargs)
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
-            n, b = np.histogram(x, bins=bins[i], weights=weights,
-                                range=np.sort(range[i]))
+            n, bin_edges = np.histogram(x, bins=bins[i], weights=weights,
+                                        range=np.sort(range[i]))
             n = gaussian_filter(n, smooth1d)
-            x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
+            x0 = np.array(list(zip(bin_edges[:-1], bin_edges[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
         if priors is not None and priors[i] is not None:
-            prior = priors[i](b)
+            prior = priors[i](bin_edges)
             prior *= np.sum(n) / np.sum(prior)
-            ax.plot(b, prior, zorder=1, **prior_kwargs)
+            ax.plot(bin_edges, prior, zorder=1, **prior_kwargs)
 
         if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
