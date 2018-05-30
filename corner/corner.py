@@ -242,7 +242,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
     if prior_kwargs is None:
-        prior_kwargs = {"linestyle": ":", "linewidth": 1, "color": "gray"}
+        prior_kwargs = dict()
+    prior_kwargs["linestyle"] = prior_kwargs.get("linestyle", ":")
+    prior_kwargs["linewidth"] = prior_kwargs.get("linewidth", 1)
+    prior_kwargs["color"] = prior_kwargs.get("color", "gray")
 
     for i, x in enumerate(xs):
         # Deal with masked arrays.
