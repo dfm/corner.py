@@ -126,10 +126,13 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
         A list of functions used to plot another probability distribution on
         top of the 1-D histograms. Individual priors can be omitted by using
         ``None``. Priors are only calculated over the range of the posteriors.
+        E.g., to plot flat priors, ``def flat(p): return np.ones_like(p)`` and
+        pass ``priors=[flat, flat, flat]``.
     
     prior_kwargs : dict
-        Any extra keyword arguments to send to the prior histogram plots.
-        The default style is a thin, gray, dotted line.
+        Any extra keyword arguments to send to the prior histogram plots, e.g.,
+        ``prior_kwargs={"color": "blue"}``. The default style is a thin, gray,
+        dotted line.
 
     **hist2d_kwargs
         Any remaining keyword arguments are sent to `corner.hist2d` to generate
