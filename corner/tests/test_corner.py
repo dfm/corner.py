@@ -97,3 +97,14 @@ def test_tight():
 @image_comparison(baseline_images=["reverse"], extensions=["png"])
 def test_reverse():
     _run_corner(ndim=2, range=[(4, -4), (-5, 5)])
+
+def flat(p):
+    return np.ones_like(p)
+
+@image_comparison(baseline_images=["priors"], extensions=["png"])
+def test_priors():
+    _run_corner(priors=[flat, flat, flat])
+
+@image_comparison(baseline_images=["prior_kwargs"], extensions=["png"])
+def test_prior_kwargs():
+    _run_corner(priors=[flat, flat, flat], prior_kwargs={"color": "blue"})
