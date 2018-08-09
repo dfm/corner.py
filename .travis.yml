@@ -18,7 +18,7 @@ install:
     - conda update -q conda
     - conda info -a
 
-    - conda create --yes -n test python=$PYTHON_VERSION matplotlib=$MATPLOTLIB_VERSION numpy scipy nose setuptools pandas
+    - conda create --yes -n test python=$PYTHON_VERSION matplotlib=$MATPLOTLIB_VERSION numpy scipy setuptools pandas pytest pytest-cov
     - source activate test
     - pip install coveralls
 
@@ -28,7 +28,7 @@ before_script: # configure a headless display to test plot generation
     - sleep 3 # give xvfb some time to start
 
 script:
-    - nosetests corner --with-coverage --cover-package=corner
+    - py.test -v --cov corner
 
 after_success:
     - coveralls
