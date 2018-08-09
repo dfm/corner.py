@@ -19,7 +19,7 @@ install:
     - conda update -q conda
     - conda info -a
 
-    - conda create --yes -n test python=$PYTHON_VERSION matplotlib=$MATPLOTLIB_VERSION numpy scipy setuptools pandas pytest pytest-cov
+    - conda create --yes -n test python=$PYTHON_VERSION matplotlib=$MATPLOTLIB_VERSION numpy scipy setuptools pandas pytest pytest-cov nose
     - source activate test
     - pip install coveralls
 
