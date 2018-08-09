@@ -17,7 +17,7 @@ except ImportError:
 __all__ = ["corner", "hist2d", "quantile"]
 
 
-def corner(xs, bins=20, range=None, weights=None, color="k",
+def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
            smooth=None, smooth1d=None,
            labels=None, label_kwargs=None,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
@@ -48,6 +48,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
 
     color : str
         A ``matplotlib`` style color for all histograms.
+
+    hist_bin_factor : float or array_like[ndim,]
+        This is a factor (or list of factors, one for each dimension) that
+        will multiply the bin specifications when making the 1-D histograms.
+        This is generally used to increase the number of bins in the 1-D plots
+        to provide more resolution.
 
     smooth, smooth1d : float
        The standard deviation for Gaussian kernel passed to
@@ -105,11 +111,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     use_math_text : bool
         If true, then axis tick labels for very large or small exponents will
         be displayed as powers of 10 rather than using `e`.
-        
+
     reverse : bool
-        If true, plot the corner plot starting in the upper-right corner instead 
-        of the usual bottom-left corner
-        
+        If true, plot the corner plot starting in the upper-right corner
+        instead of the usual bottom-left corner
+
     max_n_ticks: int
         Maximum number of ticks to try to use
 
@@ -196,6 +202,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
     except TypeError:
         if len(bins) != len(range):
             raise ValueError("Dimension mismatch between bins and range")
+    try:
+        hist_bin_factor = [float(hist_bin_factor) for _ in range]
+    except TypeError:
+        if len(hist_bin_factor) != len(range):
+            raise ValueError("Dimension mismatch between hist_bin_factor and "
+                             "range")
 
     # Some magic numbers for pretty axis layout.
     K = len(xs)
@@ -247,7 +259,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k",
                 ax = axes[i, i]
         # Plot the histograms.
         if smooth1d is None:
-            n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
+            bins_1d = int(max(1, np.round(hist_bin_factor[i] * bins[i])))
+            n, _, _ = ax.hist(x, bins=bins_1d, weights=weights,
                               range=np.sort(range[i]), **hist_kwargs)
         else:
             if gaussian_filter is None:
@@ -467,7 +480,8 @@ def quantile(x, q, weights=None):
 
 
 def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
-           ax=None, color=None, plot_datapoints=True, plot_density=True,
+           ax=None, color=None, quiet=False,
+           plot_datapoints=True, plot_density=True,
            plot_contours=True, no_fill_contours=False, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
            **kwargs):
@@ -481,6 +495,9 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     y : array_like[nsamples,]
        The samples.
+
+    quiet : bool
+        If true, suppress warnings for small datasets.
 
     levels : array_like
         The contour levels to draw.
@@ -567,51 +584,52 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
             raise ImportError("Please install scipy for smoothing")
         H = gaussian_filter(H, smooth)
 
-    # Compute the density levels.
-    Hflat = H.flatten()
-    inds = np.argsort(Hflat)[::-1]
-    Hflat = Hflat[inds]
-    sm = np.cumsum(Hflat)
-    sm /= sm[-1]
-    V = np.empty(len(levels))
-    for i, v0 in enumerate(levels):
-        try:
-            V[i] = Hflat[sm <= v0][-1]
-        except:
-            V[i] = Hflat[0]
-    V.sort()
-    m = np.diff(V) == 0
-    if np.any(m):
-        logging.warning("Too few points to create valid contours")
-    while np.any(m):
-        V[np.where(m)[0][0]] *= 1.0 - 1e-4
+    if plot_contours or plot_density:
+        # Compute the density levels.
+        Hflat = H.flatten()
+        inds = np.argsort(Hflat)[::-1]
+        Hflat = Hflat[inds]
+        sm = np.cumsum(Hflat)
+        sm /= sm[-1]
+        V = np.empty(len(levels))
+        for i, v0 in enumerate(levels):
+            try:
+                V[i] = Hflat[sm <= v0][-1]
+            except:
+                V[i] = Hflat[0]
+        V.sort()
         m = np.diff(V) == 0
-    V.sort()
+        if np.any(m) and not quiet:
+            logging.warning("Too few points to create valid contours")
+        while np.any(m):
+            V[np.where(m)[0][0]] *= 1.0 - 1e-4
+            m = np.diff(V) == 0
+        V.sort()
 
-    # Compute the bin centers.
-    X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
+        # Compute the bin centers.
+        X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
 
-    # Extend the array for the sake of the contours at the plot edges.
-    H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
-    H2[2:-2, 2:-2] = H
-    H2[2:-2, 1] = H[:, 0]
-    H2[2:-2, -2] = H[:, -1]
-    H2[1, 2:-2] = H[0]
-    H2[-2, 2:-2] = H[-1]
-    H2[1, 1] = H[0, 0]
-    H2[1, -2] = H[0, -1]
-    H2[-2, 1] = H[-1, 0]
-    H2[-2, -2] = H[-1, -1]
-    X2 = np.concatenate([
-        X1[0] + np.array([-2, -1]) * np.diff(X1[:2]),
-        X1,
-        X1[-1] + np.array([1, 2]) * np.diff(X1[-2:]),
-    ])
-    Y2 = np.concatenate([
-        Y1[0] + np.array([-2, -1]) * np.diff(Y1[:2]),
-        Y1,
-        Y1[-1] + np.array([1, 2]) * np.diff(Y1[-2:]),
-    ])
+        # Extend the array for the sake of the contours at the plot edges.
+        H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
+        H2[2:-2, 2:-2] = H
+        H2[2:-2, 1] = H[:, 0]
+        H2[2:-2, -2] = H[:, -1]
+        H2[1, 2:-2] = H[0]
+        H2[-2, 2:-2] = H[-1]
+        H2[1, 1] = H[0, 0]
+        H2[1, -2] = H[0, -1]
+        H2[-2, 1] = H[-1, 0]
+        H2[-2, -2] = H[-1, -1]
+        X2 = np.concatenate([
+            X1[0] + np.array([-2, -1]) * np.diff(X1[:2]),
+            X1,
+            X1[-1] + np.array([1, 2]) * np.diff(X1[-2:]),
+        ])
+        Y2 = np.concatenate([
+            Y1[0] + np.array([-2, -1]) * np.diff(Y1[:2]),
+            Y1,
+            Y1[-1] + np.array([1, 2]) * np.diff(Y1[-2:]),
+        ])
 
     if plot_datapoints:
         if data_kwargs is None:
