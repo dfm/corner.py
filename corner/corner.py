@@ -578,6 +578,9 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         raise ValueError("It looks like at least one of your sample columns "
                          "have no dynamic range. You could try using the "
                          "'range' argument.")
+    if H.sum() == 0:
+        raise ValueError("It looks like the provided 'range' is not valid "
+                         "or the sample is empty.")
 
     if smooth is not None:
         if gaussian_filter is None:
