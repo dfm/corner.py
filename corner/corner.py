@@ -24,7 +24,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
-           hist_kwargs=None, **hist2d_kwargs):
+           hist_kwargs=None, columnwise_titles=False, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -301,7 +301,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
                 # Add in the column name if it's given.
                 if labels is not None:
-                    if 'columnwise' in title_kwargs.keys() and title_kwargs['columnwise']:
+                    if columnwise_titles:
                         title = "{0}\n{1}".format(labels[i], title)
                     else:
                         title = "{0} = {1}".format(labels[i], title)
