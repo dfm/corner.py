@@ -301,8 +301,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
                 # Add in the column name if it's given.
                 if labels is not None:
-                    title = "{0} = {1}".format(labels[i], title)
-
+                    if 'columnwise' in title_kwargs.keys() and title_kwargs['columnwise']:
+                        title = "{0}\n{1}".format(labels[i], title)
+                    else:
+                        title = "{0} = {1}".format(labels[i], title)
+            
             elif labels is not None:
                 title = "{0}".format(labels[i])
 
