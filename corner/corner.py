@@ -3,6 +3,7 @@
 from __future__ import print_function, absolute_import
 
 import logging
+import copy
 import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib.ticker import MaxNLocator, NullLocator
@@ -24,7 +25,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
-           hist_kwargs=None, **hist2d_kwargs):
+           labelpad=0.0, hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -66,7 +67,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
     label_kwargs : dict
         Any extra keyword arguments to send to the `set_xlabel` and
-        `set_ylabel` methods.
+        `set_ylabel` methods. Note that passing the `labelpad` keyword
+        in this dictionary will not have the desired effect. Use the
+        `labelpad` keyword in this function instead.
 
     show_titles : bool
         Displays a title above each 1-D histogram showing the 0.5 quantile
@@ -115,6 +118,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
     reverse : bool
         If true, plot the corner plot starting in the upper-right corner
         instead of the usual bottom-left corner
+
+    labelpad : float
+        Padding between the axis and the x- and y-labels in units of the
+        fraction of the axis from the lower left
 
     max_n_ticks: int
         Maximum number of ticks to try to use
@@ -308,7 +315,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
             if title is not None:
                 if reverse:
-                    ax.set_xlabel(title, **title_kwargs)
+                    if "pad" in title_kwargs.keys():
+                        title_kwargs_new = copy.copy(title_kwargs)
+                        del title_kwargs_new["pad"]
+                        title_kwargs_new["labelpad"] = title_kwargs["pad"]
+                    else:
+                        title_kwargs_new = title_kwargs
+
+                    ax.set_xlabel(title, **title_kwargs_new)
                 else:
                     ax.set_title(title, **title_kwargs)
 
@@ -339,9 +353,17 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
                 if reverse:
-                    ax.set_title(labels[i], y=1.25, **label_kwargs)
+                    if "labelpad" in label_kwargs.keys():
+                        label_kwargs_new = copy.copy(label_kwargs)
+                        del label_kwargs_new["labelpad"]
+                        label_kwargs_new["pad"] = label_kwargs["labelpad"]
+                    else:
+                        label_kwargs_new = label_kwargs
+                    ax.set_title(labels[i], position=(0.5, 1.3+labelpad), **label_kwargs_new)
+
                 else:
                     ax.set_xlabel(labels[i], **label_kwargs)
+                    ax.xaxis.set_label_coords(0.5, -0.3 - labelpad)
 
             # use MathText for axes ticks
             ax.xaxis.set_major_formatter(
@@ -397,9 +419,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 if labels is not None:
                     ax.set_xlabel(labels[j], **label_kwargs)
                     if reverse:
-                        ax.xaxis.set_label_coords(0.5, 1.4)
+                        ax.xaxis.set_label_coords(0.5, 1.4+labelpad)
                     else:
-                        ax.xaxis.set_label_coords(0.5, -0.3)
+                        ax.xaxis.set_label_coords(0.5, -0.3-labelpad)
 
                 # use MathText for axes ticks
                 ax.xaxis.set_major_formatter(
@@ -414,10 +436,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 if labels is not None:
                     if reverse:
                         ax.set_ylabel(labels[i], rotation=-90, **label_kwargs)
-                        ax.yaxis.set_label_coords(1.3, 0.5)
+                        ax.yaxis.set_label_coords(1.3+labelpad, 0.5)
                     else:
                         ax.set_ylabel(labels[i], **label_kwargs)
-                        ax.yaxis.set_label_coords(-0.3, 0.5)
+                        ax.yaxis.set_label_coords(-0.3-labelpad, 0.5)
 
                 # use MathText for axes ticks
                 ax.yaxis.set_major_formatter(
