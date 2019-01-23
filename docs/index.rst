@@ -60,15 +60,18 @@ If you make use of this code, please cite `the JOSS paper
 <http://dx.doi.org/10.21105/joss.00024>`_:
 
 .. code-block:: tex
-
     @article{corner,
-        Author = {Daniel Foreman-Mackey},
-        Doi = {10.21105/joss.00024},
-        Title = {corner.py: Scatterplot matrices in Python},
-        Journal = {The Journal of Open Source Software},
-        Year = 2016,
-        Volume = 24,
-        Url = {http://dx.doi.org/10.5281/zenodo.45906}
+      doi = {10.21105/joss.00024},
+      url = {https://doi.org/10.21105/joss.00024},
+      year  = {2016},
+      month = {jun},
+      publisher = {The Open Journal},
+      volume = {1},
+      number = {2},
+      pages = {24},
+      author = {Daniel Foreman-Mackey},
+      title = {corner.py: Scatterplot matrices in Python},
+      journal = {The Journal of Open Source Software}
     }
 
 
