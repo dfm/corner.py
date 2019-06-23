@@ -21,7 +21,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
            smooth=None, smooth1d=None,
            labels=None, label_kwargs=None,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
-           truths=None, truth_color="#4682b4",
+           titles=None, truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
            hist_kwargs=None, **hist2d_kwargs):
@@ -146,6 +146,10 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             labels = xs.columns
         except AttributeError:
             pass
+
+    # If no separate titles are set, copy the axis labels
+    if titles is None:
+        titles = labels
 
     # Deal with 1D sample lists.
     xs = np.atleast_1d(xs)
@@ -300,11 +304,11 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
 
                 # Add in the column name if it's given.
-                if labels is not None:
-                    title = "{0} = {1}".format(labels[i], title)
+                if titles is not None:
+                    title = "{0} = {1}".format(titles[i], title)
 
-            elif labels is not None:
-                title = "{0}".format(labels[i])
+            elif titles is not None:
+                title = "{0}".format(titles[i])
 
             if title is not None:
                 if reverse:
@@ -339,7 +343,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             if labels is not None:
                 if reverse:
-                    ax.set_title(labels[i], y=1.25, **label_kwargs)
+                    ax.set_title(titles[i], y=1.25, **label_kwargs)
                 else:
                     ax.set_xlabel(labels[i], **label_kwargs)
 
