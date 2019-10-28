@@ -484,7 +484,8 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            plot_datapoints=True, plot_density=True,
            plot_contours=True, no_fill_contours=False, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
-           **kwargs):
+           pcolor_kwargs=None, **kwargs):
+           
     """
     Plot a 2-D histogram of samples.
 
@@ -531,6 +532,10 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     data_kwargs : dict
         Any additional keyword arguments to pass to the `plot` method when
         adding the individual data points.
+
+    pcolor_kwargs : dict
+        Any additional keyword arguments to pass to the `pcolor` method when
+        adding the density colormap.
 
     """
     if ax is None:
@@ -657,7 +662,9 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     # Plot the density map. This can't be plotted at the same time as the
     # contour fills.
     elif plot_density:
-        ax.pcolor(X, Y, H.max() - H.T, cmap=density_cmap)
+        if pcolor_kwargs is None:
+            pcolor_kwargs = dict()
+        ax.pcolor(X, Y, H.max() - H.T, cmap=density_cmap, **pcolor_kwargs)
 
     # Plot the contour edge colors.
     if plot_contours:
