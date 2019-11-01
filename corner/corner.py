@@ -21,7 +21,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
            smooth=None, smooth1d=None,
            labels=None, label_kwargs=None,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
-           truths=None, truth_color="#4682b4",
+           truths=None, truths_err=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
            max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
            hist_kwargs=None, **hist2d_kwargs):
@@ -274,6 +274,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
         if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
+        if truths_err is not None and truths_err[i] is not None:
+            ax.axvspan(truths[i]-truths_err[i], truths[i]+truths_err[i], color=truth_color, alpha=0.2)
 
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
@@ -378,6 +380,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                     ax.axvline(truths[j], color=truth_color)
                 if truths[i] is not None:
                     ax.axhline(truths[i], color=truth_color)
+
+            if truths_err is not None:
+                if truths_err[j] is not None:
+                    ax.axvspan(truths[j]-truths_err[j], truths[j]+truths_err[j], color=truth_color, alpha=0.2)
+                if truths_err[i] is not None:
+                    ax.axhspan(truths[i]-truths_err[i], truths[i]+truths_err[i], color=truth_color, alpha=0.2)
 
             if max_n_ticks == 0:
                 ax.xaxis.set_major_locator(NullLocator())
@@ -485,7 +493,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
            plot_contours=True, no_fill_contours=False, fill_contours=False,
            contour_kwargs=None, contourf_kwargs=None, data_kwargs=None,
            pcolor_kwargs=None, **kwargs):
-           
+
     """
     Plot a 2-D histogram of samples.
 
