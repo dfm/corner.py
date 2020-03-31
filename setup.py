@@ -37,5 +37,5 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
     ],
-    install_requires=["numpy", "matplotlib"],
+    install_requires=["numpy", "matplotlib>=2.1"],
 )

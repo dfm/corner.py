@@ -123,7 +123,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
         If true, label the top ticks of each axis
 
     fig : matplotlib.Figure
-        Overplot onto the provided figure object.
+        Overplot onto the provided figure object, which must either have no
+        axes yet, or ``ndim * ndim`` axes already present.  If not set, the
+        plot will be drawn on a newly created figure.
 
     hist_kwargs : dict
         Any extra keyword arguments to send to the 1-D histogram plots.
@@ -226,11 +228,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
     if fig is None:
         fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
-        try:
-            axes = np.array(fig.axes).reshape((K, K))
-        except:
-            raise ValueError("Provided figure has {0} axes, but data has "
-                             "dimensions K={1}".format(len(fig.axes), K))
+        if not fig.axes:
+            axes = fig.subplots(K, K)
+        else:
+            try:
+                axes = np.array(fig.axes).reshape((K, K))
+            except:
+                raise ValueError("Provided figure has {0} axes, but data has "
+                                 "dimensions K={1}".format(len(fig.axes), K))
 
     # Format the figure.
     lb = lbdim / dim
