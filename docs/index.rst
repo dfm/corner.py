@@ -79,7 +79,7 @@ If you make use of this code, please cite `the JOSS paper
 Authors & License
 -----------------
 
-Copyright 2013-2016 Dan Foreman-Mackey & contributors
+Copyright 2013-2020 Dan Foreman-Mackey
 
 Built by `Dan Foreman-Mackey <https://github.com/dfm>`_ and contributors (see
 ``corner.__contributors__`` for the most up to date list). Licensed under

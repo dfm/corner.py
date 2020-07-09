@@ -8,8 +8,9 @@ from .corner_version import __version__  # noqa
 __author__ = "Dan Foreman-Mackey"
 __email__ = "foreman.mackey@gmail.com"
 __uri__ = "https://corner.readthedocs.io"
+__license__ = "BSD"
 __description__ = "Make some beautiful corner plots"
-__copyright__ = "Copyright 2013-2020 Daniel Foreman-Mackey and contributors"
+__copyright__ = "Copyright 2013-2020 Daniel Foreman-Mackey"
 __contributors__ = "https://github.com/dfm/corner.py/graphs/contributors"
 __bibtex__ = __citation__ = """
 @article{corner,

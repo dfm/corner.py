@@ -1,34 +1,51 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division, print_function
-
+from collections import OrderedDict
+import pytest
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as pl
 from matplotlib.testing.decorators import image_comparison
 
 import corner
 
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
 
-def _run_corner(pandas=False, N=10000, seed=1234, ndim=3, factor=None,
-                **kwargs):
+try:
+    import scipy  # noqa
+except ImportError:
+    scipy_installed = False
+else:
+    scipy_installed = True
+
+
+def _run_corner(
+    pandas=False, N=10000, seed=1234, ndim=3, factor=None, **kwargs
+):
     np.random.seed(seed)
-    data1 = np.random.randn(ndim*4*N//5).reshape([4*N//5, ndim])
-    data2 = (5 * np.random.rand(ndim)[None, :] +
-             np.random.randn(ndim*N//5).reshape([N//5, ndim]))
+    data1 = np.random.randn(ndim * 4 * N // 5).reshape([4 * N // 5, ndim])
+    data2 = 5 * np.random.rand(ndim)[None, :] + np.random.randn(
+        ndim * N // 5
+    ).reshape([N // 5, ndim])
     data = np.vstack([data1, data2])
     if factor is not None:
         data[:, 0] *= factor
         data[:, 1] /= factor
     if pandas:
-        data = pd.DataFrame.from_items(zip(map("d{0}".format, range(ndim)),
-                                           data.T))
+        # data = pd.DataFrame.from_items()
+        data = pd.DataFrame.from_dict(
+            OrderedDict(zip(map("d{0}".format, range(ndim)), data.T))
+        )
 
     fig = corner.corner(data, **kwargs)
     return fig
 
 
-@image_comparison(baseline_images=["basic"], extensions=["png"])
+@image_comparison(
+    baseline_images=["basic"], remove_text=True, extensions=["png"]
+)
 def test_basic():
     _run_corner()
 
@@ -38,38 +55,54 @@ def test_labels():
     _run_corner(labels=["a", "b", "c"])
 
 
-@image_comparison(baseline_images=["quantiles"], extensions=["png"])
+@image_comparison(
+    baseline_images=["quantiles"], remove_text=True, extensions=["png"]
+)
 def test_quantiles():
     _run_corner(quantiles=[0.16, 0.5, 0.84])
 
 
-@image_comparison(baseline_images=["color"], extensions=["png"])
+@image_comparison(
+    baseline_images=["color"], remove_text=True, extensions=["png"]
+)
 def test_color():
     _run_corner(color="g")
 
 
-@image_comparison(baseline_images=["color_filled"], extensions=["png"])
+@image_comparison(
+    baseline_images=["color_filled"], remove_text=True, extensions=["png"]
+)
 def test_color_filled():
     _run_corner(color="g", fill_contours=True)
 
 
-@image_comparison(baseline_images=["overplot"], extensions=["png"])
+@image_comparison(
+    baseline_images=["overplot"], remove_text=True, extensions=["png"]
+)
 def test_overplot():
     fig = _run_corner(color="g", fill_contours=True)
     _run_corner(seed=15, color="b", fig=fig, fill_contours=True)
 
 
-@image_comparison(baseline_images=["smooth1"], extensions=["png"])
+@image_comparison(
+    baseline_images=["smooth1"], remove_text=True, extensions=["png"]
+)
 def test_smooth1():
     _run_corner(bins=50)
 
 
-@image_comparison(baseline_images=["smooth2"], extensions=["png"])
+@pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
+@image_comparison(
+    baseline_images=["smooth2"], remove_text=True, extensions=["png"]
+)
 def test_smooth2():
     _run_corner(bins=50, smooth=1.0)
 
 
-@image_comparison(baseline_images=["smooth1d"], extensions=["png"])
+@pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
+@image_comparison(
+    baseline_images=["smooth1d"], remove_text=True, extensions=["png"]
+)
 def test_smooth1d():
     _run_corner(bins=50, smooth=1.0, smooth1d=1.0)
 
@@ -84,37 +117,50 @@ def test_titles2():
     _run_corner(show_titles=True, title_fmt=None, labels=["a", "b", "c"])
 
 
-@image_comparison(baseline_images=["top_ticks"], extensions=["png"])
+@image_comparison(
+    baseline_images=["top_ticks"], remove_text=True, extensions=["png"]
+)
 def test_top_ticks():
     _run_corner(top_ticks=True)
 
 
+@pytest.mark.skipif(pd is None, reason="requires pandas")
 @image_comparison(baseline_images=["pandas"], extensions=["png"])
 def test_pandas():
     _run_corner(pandas=True)
 
 
-@image_comparison(baseline_images=["truths"], extensions=["png"])
+@image_comparison(
+    baseline_images=["truths"], remove_text=True, extensions=["png"]
+)
 def test_truths():
     _run_corner(truths=[0.0, None, 0.15])
 
 
-@image_comparison(baseline_images=["no_fill_contours"], extensions=["png"])
+@image_comparison(
+    baseline_images=["no_fill_contours"], remove_text=True, extensions=["png"]
+)
 def test_no_fill_contours():
     _run_corner(no_fill_contours=True)
 
 
-@image_comparison(baseline_images=["tight"], extensions=["png"])
+@image_comparison(
+    baseline_images=["tight"], remove_text=True, extensions=["png"]
+)
 def test_tight():
     _run_corner(ret=True)
     pl.tight_layout()
 
 
-@image_comparison(baseline_images=["reverse"], extensions=["png"])
+@image_comparison(
+    baseline_images=["reverse"], remove_text=True, extensions=["png"]
+)
 def test_reverse():
     _run_corner(ndim=2, range=[(4, -4), (-5, 5)])
 
 
-@image_comparison(baseline_images=["hist_bin_factor"], extensions=["png"])
+@image_comparison(
+    baseline_images=["hist_bin_factor"], remove_text=True, extensions=["png"]
+)
 def test_hist_bin_factor():
     _run_corner(hist_bin_factor=4)

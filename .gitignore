@@ -9,3 +9,4 @@ test_figures
 .coverage
 !corner/tests/baseline_images/*/*.png
 .pytest_cache
+corner_version.py

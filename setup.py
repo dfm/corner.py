@@ -30,13 +30,21 @@ INSTALL_REQUIRES = [
     "wheel",
 ]
 EXTRA_REQUIRE = {
-    "test": ["pytest>=3.6", "pytest-cov>=2.6.1"],
+    "test": [
+        "pytest>=3.6",
+        "pytest-cov>=2.6.1",
+        "black",
+        "isort",
+        "toml",
+        "scipy",
+        "pandas",
+    ],
     "docs": ["sphinx>=1.7.5", "pandoc"],
 }
 EXTRA_REQUIRE["dev"] = (
     EXTRA_REQUIRE["test"]
     + EXTRA_REQUIRE["docs"]
-    + ["pre-commit", "black", "isort", "toml", "flake8", "pep517", "twine"]
+    + ["pre-commit", "flake8", "pep517", "twine"]
 )
 
 # END PROJECT SPECIFIC
