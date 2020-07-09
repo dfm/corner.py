@@ -10,29 +10,7 @@ __email__ = "foreman.mackey@gmail.com"
 __uri__ = "https://corner.readthedocs.io"
 __description__ = "Make some beautiful corner plots"
 __copyright__ = "Copyright 2013-2020 Daniel Foreman-Mackey and contributors"
-__contributors__ = [
-    # Alphabetical by first name.
-    "Adrian Price-Whelan @adrn",
-    "Brendon Brewer @eggplantbren",
-    "Brigitta Sipocz @bsipocz",
-    "Ekta Patel @ekta1224",
-    "Emily Rice @emilurice",
-    "Geoff Ryan @geoffryan",
-    "Guillaume @ceyzeriat",
-    "Gregory Ashton @ga7g08",
-    "Hanno Rein @hannorein",
-    "Jeremy Heyl @jsheyl",
-    "Kelle Cruz @kelle",
-    "Kyle Barbary @kbarbary",
-    "Marco Tazzari @mtazzari",
-    "Matt Pitkin @mattpitkin",
-    "Phil Marshall @drphilmarshall",
-    "Pierre Gratier @pirg",
-    "Stephan Hoyer @shoyer",
-    "Víctor Zabalza @zblz",
-    "Will Vousden @willvousden",
-    "Wolfgang Kerzendorf @wkerzendorf",
-]
+__contributors__ = "https://github.com/dfm/corner.py/graphs/contributors"
 __bibtex__ = __citation__ = """
 @article{corner,
   doi = {10.21105/joss.00024},
