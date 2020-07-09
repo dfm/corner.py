@@ -16,20 +16,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - uses: ilammy/msvc-dev-cmd@v1
+
       - name: Install dependencies
         run: |
           python -m pip install -U pip
           python -m pip install ".[test]"
+
       - name: Check the style
         run: |
           isort -c src/corner
           isort -c tests
           black --check src/corner
           black --check tests
+
       - name: Run the unit tests
         run: python -m pytest -v tests
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          path: ./result_images

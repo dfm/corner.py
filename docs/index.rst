@@ -29,12 +29,10 @@ as ``corner.py`` or using its previous name ``triangle.py``.
 
 
 
-.. image:: http://img.shields.io/travis/dfm/corner.py/master.svg?style=flat
+.. image:: http://img.shields.io/travis/dfm/corner.py/main.svg?style=flat
     :target: https://travis-ci.org/dfm/corner.py
-.. image:: https://coveralls.io/repos/github/dfm/corner.py/badge.svg?branch=master&style=flat
-    :target: https://coveralls.io/github/dfm/corner.py?branch=master&style=flat
 .. image:: http://img.shields.io/badge/license-BSD-blue.svg?style=flat
-    :target: https://github.com/dfm/corner.py/blob/master/LICENSE
+    :target: https://github.com/dfm/corner.py/blob/main/LICENSE
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
     :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
 
@@ -82,5 +80,5 @@ Authors & License
 Copyright 2013-2020 Dan Foreman-Mackey
 
 Built by `Dan Foreman-Mackey <https://github.com/dfm>`_ and contributors (see
-``corner.__contributors__`` for the most up to date list). Licensed under
-the 2-clause BSD license (see ``LICENSE``).
+`the contribution graph <https://github.com/dfm/corner.py/graphs/contributors>`_ for the most
+up to date list). Licensed under the 2-clause BSD license (see ``LICENSE``).
