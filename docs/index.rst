@@ -27,14 +27,14 @@ occasionally been cited
 <https://ui.adsabs.harvard.edu/#search/q=%22triangle.py%22%20or%20%22corner.py%22&sort=date%20desc>`_
 as ``corner.py`` or using its previous name ``triangle.py``.
 
-
-
-.. image:: http://img.shields.io/travis/dfm/corner.py/main.svg?style=flat
-    :target: https://travis-ci.org/dfm/corner.py
+.. image:: https://github.com/dfm/corner.py/workflows/Tests/badge.svg?style=flat
+    :target: https://github.com/dfm/corner.py/actions
 .. image:: http://img.shields.io/badge/license-BSD-blue.svg?style=flat
     :target: https://github.com/dfm/corner.py/blob/main/LICENSE
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
     :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
+.. image:: http://joss.theoj.org/papers/10.21105/joss.00024/status.svg?style=flat
+    :target: http://dx.doi.org/10.21105/joss.00024
 
 
 Documentation
