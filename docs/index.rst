@@ -11,7 +11,7 @@ Corner plot /ˈkôrnər plät/ (noun):
     *Synonyms: scatterplot matrix, pairs plot, draftsman's display*
 
 
-This Python module uses `matplotlib <http://matplotlib.org/>`_ to visualize
+This Python module uses `matplotlib <https://matplotlib.org/>`_ to visualize
 multidimensional samples using a scatterplot matrix.
 In these visualizations, each one- and two-dimensional projection of the
 sample is plotted to reveal covariances.
@@ -23,17 +23,16 @@ Development of *corner* happens `on GitHub
 <https://github.com/dfm/corner.py>`_ so you can `raise any issues you have
 there <https://github.com/dfm/corner.py/issues>`_.
 *corner* has been used extensively in the astronomical literature and it `has
-occasionally been cited
-<https://ui.adsabs.harvard.edu/#search/q=%22triangle.py%22%20or%20%22corner.py%22&sort=date%20desc>`_
+occasionally been cited <https://ui.adsabs.harvard.edu/abs/2016JOSS....1...24F/citations>`_
 as ``corner.py`` or using its previous name ``triangle.py``.
 
 .. image:: https://github.com/dfm/corner.py/workflows/Tests/badge.svg?style=flat
     :target: https://github.com/dfm/corner.py/actions
-.. image:: http://img.shields.io/badge/license-BSD-blue.svg?style=flat
+.. image:: https://img.shields.io/badge/license-BSD-blue.svg?style=flat
     :target: https://github.com/dfm/corner.py/blob/main/LICENSE
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
     :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
-.. image:: http://joss.theoj.org/papers/10.21105/joss.00024/status.svg?style=flat
+.. image:: https://joss.theoj.org/papers/10.21105/joss.00024/status.svg?style=flat
     :target: http://dx.doi.org/10.21105/joss.00024
 
 
@@ -55,7 +54,7 @@ Attribution
 -----------
 
 If you make use of this code, please cite `the JOSS paper
-<http://dx.doi.org/10.21105/joss.00024>`_:
+<https://dx.doi.org/10.21105/joss.00024>`_:
 
 .. code-block:: tex
 
