@@ -1,3 +1,4 @@
+import matplotlib
 from matplotlib.testing.conftest import *  # noqa
 
 
