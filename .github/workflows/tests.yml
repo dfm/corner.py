@@ -32,4 +32,4 @@ jobs:
           black --check src/corner
           black --check tests
       - name: Run the unit tests
-        run: python -m pytest -p no:warnings -v tests
+        run: python -m pytest -v tests
