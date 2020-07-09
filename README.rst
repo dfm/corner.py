@@ -1,12 +1,10 @@
 corner.py
 =========
 
-.. image:: http://img.shields.io/travis/dfm/corner.py/master.svg?style=flat
-    :target: https://travis-ci.org/dfm/corner.py
-.. image:: https://coveralls.io/repos/github/dfm/corner.py/badge.svg?branch=master&style=flat
-    :target: https://coveralls.io/github/dfm/corner.py?branch=master&style=flat
+.. image:: https://github.com/dfm/corner.py/workflows/Tests/badge.svg?style=flat
+    :target: https://github.com/dfm/corner.py/actions
 .. image:: http://img.shields.io/badge/license-BSD-blue.svg?style=flat
-    :target: https://github.com/dfm/corner.py/blob/master/LICENSE
+    :target: https://github.com/dfm/corner.py/blob/main/LICENSE
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
     :target: https://zenodo.org/badge/latestdoi/4729/dfm/corner.py
 .. image:: http://joss.theoj.org/papers/10.21105/joss.00024/status.svg?style=flat

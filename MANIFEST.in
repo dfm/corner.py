@@ -1,1 +1,6 @@
 include README.rst LICENSE
+
+exclude corner.png demo.py *.yml
+recursive-exclude docs *
+recursive-exclude tests *
+recursive-exclude paper *

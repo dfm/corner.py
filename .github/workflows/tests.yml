@@ -1,0 +1,93 @@
+name: Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  tests:
+    name: "py${{ matrix.python-version }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install ".[test]"
+
+      - name: Check the style
+        run: |
+          isort -c src/corner
+          isort -c tests
+          black --check src/corner
+          black --check tests
+
+      - name: Run the unit tests
+        run: python -m pytest -v tests
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          path: ./result_images
+
+  build:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        name: Install Python
+        with:
+          python-version: "3.8"
+
+      - name: Build
+        run: |
+          python -m pip install -U pip pep517 twine setuptools_scm
+          python -m pep517.build .
+
+      - name: Test the sdist
+        run: |
+          python -m venv venv-sdist
+          venv-sdist/bin/python -m pip install dist/corner*.tar.gz
+          venv-sdist/bin/python -c "import corner;print(corner.__version__)"
+
+      - name: Test the wheel
+        run: |
+          python -m venv venv-wheel
+          venv-wheel/bin/python -m pip install dist/corner*.whl
+          venv-wheel/bin/python -c "import corner;print(corner.__version__)"
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*
+
+  upload_pypi:
+    needs: [tests, build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_password }}
+          # To test: repository_url: https://test.pypi.org/legacy/
