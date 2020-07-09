@@ -3,6 +3,8 @@ corner.py
 
 .. image:: https://github.com/dfm/corner.py/workflows/Tests/badge.svg?style=flat
     :target: https://github.com/dfm/corner.py/actions
+.. image:: https://readthedocs.org/projects/corner/badge/?version=latest
+    :target: https://corner.readthedocs.io/en/latest/?badge=latest
 .. image:: http://img.shields.io/badge/license-BSD-blue.svg?style=flat
     :target: https://github.com/dfm/corner.py/blob/main/LICENSE
 .. image:: https://zenodo.org/badge/4729/dfm/corner.py.svg?style=flat
