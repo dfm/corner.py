@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
-import pytest
+
 import numpy as np
-import matplotlib.pyplot as pl
+import pytest
+from matplotlib import pyplot as pl
 from matplotlib.testing.decorators import image_comparison
 
 import corner

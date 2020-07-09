@@ -27,7 +27,9 @@ jobs:
           python -m pip install ".[test]"
       - name: Check the style
         run: |
-          isort -c python
-          black --check python
+          isort -c src/corner
+          isort -c tests
+          black --check src/corner
+          black --check tests
       - name: Run the unit tests
         run: python -m pytest -v tests
