@@ -202,6 +202,45 @@ def corner(
         if xs.shape[1] != weights.shape[0]:
             raise ValueError("Lengths of weights must match number of samples")
 
+    # Some magic numbers for pretty axis layout.
+    K = len(xs)
+    factor = 2.0  # size of one side of one panel
+    if reverse:
+        lbdim = 0.2 * factor  # size of left/bottom margin
+        trdim = 0.5 * factor  # size of top/right margin
+    else:
+        lbdim = 0.5 * factor  # size of left/bottom margin
+        trdim = 0.2 * factor  # size of top/right margin
+    whspace = 0.05  # w/hspace size
+    plotdim = factor * K + factor * (K - 1.0) * whspace
+    dim = lbdim + plotdim + trdim
+
+    # Create a new figure if one wasn't provided.
+    new_fig = True
+    if fig is None:
+        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+    else:
+        if not fig.axes:
+            axes = fig.subplots(K, K)
+        else:
+            new_fig = False
+            try:
+                axes = np.array(fig.axes).reshape((K, K))
+            except ValueError:
+                raise ValueError(
+                    (
+                        "Provided figure has {0} axes, but data has "
+                        "dimensions K={1}"
+                    ).format(len(fig.axes), K)
+                )
+
+    # Format the figure.
+    lb = lbdim / dim
+    tr = (lbdim + plotdim) / dim
+    fig.subplots_adjust(
+        left=lb, bottom=lb, right=tr, top=tr, wspace=whspace, hspace=whspace
+    )
+
     # Parse the parameter ranges.
     if range is None:
         if "extents" in hist2d_kwargs:
@@ -212,6 +251,7 @@ def corner(
             range = hist2d_kwargs.pop("extents")
         else:
             range = [[x.min(), x.max()] for x in xs]
+
             # Check for parameters that never change.
             m = np.array([e[0] == e[1] for e in range], dtype=bool)
             if np.any(m):
@@ -252,43 +292,6 @@ def corner(
             raise ValueError(
                 "Dimension mismatch between hist_bin_factor and " "range"
             )
-
-    # Some magic numbers for pretty axis layout.
-    K = len(xs)
-    factor = 2.0  # size of one side of one panel
-    if reverse:
-        lbdim = 0.2 * factor  # size of left/bottom margin
-        trdim = 0.5 * factor  # size of top/right margin
-    else:
-        lbdim = 0.5 * factor  # size of left/bottom margin
-        trdim = 0.2 * factor  # size of top/right margin
-    whspace = 0.05  # w/hspace size
-    plotdim = factor * K + factor * (K - 1.0) * whspace
-    dim = lbdim + plotdim + trdim
-
-    # Create a new figure if one wasn't provided.
-    if fig is None:
-        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
-    else:
-        if not fig.axes:
-            axes = fig.subplots(K, K)
-        else:
-            try:
-                axes = np.array(fig.axes).reshape((K, K))
-            except ValueError:
-                raise ValueError(
-                    (
-                        "Provided figure has {0} axes, but data has "
-                        "dimensions K={1}"
-                    ).format(len(fig.axes), K)
-                )
-
-    # Format the figure.
-    lb = lbdim / dim
-    tr = (lbdim + plotdim) / dim
-    fig.subplots_adjust(
-        left=lb, bottom=lb, right=tr, top=tr, wspace=whspace, hspace=whspace
-    )
 
     # Set up the default histogram keywords.
     if hist_kwargs is None:
@@ -379,12 +382,14 @@ def corner(
                     ax.set_title(title, **title_kwargs)
 
         # Set up the axes.
-        ax.set_xlim(range[i])
+        _set_xlim(new_fig, ax, range[i])
         if scale_hist:
             maxn = np.max(n)
-            ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
+            _set_ylim(new_fig, ax, [-0.1 * maxn, 1.1 * maxn])
+
         else:
-            ax.set_ylim(0, 1.1 * np.max(n))
+            _set_ylim(new_fig, ax, [0, 1.1 * np.max(n)])
+
         ax.set_yticklabels([])
         if max_n_ticks == 0:
             ax.xaxis.set_major_locator(NullLocator())
@@ -455,6 +460,7 @@ def corner(
                 color=color,
                 smooth=smooth,
                 bins=[bins[j], bins[i]],
+                new_fig=new_fig,
                 **hist2d_kwargs
             )
 
@@ -515,6 +521,20 @@ def corner(
                 )
 
     return fig
+
+
+def _set_xlim(new_fig, ax, new_xlim):
+    if new_fig:
+        return ax.set_xlim(new_xlim)
+    xlim = ax.get_xlim()
+    return ax.set_xlim([min(xlim[0], new_xlim[0]), max(xlim[1], new_xlim[1])])
+
+
+def _set_ylim(new_fig, ax, new_ylim):
+    if new_fig:
+        return ax.set_ylim(new_ylim)
+    ylim = ax.get_ylim()
+    return ax.set_ylim([min(ylim[0], new_ylim[0]), max(ylim[1], new_ylim[1])])
 
 
 def quantile(x, q, weights=None):
@@ -590,6 +610,7 @@ def hist2d(
     contourf_kwargs=None,
     data_kwargs=None,
     pcolor_kwargs=None,
+    new_fig=True,
     **kwargs
 ):
 
@@ -805,5 +826,5 @@ def hist2d(
         contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
-    ax.set_xlim(range[0])
-    ax.set_ylim(range[1])
+    _set_xlim(new_fig, ax, range[0])
+    _set_ylim(new_fig, ax, range[1])
