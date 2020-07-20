@@ -202,6 +202,45 @@ def corner(
         if xs.shape[1] != weights.shape[0]:
             raise ValueError("Lengths of weights must match number of samples")
 
+    # Some magic numbers for pretty axis layout.
+    K = len(xs)
+    factor = 2.0  # size of one side of one panel
+    if reverse:
+        lbdim = 0.2 * factor  # size of left/bottom margin
+        trdim = 0.5 * factor  # size of top/right margin
+    else:
+        lbdim = 0.5 * factor  # size of left/bottom margin
+        trdim = 0.2 * factor  # size of top/right margin
+    whspace = 0.05  # w/hspace size
+    plotdim = factor * K + factor * (K - 1.0) * whspace
+    dim = lbdim + plotdim + trdim
+
+    # Create a new figure if one wasn't provided.
+    new_fig = True
+    if fig is None:
+        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
+    else:
+        if not fig.axes:
+            axes = fig.subplots(K, K)
+        else:
+            new_fig = False
+            try:
+                axes = np.array(fig.axes).reshape((K, K))
+            except ValueError:
+                raise ValueError(
+                    (
+                        "Provided figure has {0} axes, but data has "
+                        "dimensions K={1}"
+                    ).format(len(fig.axes), K)
+                )
+
+    # Format the figure.
+    lb = lbdim / dim
+    tr = (lbdim + plotdim) / dim
+    fig.subplots_adjust(
+        left=lb, bottom=lb, right=tr, top=tr, wspace=whspace, hspace=whspace
+    )
+
     # Parse the parameter ranges.
     if range is None:
         if "extents" in hist2d_kwargs:
@@ -211,7 +250,16 @@ def corner(
             )
             range = hist2d_kwargs.pop("extents")
         else:
-            range = [[x.min(), x.max()] for x in xs]
+            # Handle different x-ranges for overplotted data
+            if new_fig:
+                range = [[x.min(), x.max()] for x in xs]
+
+            else:
+                range = []
+                for x, ax in zip(xs, np.diag(axes)):
+                    rng = ax.get_xlim()
+                    range.append([min(x.min(), rng[0]), max(x.max(), rng[1])])
+
             # Check for parameters that never change.
             m = np.array([e[0] == e[1] for e in range], dtype=bool)
             if np.any(m):
@@ -252,43 +300,6 @@ def corner(
             raise ValueError(
                 "Dimension mismatch between hist_bin_factor and " "range"
             )
-
-    # Some magic numbers for pretty axis layout.
-    K = len(xs)
-    factor = 2.0  # size of one side of one panel
-    if reverse:
-        lbdim = 0.2 * factor  # size of left/bottom margin
-        trdim = 0.5 * factor  # size of top/right margin
-    else:
-        lbdim = 0.5 * factor  # size of left/bottom margin
-        trdim = 0.2 * factor  # size of top/right margin
-    whspace = 0.05  # w/hspace size
-    plotdim = factor * K + factor * (K - 1.0) * whspace
-    dim = lbdim + plotdim + trdim
-
-    # Create a new figure if one wasn't provided.
-    if fig is None:
-        fig, axes = pl.subplots(K, K, figsize=(dim, dim))
-    else:
-        if not fig.axes:
-            axes = fig.subplots(K, K)
-        else:
-            try:
-                axes = np.array(fig.axes).reshape((K, K))
-            except ValueError:
-                raise ValueError(
-                    (
-                        "Provided figure has {0} axes, but data has "
-                        "dimensions K={1}"
-                    ).format(len(fig.axes), K)
-                )
-
-    # Format the figure.
-    lb = lbdim / dim
-    tr = (lbdim + plotdim) / dim
-    fig.subplots_adjust(
-        left=lb, bottom=lb, right=tr, top=tr, wspace=whspace, hspace=whspace
-    )
 
     # Set up the default histogram keywords.
     if hist_kwargs is None:
@@ -382,9 +393,19 @@ def corner(
         ax.set_xlim(range[i])
         if scale_hist:
             maxn = np.max(n)
-            ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
+            if new_fig:
+                ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
+            else:
+                lim = ax.get_ylim()
+                ax.set_ylim(min(-0.1 * maxn, lim[0]), max(1.1 * maxn, lim[1]))
+
         else:
-            ax.set_ylim(0, 1.1 * np.max(n))
+            if new_fig:
+                ax.set_ylim(0, 1.1 * np.max(n))
+            else:
+                lim = ax.get_ylim()
+                ax.set_ylim(min(0, lim[0]), max(1.1 * np.max(n), lim[1]))
+
         ax.set_yticklabels([])
         if max_n_ticks == 0:
             ax.xaxis.set_major_locator(NullLocator())

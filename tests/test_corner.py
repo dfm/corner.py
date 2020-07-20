@@ -81,8 +81,10 @@ def test_color_filled():
     baseline_images=["overplot"], remove_text=True, extensions=["png"]
 )
 def test_overplot():
-    fig = _run_corner(color="g", fill_contours=True)
-    _run_corner(seed=15, color="b", fig=fig, fill_contours=True)
+    fig = _run_corner(N=15000, color="g", fill_contours=True)
+    _run_corner(
+        N=5000, factor=0.5, seed=15, color="b", fig=fig, fill_contours=True
+    )
 
 
 @image_comparison(
