@@ -250,15 +250,7 @@ def corner(
             )
             range = hist2d_kwargs.pop("extents")
         else:
-            # Handle different x-ranges for overplotted data
-            if new_fig:
-                range = [[x.min(), x.max()] for x in xs]
-
-            else:
-                range = []
-                for x, ax in zip(xs, np.diag(axes)):
-                    rng = ax.get_xlim()
-                    range.append([min(x.min(), rng[0]), max(x.max(), rng[1])])
+            range = [[x.min(), x.max()] for x in xs]
 
             # Check for parameters that never change.
             m = np.array([e[0] == e[1] for e in range], dtype=bool)
@@ -390,21 +382,13 @@ def corner(
                     ax.set_title(title, **title_kwargs)
 
         # Set up the axes.
-        ax.set_xlim(range[i])
+        _set_xlim(new_fig, ax, range[i])
         if scale_hist:
             maxn = np.max(n)
-            if new_fig:
-                ax.set_ylim(-0.1 * maxn, 1.1 * maxn)
-            else:
-                lim = ax.get_ylim()
-                ax.set_ylim(min(-0.1 * maxn, lim[0]), max(1.1 * maxn, lim[1]))
+            _set_ylim(new_fig, ax, [-0.1 * maxn, 1.1 * maxn])
 
         else:
-            if new_fig:
-                ax.set_ylim(0, 1.1 * np.max(n))
-            else:
-                lim = ax.get_ylim()
-                ax.set_ylim(min(0, lim[0]), max(1.1 * np.max(n), lim[1]))
+            _set_ylim(new_fig, ax, [0, 1.1 * np.max(n)])
 
         ax.set_yticklabels([])
         if max_n_ticks == 0:
@@ -476,6 +460,7 @@ def corner(
                 color=color,
                 smooth=smooth,
                 bins=[bins[j], bins[i]],
+                new_fig=new_fig,
                 **hist2d_kwargs
             )
 
@@ -536,6 +521,20 @@ def corner(
                 )
 
     return fig
+
+
+def _set_xlim(new_fig, ax, new_xlim):
+    if new_fig:
+        return ax.set_xlim(new_xlim)
+    xlim = ax.get_xlim()
+    return ax.set_xlim([min(xlim[0], new_xlim[0]), max(xlim[1], new_xlim[1])])
+
+
+def _set_ylim(new_fig, ax, new_ylim):
+    if new_fig:
+        return ax.set_ylim(new_ylim)
+    ylim = ax.get_ylim()
+    return ax.set_ylim([min(ylim[0], new_ylim[0]), max(ylim[1], new_ylim[1])])
 
 
 def quantile(x, q, weights=None):
@@ -611,6 +610,7 @@ def hist2d(
     contourf_kwargs=None,
     data_kwargs=None,
     pcolor_kwargs=None,
+    new_fig=True,
     **kwargs
 ):
 
@@ -826,5 +826,5 @@ def hist2d(
         contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
-    ax.set_xlim(range[0])
-    ax.set_ylim(range[1])
+    _set_xlim(new_fig, ax, range[0])
+    _set_ylim(new_fig, ax, range[1])
