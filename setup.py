@@ -24,10 +24,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3",
 ]
 INSTALL_REQUIRES = [
-    "matplotlib>=2.1",
-    "setuptools>=40.6.0",
-    "setuptools_scm",
-    "wheel",
+    "matplotlib>=2.1"
 ]
 EXTRA_REQUIRE = {
     "test": [
