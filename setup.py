@@ -92,5 +92,4 @@ if __name__ == "__main__":
         extras_require=EXTRA_REQUIRE,
         classifiers=CLASSIFIERS,
         zip_safe=True,
-        options={"bdist_wheel": {"universal": "1"}},
     )
