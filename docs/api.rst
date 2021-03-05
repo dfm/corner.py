@@ -10,3 +10,5 @@ documented here.
 .. autofunction:: corner.corner
 .. autofunction:: corner.hist2d
 .. autofunction:: corner.quantile
+.. autofunction:: corner.overplot_lines
+.. autofunction:: corner.overplot_points
