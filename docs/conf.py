@@ -26,6 +26,7 @@ html_show_sourcelink = False
 html_theme_options = {
     "path_to_docs": "docs",
     "repository_url": "https://github.com/dfm/corner.py",
+    "repository_branch": "main",
     "launch_buttons": {
         "binderhub_url": "https://mybinder.org",
         "colab_url": "https://colab.research.google.com/",

@@ -46,6 +46,7 @@ Documentation
    pages/quickstart
    pages/sigmas
    pages/custom
+   pages/arviz
    api
 
 
