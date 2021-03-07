@@ -23,7 +23,7 @@ CLASSIFIERS = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-INSTALL_REQUIRES = ["arviz"]
+INSTALL_REQUIRES = ["arviz>=0.9"]
 EXTRA_REQUIRE = {
     "test": [
         "pytest>=3.6",
