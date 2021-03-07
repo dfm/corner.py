@@ -19,7 +19,7 @@ with `pip <http://www.pip-installer.org/>`_:
 
 .. code-block:: bash
 
-    pip install corner
+    python -m pip install corner
 
 
 From source
@@ -38,18 +38,18 @@ directory and run:
 
 .. code-block:: bash
 
-    python setup.py install
+    python -m pip install .
 
 
 Tests
 -----
 
-If you installed from source, you can run the unit tests using `nose
-<http://nose.readthedocs.org/>`_. From the root of the source directory, run:
+If you installed from source, you can run the unit tests. From the root of the
+source directory, run:
 
 .. code-block:: bash
 
-    nosetests corner
+    python -m pip install pytest -v tests
 
 This might take a few minutes but you shouldn't get any errors if all went
 as planned.

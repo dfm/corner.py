@@ -10,8 +10,12 @@ repos:
     hooks:
       - id: isort
         additional_dependencies: [toml]
-        exclude: docs/tutorials
+        exclude: docs/pages
   - repo: https://github.com/psf/black
     rev: "20.8b1"
     hooks:
       - id: black
+  - repo: https://github.com/kynan/nbstripout
+    rev: "0.3.9"
+    hooks:
+      - id: nbstripout
