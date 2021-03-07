@@ -5,11 +5,11 @@ import logging
 from collections.abc import Mapping
 
 import numpy as np
+from arviz.data import convert_to_dataset
+from arviz.utils import _var_names, get_coords
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import MaxNLocator, NullLocator, ScalarFormatter
-from arviz.data import convert_to_dataset
-from arviz.utils import _var_names, get_coords
 
 try:
     from scipy.ndimage import gaussian_filter
@@ -32,8 +32,8 @@ try:
 
 
 except ImportError:
-    from arviz.sel_utils import xarray_to_ndarray, xarray_var_iter
     from arviz.label import BaseLabeller
+    from arviz.sel_utils import xarray_to_ndarray, xarray_var_iter
 
     def _get_labels(plotters, labeller=None):
         if labeller is None:
