@@ -8,7 +8,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "myst_nb",
 ]
-source_suffix = ".rst"
+# source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
