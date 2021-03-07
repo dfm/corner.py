@@ -9,12 +9,16 @@ on:
 
 jobs:
   tests:
-    name: "py${{ matrix.python-version }} on ${{ matrix.os }}"
-    runs-on: ${{ matrix.os }}
+    name: "py${{ matrix.python-version }}; ${{ matrix.arviz-version }}"
+    runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
-        os: [ubuntu-latest, macos-latest]
+        python-version: [3.9]
+        arviz-version:
+          - "arviz~=0.9"
+          - "arviz~=0.10"
+          - "arviz~=0.11"
+          - "https://github.com/arviz-devs/arviz/archive/main.zip"
 
     steps:
       - uses: actions/checkout@v2
@@ -27,14 +31,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip
+          python -m pip install $ARVIZ
           python -m pip install ".[test]"
-
-      - name: Check the style
-        run: |
-          isort -c src/corner
-          isort -c tests
-          black --check src/corner
-          black --check tests
+        env:
+          ARVIZ: ${{ matrix.arviz-version }}
 
       - name: Run the unit tests
         run: python -m pytest -v tests
@@ -53,12 +53,13 @@ jobs:
       - uses: actions/setup-python@v2
         name: Install Python
         with:
-          python-version: "3.8"
+          python-version: "3.9"
 
       - name: Build
         run: |
-          python -m pip install -U pip pep517 twine setuptools_scm
-          python -m pep517.build .
+          python -m pip install -U pip
+          python -m pip install -U build
+          python -m build .
 
       - name: Test the sdist
         run: |

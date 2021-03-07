@@ -39,7 +39,7 @@ We can visualize the difference between sigma definitions:
     import corner
     import numpy as np
     import matplotlib.pyplot as pl
-    
+
     # Generate some fake data from a Gaussian
     np.random.seed(42)
     x = np.random.randn(50000, 2)
@@ -67,5 +67,3 @@ contour compares to the marginalized 68% quantile:
 
 
 .. image:: sigmas_files/sigmas_6_0.png
-
-

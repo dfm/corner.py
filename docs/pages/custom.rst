@@ -25,14 +25,14 @@ another randomly sampled mode:
 
     import corner
     import numpy as np
-    
+
     ndim, nsamples = 4, 50000
     np.random.seed(1234)
     data1 = np.random.randn(ndim * 4 * nsamples // 5).reshape([4 * nsamples // 5, ndim])
     mean = 4*np.random.rand(ndim)
     data2 = (mean[None, :] + np.random.randn(ndim * nsamples // 5).reshape([nsamples // 5, ndim]))
     samples = np.vstack([data1, data2])
-    
+
     figure = corner.corner(samples)
 
 
@@ -47,22 +47,22 @@ of the second mode.
 
     # This is the true mean of the second mode that we used above:
     value1 = mean
-    
+
     # This is the empirical mean of the sample:
     value2 = np.mean(samples, axis=0)
-    
+
     # Make the base corner plot
     figure = corner.corner(samples)
-    
+
     # Extract the axes
     axes = np.array(figure.axes).reshape((ndim, ndim))
-    
+
     # Loop over the diagonal
     for i in range(ndim):
         ax = axes[i, i]
         ax.axvline(value1[i], color="g")
         ax.axvline(value2[i], color="r")
-        
+
     # Loop over the histograms
     for yi in range(ndim):
         for xi in range(yi):
@@ -81,4 +81,3 @@ of the second mode.
 
 A similar procedure could be used to add anything to the axes that you
 can normally do with matplotlib.
-
