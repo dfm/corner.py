@@ -32,7 +32,7 @@ try:
 
 
 except ImportError:
-    from arviz.label import BaseLabeller
+    from arviz.labels import BaseLabeller
     from arviz.sel_utils import xarray_to_ndarray, xarray_var_iter
 
     def _get_labels(plotters, labeller=None):
