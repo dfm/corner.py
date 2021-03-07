@@ -4,12 +4,12 @@ import copy
 import logging
 from collections.abc import Mapping
 
+import numpy as np
 from arviz.data import convert_to_dataset
 from arviz.utils import _var_names, get_coords
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import MaxNLocator, NullLocator, ScalarFormatter
-import numpy as np
 
 try:
     from scipy.ndimage import gaussian_filter
