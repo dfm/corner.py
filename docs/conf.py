@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import os
-
 import corner
 
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
-    "nbsphinx",
+    "myst_nb",
 ]
-templates_path = ["_templates"]
 source_suffix = ".rst"
 master_doc = "index"
 
@@ -21,23 +18,24 @@ copyright = u"2013-2021 Dan Foreman-Mackey & contributors"
 version = corner.__version__
 release = corner.__version__
 
-exclude_patterns = ["_build", "_static/notebooks/profile"]
-pygments_style = "sphinx"
-
-# Readthedocs.
-on_rtd = os.environ.get("READTHEDOCS", None) == "True"
-if not on_rtd:
-    import sphinx_rtd_theme
-
-    html_theme = "sphinx_rtd_theme"
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-
+exclude_patterns = ["_build"]
+html_theme = "sphinx_book_theme"
+html_title = "corner.py"
 html_static_path = ["_static"]
 html_show_sourcelink = False
+html_theme_options = {
+    "path_to_docs": "docs",
+    "repository_url": "https://github.com/dfm/corner.py",
+    "launch_buttons": {
+        "binderhub_url": "https://mybinder.org",
+        "colab_url": "https://colab.research.google.com/",
+        "notebook_interface": "jupyterlab",
+    },
+    "use_edit_page_button": True,
+    "use_issues_button": True,
+    "use_repository_button": True,
+    "use_download_button": True,
+}
+html_baseurl = "https://corner.readthedocs.io/en/latest/"
 
-nbsphinx_execute = "always"
-nbsphinx_prolog = """
-.. note:: This page was generated from an IPython notebook that can be downloaded
-          `here <https://github.com/dfm/corner.py/blob/main/docs/{{ env.doc2path(env.docname, base=None) }}>`_.
-
-"""
+jupyter_execute_notebooks = "force"

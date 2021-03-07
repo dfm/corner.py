@@ -76,7 +76,7 @@ If you make use of this code, please cite `the JOSS paper
 Authors & License
 -----------------
 
-Copyright 2013-2020 Dan Foreman-Mackey
+Copyright 2013-2021 Dan Foreman-Mackey
 
 Built by `Dan Foreman-Mackey <https://github.com/dfm>`_ and contributors (see
 `the contribution graph <https://github.com/dfm/corner.py/graphs/contributors>`_ for the most
