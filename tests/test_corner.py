@@ -2,6 +2,7 @@
 
 from collections import OrderedDict
 
+import arviz as az
 import numpy as np
 import pytest
 from matplotlib import pyplot as pl
@@ -23,7 +24,13 @@ else:
 
 
 def _run_corner(
-    pandas=False, N=10000, seed=1234, ndim=3, factor=None, **kwargs
+    pandas=False,
+    arviz=False,
+    N=10000,
+    seed=1234,
+    ndim=3,
+    factor=None,
+    **kwargs
 ):
     np.random.seed(seed)
     data1 = np.random.randn(ndim * 4 * N // 5).reshape([4 * N // 5, ndim])
@@ -39,6 +46,12 @@ def _run_corner(
         data = pd.DataFrame.from_dict(
             OrderedDict(zip(map("d{0}".format, range(ndim)), data.T))
         )
+    elif arviz:
+        data = az.from_dict(
+            posterior={"x": data[None]},
+            sample_stats={"diverging": data[None, :, 0] < 0.0},
+        )
+        kwargs["truths"] = {"x": np.random.randn(ndim)}
 
     fig = corner.corner(data, **kwargs)
     return fig
@@ -167,3 +180,8 @@ def test_reverse():
 )
 def test_hist_bin_factor():
     _run_corner(hist_bin_factor=4)
+
+
+@image_comparison(baseline_images=["arviz"], extensions=["png"])
+def test_arviz():
+    _run_corner(arviz=True)

@@ -82,6 +82,7 @@ def corner(
     filter_vars=None,
     coords=None,
     divergences=False,
+    divergences_kwargs=None,
     labeller=None,
     **hist2d_kwargs
 ):
@@ -121,6 +122,10 @@ def corner(
     divergences : bool
         If ``True`` divergences will be plotted in a different color, only if
         ``group`` is either ``'prior'`` or ``'posterior'``.
+
+    divergences_kwargs : dict
+        Any extra keyword arguments to send to the ``overplot_points`` when
+        plotting the divergences.
 
     labeller : arviz.Labeller
         Class providing the method ``make_label_vert`` to generate the labels
@@ -258,6 +263,8 @@ def corner(
     )
     if labels is None and not is_np:
         labels = _get_labels(plotters, labeller=labeller)
+    if var_names is None:
+        var_names = dataset.data_vars
 
     divergent_data = None
     diverging_mask = None
@@ -269,19 +276,6 @@ def corner(
         divergent_group = "sample_stats_prior"
     else:
         divergences = False
-
-    # Get diverging draws and combine chains
-    if divergences:
-        if hasattr(data, divergent_group) and hasattr(
-            getattr(data, divergent_group), "diverging"
-        ):
-            divergent_data = convert_to_dataset(data, group=divergent_group)
-            _, diverging_mask = xarray_to_ndarray(
-                divergent_data, var_names=("diverging",), combined=True
-            )
-            diverging_mask = np.squeeze(diverging_mask)
-        else:
-            divergences = False
 
     # Reformat truths and titles as lists if they are mappings
     if isinstance(truths, Mapping):
@@ -324,6 +318,21 @@ def corner(
         hist_kwargs=hist_kwargs,
         **hist2d_kwargs,
     )
+
+    # Get diverging draws and combine chains
+    if divergences:
+        if hasattr(data, divergent_group) and hasattr(
+            getattr(data, divergent_group), "diverging"
+        ):
+            divergent_data = convert_to_dataset(data, group=divergent_group)
+            _, diverging_mask = xarray_to_ndarray(
+                divergent_data, var_names=("diverging",), combined=True
+            )
+            diverging_mask = np.squeeze(diverging_mask)
+            if divergences_kwargs is None:
+                divergences_kwargs = {"color": "C1", "ms": 1}
+            overplot_points(fig, samples[diverging_mask], **divergences_kwargs)
+
     return fig
 
 
