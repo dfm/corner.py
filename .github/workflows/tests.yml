@@ -9,12 +9,16 @@ on:
 
 jobs:
   tests:
-    name: "py${{ matrix.python-version }} on ${{ matrix.os }}"
-    runs-on: ${{ matrix.os }}
+    name: "py${{ matrix.python-version }}; ${{ matrix.arviz-version }}"
+    runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
-        os: [ubuntu-latest, macos-latest]
+        python-version: [3.9]
+        arviz-version:
+          - "arviz~=0.9"
+          - "arviz~=0.10"
+          - "arviz~=0.11"
+          - "https://github.com/arviz-devs/arviz/archive/main.zip"
 
     steps:
       - uses: actions/checkout@v2
