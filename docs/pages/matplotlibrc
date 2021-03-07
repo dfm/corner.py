@@ -1,0 +1,7 @@
+savefig.dpi: 100
+figure.dpi: 100
+font.size: 14
+font.family: sans-serif
+font.sans-serif: Liberation Sans
+font.cursive: Liberation Sans
+mathtext.fontset: custom

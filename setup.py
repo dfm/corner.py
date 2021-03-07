@@ -32,7 +32,7 @@ EXTRA_REQUIRE = {
         "isort",
         "toml",
     ],
-    "docs": ["sphinx>=1.7.5", "pandoc"],
+    "docs": ["sphinx>=1.7.5", "pandoc", "nbsphinx"],
 }
 EXTRA_REQUIRE["dev"] = (
     EXTRA_REQUIRE["test"]
