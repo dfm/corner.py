@@ -31,7 +31,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip
+          python -m pip install $ARVIZ
           python -m pip install ".[test]"
+        env:
+          ARVIZ: ${{ matrix.arviz-version }}
 
       - name: Check the style
         run: |
