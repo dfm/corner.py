@@ -2,7 +2,8 @@
 
 __all__ = ["corner", "hist2d", "quantile", "overplot_lines", "overplot_points"]
 
-from .corner import corner, hist2d, overplot_lines, overplot_points, quantile
+from .core import hist2d, overplot_lines, overplot_points, quantile
+from .corner import corner
 from .corner_version import __version__  # noqa
 
 __author__ = "Dan Foreman-Mackey"
