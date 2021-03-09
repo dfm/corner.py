@@ -2,13 +2,17 @@
 
 from collections import OrderedDict
 
-import arviz as az
 import numpy as np
 import pytest
 from matplotlib import pyplot as pl
 from matplotlib.testing.decorators import image_comparison
 
 import corner
+
+try:
+    import arviz as az
+except ImportError:
+    az = None
 
 try:
     import pandas as pd
@@ -182,6 +186,7 @@ def test_hist_bin_factor():
     _run_corner(hist_bin_factor=4)
 
 
+@pytest.mark.skipif(az is None, reason="requires arviz")
 @image_comparison(baseline_images=["arviz"], extensions=["png"])
 def test_arviz():
     _run_corner(arviz=True)

@@ -23,8 +23,9 @@ CLASSIFIERS = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-INSTALL_REQUIRES = ["arviz>=0.9"]
+INSTALL_REQUIRES = ["matplotlib>=2.1"]
 EXTRA_REQUIRE = {
+    "arviz": ["arviz>=0.9"],
     "test": [
         "pytest>=3.6",
         "pytest-cov>=2.6.1",
@@ -32,8 +33,13 @@ EXTRA_REQUIRE = {
         "isort",
         "toml",
     ],
-    "docs": ["sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme"],
 }
+EXTRA_REQUIRE["docs"] = EXTRA_REQUIRE["arviz"] + [
+    "sphinx>=1.7.5",
+    "pandoc",
+    "myst-nb",
+    "sphinx-book-theme",
+]
 EXTRA_REQUIRE["dev"] = (
     EXTRA_REQUIRE["test"]
     + EXTRA_REQUIRE["docs"]
