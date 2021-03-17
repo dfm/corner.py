@@ -131,3 +131,9 @@ def test_lowNfilled():
 )
 def test_lowNnofill():
     _run_hist2d("lowNnofill", N=20, no_fill_contours=True)
+
+
+def test_infinite_loop():
+    x, y = np.random.rand(2, 1000)
+    with pytest.raises(ValueError):
+        corner.hist2d(x, y, 20, range=[(0, 1), (2, 3)])
