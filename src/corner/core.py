@@ -568,6 +568,11 @@ def hist2d(
             "have no dynamic range. You could try using the "
             "'range' argument."
         )
+    if H.sum() == 0:
+        raise ValueError(
+            "It looks like the provided 'range' is not valid "
+            "or the sample is empty."
+        )
 
     if smooth is not None:
         if gaussian_filter is None:
