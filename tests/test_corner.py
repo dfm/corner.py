@@ -179,6 +179,65 @@ def test_reverse():
     _run_corner(ndim=2, range=[(4, -4), (-5, 5)])
 
 
+
+@image_comparison(
+    baseline_images=["extended_overplotting"], remove_text=True, extensions=["png"]
+)
+def test_extended_overplotting():
+    # Test overplotting a more complex plot
+    labels=[r"$\theta_1$",r"$\theta_2$",r"$\theta_3$",r"$\theta_4$"]
+
+    figure = _run_corner(ndim=4, reverse=False,labels=labels)
+
+    #Set same results:
+    ndim, nsamples = 4, 10000
+    np.random.seed(1234)
+
+    data1 = np.random.randn(ndim * 4 * nsamples // 5).reshape([4 * nsamples // 5, ndim])
+    mean = 4*np.random.rand(ndim)
+    data2 = (mean[None, :] + np.random.randn(ndim * nsamples // 5).reshape([nsamples // 5, ndim]))
+    samples = np.vstack([data1, data2])
+
+    value1 = mean
+    # This is the empirical mean of the sample:
+    value2 = np.mean(data1, axis=0)
+
+
+    corner.overplot_lines(figure, value1, color="C1",reverse=False)
+    corner.overplot_points(figure, value1[None], marker="s", color="C1",reverse=False)
+    corner.overplot_lines(figure, value2, color="C2",reverse=False)
+    corner.overplot_points(figure, value2[None], marker="s", color="C2",reverse=False);
+
+
+@image_comparison(
+    baseline_images=["reverse_overplotting"], remove_text=True, extensions=["png"]
+)
+def test_reverse_overplotting():
+    #Test overplotting with a reversed plot
+    labels=[r"$\theta_1$",r"$\theta_2$",r"$\theta_3$",r"$\theta_4$"]
+
+    figure = _run_corner(ndim=4, reverse=True,labels=labels)
+
+    #Set same results:
+    ndim, nsamples = 4, 10000
+    np.random.seed(1234)
+
+    data1 = np.random.randn(ndim * 4 * nsamples // 5).reshape([4 * nsamples // 5, ndim])
+    mean = 4*np.random.rand(ndim)
+    data2 = (mean[None, :] + np.random.randn(ndim * nsamples // 5).reshape([nsamples // 5, ndim]))
+    samples = np.vstack([data1, data2])
+
+    value1 = mean
+    # This is the empirical mean of the sample:
+    value2 = np.mean(data1, axis=0)
+
+
+    corner.overplot_lines(figure, value1, color="C1",reverse=True)
+    corner.overplot_points(figure, value1[None], marker="s", color="C1",reverse=True)
+    corner.overplot_lines(figure, value2, color="C2",reverse=True)
+    corner.overplot_points(figure, value2[None], marker="s", color="C2",reverse=True);
+
+
 @image_comparison(
     baseline_images=["hist_bin_factor"], remove_text=True, extensions=["png"]
 )
