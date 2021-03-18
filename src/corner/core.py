@@ -761,7 +761,7 @@ def overplot_points(fig, xs, reverse=False, **kwargs):
     if reverse:
         for k1 in range(K):
             for k2 in range(k1 + 1):
-                 axes[K - k1 - 1, K - k2 - 1].plot(xs[k2], xs[k1], **kwargs)
+                axes[K - k1 - 1, K - k2 - 1].plot(xs[k2], xs[k1], **kwargs)
 
     else:
         for k1 in range(K):
