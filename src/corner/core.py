@@ -712,12 +712,12 @@ def overplot_lines(fig, xs, reverse=False, **kwargs):
     if reverse:
         for k1 in range(K):
             if xs[k1] is not None:
-                axes[K-k1-1, K-k1-1].axvline(xs[k1], **kwargs)
+                axes[K - k1 - 1, K - k1 - 1].axvline(xs[k1], **kwargs)
             for k2 in range(k1 + 1, K):
                 if xs[k1] is not None:
-                    axes[K-k2-1, K-k1-1].axvline(xs[k1], **kwargs)
+                    axes[K - k2 - 1, K - k1 - 1].axvline(xs[k1], **kwargs)
                 if xs[k2] is not None:
-                    axes[K-k2-1, K-k1-1].axhline(xs[k2], **kwargs)
+                    axes[K - k2 - 1, K - k1 - 1].axhline(xs[k2], **kwargs)
 
     else:
         for k1 in range(K):
@@ -764,9 +764,9 @@ def overplot_points(fig, xs, reverse=False, **kwargs):
                  axes[K - k1 - 1, K - k2 - 1].plot(xs[k2], xs[k1], **kwargs)
 
     else:
-         for k1 in range(K):
-             for k2 in range(k1 + 1, K):
-                 axes[k2, k1].plot(xs[k1], xs[k2], **kwargs)
+        for k1 in range(K):
+            for k2 in range(k1 + 1, K):
+                axes[k2, k1].plot(xs[k1], xs[k2], **kwargs)
 
 
 def _parse_input(xs):
