@@ -374,10 +374,11 @@ def corner_impl(
                 )
 
     if truths is not None:
-        overplot_lines(fig, truths, color=truth_color)
+        overplot_lines(fig, truths, reverse=reverse, color=truth_color)
         overplot_points(
             fig,
             [[np.nan if t is None else t for t in truths]],
+            reverse=reverse,
             marker="s",
             color=truth_color,
         )

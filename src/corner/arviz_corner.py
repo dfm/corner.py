@@ -175,6 +175,6 @@ def arviz_corner(
             diverging_mask = np.squeeze(diverging_mask)
             if divergences_kwargs is None:
                 divergences_kwargs = {"color": "C1", "ms": 1}
-            overplot_points(fig, samples[diverging_mask], **divergences_kwargs)
+            overplot_points(fig, samples[diverging_mask],reverse=reverse, **divergences_kwargs)
 
     return fig
