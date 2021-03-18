@@ -165,13 +165,6 @@ def test_reverse_truths():
 
 
 @image_comparison(
-    baseline_images=["truths"], remove_text=True, extensions=["png"]
-)
-def test_truths():
-    _run_corner(truths=[0.0, None, 0.15])
-
-
-@image_comparison(
     baseline_images=["no_fill_contours"], remove_text=True, extensions=["png"]
 )
 def test_no_fill_contours():
