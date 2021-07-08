@@ -15,7 +15,7 @@ import matplotlib
 import numpy as np
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
-from matplotlib.ticker import MaxNLocator, NullLocator, ScalarFormatter
+from matplotlib.ticker import MaxNLocator, NullLocator, LogLocator, ScalarFormatter, NullFormatter
 
 try:
     from scipy.ndimage import gaussian_filter
@@ -27,6 +27,7 @@ def corner_impl(
     xs,
     bins=20,
     range=None,
+    axes_scale='linear',
     weights=None,
     color=None,
     hist_bin_factor=1,
@@ -104,6 +105,14 @@ def corner_impl(
     whspace = 0.05  # w/hspace size
     plotdim = factor * K + factor * (K - 1.0) * whspace
     dim = lbdim + plotdim + trdim
+
+    # Make axes_scale into a list if necessary, otherwise check length
+    if isinstance(axes_scale, str):
+        axes_scale = [axes_scale] * K
+    else:
+        assert len(axes_scale) == K, (
+            "'axes_scale' should contain as many elements as data dimensions"
+        )
 
     # Create a new figure if one wasn't provided.
     new_fig = True
@@ -197,23 +206,26 @@ def corner_impl(
                 ax = axes[i, i]
 
         # Plot the histograms.
-        if smooth1d is None:
-            bins_1d = int(max(1, np.round(hist_bin_factor[i] * bins[i])))
-            n, _, _ = ax.hist(
-                x,
-                bins=bins_1d,
-                weights=weights,
-                range=np.sort(range[i]),
-                **hist_kwargs,
+        n_bins_1d = int(max(1, np.round(hist_bin_factor[i] * bins[i])))
+        if axes_scale[i]=='linear':
+            bins_1d = np.linspace(min(range[i]), max(range[i]), n_bins_1d + 1)
+        elif axes_scale[i]=='log':
+            bins_1d = np.logspace(np.log10(min(range[i])),
+                                  np.log10(max(range[i])),
+                                  n_bins_1d + 1)
+        else:
+            raise ValueError(
+                "Scale " + axes_scale[i] + "for dimension " + str(i) +\
+                "not supported. Use 'linear' or 'log'"
             )
+        if smooth1d is None:
+            n, _, _ = ax.hist(x, bins=bins_1d, weights=weights, **hist_kwargs)
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
-            n, b = np.histogram(
-                x, bins=bins[i], weights=weights, range=np.sort(range[i])
-            )
+            n, _ = np.histogram(x, bins=bins_1d, weights=weights)
             n = gaussian_filter(n, smooth1d)
-            x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
+            x0 = np.array(list(zip(bins_1d[:-1], bins_1d[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
@@ -264,6 +276,7 @@ def corner_impl(
 
         # Set up the axes.
         _set_xlim(new_fig, ax, range[i])
+        ax.set_xscale(axes_scale[i])
         if scale_hist:
             maxn = np.max(n)
             _set_ylim(new_fig, ax, [-0.1 * maxn, 1.1 * maxn])
@@ -276,19 +289,25 @@ def corner_impl(
             ax.xaxis.set_major_locator(NullLocator())
             ax.yaxis.set_major_locator(NullLocator())
         else:
-            ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
+            if axes_scale[i]=='linear':
+                ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
+            elif axes_scale[i]=='log':
+                ax.xaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
             ax.yaxis.set_major_locator(NullLocator())
 
         if i < K - 1:
             if top_ticks:
                 ax.xaxis.set_ticks_position("top")
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
+                [l.set_rotation(45) for l in ax.get_xticklabels(minor=True)]
             else:
                 ax.set_xticklabels([])
+                ax.set_xticklabels([], minor=True)
         else:
             if reverse:
                 ax.xaxis.tick_top()
-            [lbl.set_rotation(45) for lbl in ax.get_xticklabels()]
+            [l.set_rotation(45) for l in ax.get_xticklabels()]
+            [l.set_rotation(45) for l in ax.get_xticklabels(minor=True)]
             if labels is not None:
                 if reverse:
                     if "labelpad" in label_kwargs.keys():
@@ -337,6 +356,7 @@ def corner_impl(
                 x,
                 ax=ax,
                 range=[range[j], range[i]],
+                axes_scale=[axes_scale[j], axes_scale[i]],
                 weights=weights,
                 color=color,
                 smooth=smooth,
@@ -349,19 +369,26 @@ def corner_impl(
                 ax.xaxis.set_major_locator(NullLocator())
                 ax.yaxis.set_major_locator(NullLocator())
             else:
-                ax.xaxis.set_major_locator(
-                    MaxNLocator(max_n_ticks, prune="lower")
-                )
-                ax.yaxis.set_major_locator(
-                    MaxNLocator(max_n_ticks, prune="lower")
-                )
+                if axes_scale[j]=='linear':
+                    ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks,
+                                                           prune="lower"))
+                elif axes_scale[j]=='log':
+                    ax.xaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
+
+                if axes_scale[i]=='linear':
+                    ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks,
+                                                           prune="lower"))
+                elif axes_scale[i]=='log':
+                    ax.yaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
 
             if i < K - 1:
                 ax.set_xticklabels([])
+                ax.set_xticklabels([], minor=True)
             else:
                 if reverse:
                     ax.xaxis.tick_top()
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
+                [l.set_rotation(45) for l in ax.get_xticklabels(minor=True)]
                 if labels is not None:
                     ax.set_xlabel(labels[j], **label_kwargs)
                     if reverse:
@@ -376,10 +403,12 @@ def corner_impl(
 
             if j > 0:
                 ax.set_yticklabels([])
+                ax.set_yticklabels([], minor=True)
             else:
                 if reverse:
                     ax.yaxis.tick_right()
                 [l.set_rotation(45) for l in ax.get_yticklabels()]
+                [l.set_rotation(45) for l in ax.get_yticklabels(minor=True)]
                 if labels is not None:
                     if reverse:
                         ax.set_ylabel(labels[i], rotation=-90, **label_kwargs)
@@ -464,6 +493,7 @@ def hist2d(
     y,
     bins=20,
     range=None,
+    axes_scale=['linear', 'linear'],
     weights=None,
     levels=None,
     smooth=None,
@@ -493,6 +523,9 @@ def hist2d(
 
     y : array_like[nsamples,]
        The samples.
+
+    axes_scale : iterable (2,)
+        Scale (``"linear"``, ``"log"``) to use for each dimension.
 
     quiet : bool
         If true, suppress warnings for small datasets.
@@ -578,12 +611,38 @@ def hist2d(
         contour_cmap[i][-1] *= float(i) / (len(levels) + 1)
 
     # We'll make the 2D histogram to directly estimate the density.
+    bins_2d = []
+    if axes_scale[0]=='linear':
+        bins_2d.append(
+            np.linspace(min(range[0]), max(range[0]), bins[0] + 1)
+        )        
+    elif axes_scale[0]=='log':
+        bins_2d.append(
+            np.logspace(
+                np.log10(min(range[0])),
+                np.log10(max(range[0])),
+                bins[0] + 1,
+            )
+        )
+
+    if axes_scale[1]=='linear':
+        bins_2d.append(
+            np.linspace(min(range[1]), max(range[1]), bins[1] + 1)
+        )
+    elif axes_scale[1]=='log':
+        bins_2d.append(
+            np.logspace(
+                np.log10(min(range[1])),
+                np.log10(max(range[1])),
+                bins[1] + 1,
+            )
+        )
+    
     try:
         H, X, Y = np.histogram2d(
             x.flatten(),
             y.flatten(),
-            bins=bins,
-            range=list(map(np.sort, range)),
+            bins=bins_2d,
             weights=weights,
         )
     except ValueError:
@@ -705,6 +764,8 @@ def hist2d(
 
     _set_xlim(new_fig, ax, range[0])
     _set_ylim(new_fig, ax, range[1])
+    ax.set_xscale(axes_scale[0])
+    ax.set_yscale(axes_scale[1])
 
 
 def overplot_lines(fig, xs, reverse=False, **kwargs):
