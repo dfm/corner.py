@@ -186,6 +186,7 @@ def corner_impl(
                 range=np.sort(range[i]),
                 **hist_kwargs,
             )
+            ax.set_xlim(np.sort(range[i]))
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
@@ -196,6 +197,7 @@ def corner_impl(
             x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
+            ax.set_xlim(np.sort(range[i]))
 
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
