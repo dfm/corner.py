@@ -40,7 +40,7 @@ jobs:
           path: ./result_images
 
   build:
-    name: Build source distribution
+    name: Build dist
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -65,6 +65,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
+          name: dist
           path: dist/*
 
   upload_pypi:
@@ -74,7 +75,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: artifact
+          name: dist
           path: dist
 
       - uses: pypa/gh-action-pypi-publish@v1.4.2
