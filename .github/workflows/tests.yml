@@ -13,20 +13,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.9"]
-        arviz-version:
-          - ""
-          - "arviz~=0.9"
-          - "arviz~=0.10"
-          - "arviz~=0.11"
-          - "https://github.com/arviz-devs/arviz/archive/main.zip"
-        include:
-          - python-version: "3.6"
-            arviz-version: "arviz"
-          - python-version: "3.7"
-            arviz-version: "arviz"
-          - python-version: "3.8"
-            arviz-version: "arviz"
+        python-version: ["3.7", "3.8", "3.9"]
 
     steps:
       - uses: actions/checkout@v2
@@ -39,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip
-          python -m pip install $ARVIZ ".[test]"
+          python -m pip install ".[test,arviz]"
         env:
           ARVIZ: ${{ matrix.arviz-version }}
 
@@ -49,6 +36,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
+          name: images-${{ matrix.python-version }}
           path: ./result_images
 
   build:
@@ -70,17 +58,10 @@ jobs:
           python -m pip install -U build
           python -m build .
 
-      - name: Test the sdist
+      - name: Check the artifacts
         run: |
-          python -m venv venv-sdist
-          venv-sdist/bin/python -m pip install dist/corner*.tar.gz
-          venv-sdist/bin/python -c "import corner;print(corner.__version__)"
-
-      - name: Test the wheel
-        run: |
-          python -m venv venv-wheel
-          venv-wheel/bin/python -m pip install dist/corner*.whl
-          venv-wheel/bin/python -c "import corner;print(corner.__version__)"
+          python -m pip install -U twine
+          python -m twine check dist/*
 
       - uses: actions/upload-artifact@v2
         with:
@@ -96,7 +77,7 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@master
+      - uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
           user: __token__
           password: ${{ secrets.pypi_password }}
