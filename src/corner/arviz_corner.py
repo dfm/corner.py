@@ -23,7 +23,6 @@ try:
             for var_name, selection, _ in plotters
         ]
 
-
 except ImportError:
     from arviz.labels import BaseLabeller
     from arviz.sel_utils import xarray_to_ndarray, xarray_var_iter
