@@ -39,3 +39,6 @@ html_theme_options = {
 html_baseurl = "https://corner.readthedocs.io/en/latest/"
 
 jupyter_execute_notebooks = "force"
+
+# download notebooks as .ipynb and not as .ipynb.txt
+html_sourcelink_suffix = ""
