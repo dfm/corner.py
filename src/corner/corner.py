@@ -189,7 +189,7 @@ def corner(
     top_ticks : bool
         If true, label the top ticks of each axis
 
-    fig : matplotlib.Figure
+    fig : `~matplotlib.figure.Figure`
         Overplot onto the provided figure object, which must either have no
         axes yet, or ``ndim * ndim`` axes already present.  If not set, the
         plot will be drawn on a newly created figure.
@@ -200,6 +200,11 @@ def corner(
     **hist2d_kwargs
         Any remaining keyword arguments are sent to :func:`corner.hist2d` to
         generate the 2-D histogram plots.
+
+    Returns
+    -------
+    fig : `~matplotlib.figure.Figure`
+        The ``matplotlib`` figure instance for the corner plot.
 
     """
     if arviz_corner is None:
