@@ -11,8 +11,8 @@ extensions = [
 master_doc = "index"
 
 # General information about the project.
-project = u"corner.py"
-copyright = u"2013-2021 Dan Foreman-Mackey & contributors"
+project = "corner.py"
+copyright = "2013-2021 Dan Foreman-Mackey & contributors"
 
 version = corner.__version__
 release = corner.__version__
