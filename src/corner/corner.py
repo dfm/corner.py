@@ -137,8 +137,8 @@ def corner(
         with the upper and lower errors supplied by the quantiles argument.
 
     title_quantiles : iterable
-        A list of 3 fractional quantiles to show as the the upper and lower 
-        errors. If `None` (default), inherit the values from quantiles, unless 
+        A list of 3 fractional quantiles to show as the the upper and lower
+        errors. If `None` (default), inherit the values from quantiles, unless
         quantiles is `None`, in which case it defaults to [0.16,0.5,0.84]
 
     title_fmt : string

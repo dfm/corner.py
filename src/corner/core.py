@@ -66,14 +66,14 @@ def corner_impl(
     # deal with title quantiles so they much quantiles unless desired otherwise
     if title_quantiles is None:
         if len(quantiles) > 0:
-            title_quantiles = quantiles 
-        else: 
+            title_quantiles = quantiles
+        else:
             # a default for when quantiles not supplied.
-            title_quantiles  = [0.16, 0.5, 0.84]     
+            title_quantiles = [0.16, 0.5, 0.84]
 
     assert len(title_quantiles) == 3, (
         "title_quantiles must contain three values -- "
-        "please pass a length-3 list or array using the title_quantiles kwarg"        
+        "please pass a length-3 list or array using the title_quantiles kwarg"
     )
 
     # Deal with 1D sample lists.
