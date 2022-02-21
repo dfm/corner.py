@@ -79,6 +79,11 @@ def test_labels():
 def test_quantiles():
     _run_corner(quantiles=[0.16, 0.5, 0.84])
 
+@image_comparison(
+    baseline_images=["quantiles"], remove_text=False extensions=["png"]
+)
+def test_quantiles():
+    _run_corner(quantiles=[0.16, 0.5, 0.84], title_quantiles=None)
 
 @image_comparison(
     baseline_images=["color"], remove_text=True, extensions=["png"]
