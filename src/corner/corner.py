@@ -29,6 +29,7 @@ def corner(
     label_kwargs=None,
     titles=None,
     show_titles=False,
+    title_quantiles=None,
     title_fmt=".2f",
     title_kwargs=None,
     truths=None,
@@ -134,6 +135,11 @@ def corner(
     show_titles : bool
         Displays a title above each 1-D histogram showing the 0.5 quantile
         with the upper and lower errors supplied by the quantiles argument.
+
+    title_quantiles : iterable
+        A list of 3 fractional quantiles to show as the the upper and lower
+        errors. If `None` (default), inherit the values from quantiles, unless
+        quantiles is `None`, in which case it defaults to [0.16,0.5,0.84]
 
     title_fmt : string
         The format string for the quantiles given in titles. If you explicitly
@@ -241,6 +247,7 @@ def corner(
             label_kwargs=label_kwargs,
             titles=titles,
             show_titles=show_titles,
+            title_quantiles=title_quantiles,
             title_fmt=title_fmt,
             title_kwargs=title_kwargs,
             truths=truths,
@@ -271,6 +278,7 @@ def corner(
         label_kwargs=label_kwargs,
         titles=titles,
         show_titles=show_titles,
+        title_quantiles=title_quantiles,
         title_fmt=title_fmt,
         title_kwargs=title_kwargs,
         truths=truths,

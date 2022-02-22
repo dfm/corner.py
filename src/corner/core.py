@@ -41,6 +41,7 @@ def corner_impl(
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
+    title_quantiles=None,
     verbose=False,
     fig=None,
     max_n_ticks=5,
@@ -61,6 +62,20 @@ def corner_impl(
     # If no separate titles are set, copy the axis labels
     if titles is None:
         titles = labels
+
+    # deal with title quantiles so they much quantiles unless desired otherwise
+    if title_quantiles is None:
+        if len(quantiles) > 0:
+            title_quantiles = quantiles
+        else:
+            # a default for when quantiles not supplied.
+            title_quantiles = [0.16, 0.5, 0.84]
+
+    if show_titles and len(title_quantiles) != 3:
+        raise ValueError(
+            "'title_quantiles' must contain exactly three values; "
+            "pass a length-3 list or array using the 'title_quantiles' argument"
+        )
 
     # Deal with 1D sample lists.
     xs = _parse_input(xs)
@@ -212,15 +227,15 @@ def corner_impl(
             if title_fmt is not None:
                 # Compute the quantiles for the title. This might redo
                 # unneeded computation but who cares.
-                q_16, q_50, q_84 = quantile(
-                    x, [0.16, 0.5, 0.84], weights=weights
+                q_lo, q_mid, q_hi = quantile(
+                    x, title_quantiles, weights=weights
                 )
-                q_m, q_p = q_50 - q_16, q_84 - q_50
+                q_m, q_p = q_mid - q_lo, q_hi - q_mid
 
                 # Format the quantile display.
                 fmt = "{{0:{0}}}".format(title_fmt).format
                 title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
-                title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+                title = title.format(fmt(q_mid), fmt(q_m), fmt(q_p))
 
                 # Add in the column name if it's given.
                 if titles is not None:

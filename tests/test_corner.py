@@ -81,6 +81,39 @@ def test_quantiles():
 
 
 @image_comparison(
+    baseline_images=["title_quantiles"], remove_text=False, extensions=["png"]
+)
+def test_title_quantiles():
+    _run_corner(
+        quantiles=[0.16, 0.5, 0.84],
+        title_quantiles=[0.05, 0.5, 0.95],
+        show_titles=True,
+    )
+
+
+@image_comparison(
+    baseline_images=["title_quantiles_default"],
+    remove_text=False,
+    extensions=["png"],
+)
+def test_title_quantiles_default():
+    _run_corner(quantiles=[0.16, 0.5, 0.84], show_titles=True)
+
+
+@image_comparison(
+    baseline_images=["title_quantiles_raises"],
+    remove_text=False,
+    extensions=["png"],
+)
+def test_title_quantiles_raises():
+    with pytest.raises(ValueError):
+        _run_corner(quantiles=[0.05, 0.16, 0.5, 0.84, 0.95], show_titles=True)
+
+    # This one shouldn't raise since show_titles isn't provided
+    _run_corner(quantiles=[0.05, 0.16, 0.5, 0.84, 0.95])
+
+
+@image_comparison(
     baseline_images=["color"], remove_text=True, extensions=["png"]
 )
 def test_color():
