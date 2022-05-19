@@ -557,7 +557,16 @@ def hist2d(
     # This is the color map for the density plot, over-plotted to indicate the
     # density of the points near the center.
     density_cmap = LinearSegmentedColormap.from_list(
-        "density_cmap", [color, tuple(list(base_color[:3])+[0.0, ])]
+        "density_cmap",
+        [
+            color,
+            tuple(
+                list(base_color[:3])
+                + [
+                    0.0,
+                ]
+            ),
+        ],
     )
 
     # This color map is used to hide the points at the high density areas.
