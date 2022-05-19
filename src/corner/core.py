@@ -551,15 +551,18 @@ def hist2d(
     if levels is None:
         levels = 1.0 - np.exp(-0.5 * np.arange(0.5, 2.1, 0.5) ** 2)
 
+    # This is the base color of the axis (background color)
+    base_color = ax.get_facecolor()
+
     # This is the color map for the density plot, over-plotted to indicate the
     # density of the points near the center.
     density_cmap = LinearSegmentedColormap.from_list(
-        "density_cmap", [color, (1, 1, 1, 0)]
+        "density_cmap", [color, tuple(list(base_color[:3])+[0.0, ])]
     )
 
     # This color map is used to hide the points at the high density areas.
-    white_cmap = LinearSegmentedColormap.from_list(
-        "white_cmap", [(1, 1, 1), (1, 1, 1)], N=2
+    base_cmap = LinearSegmentedColormap.from_list(
+        "base_cmap", [base_color, base_color], N=2
     )
 
     # This "color map" is the list of colors for the contour levels if the
@@ -662,7 +665,7 @@ def hist2d(
             Y2,
             H2.T,
             [V.min(), H.max()],
-            cmap=white_cmap,
+            cmap=base_cmap,
             antialiased=False,
         )
 
