@@ -11,8 +11,8 @@ __all__ = [
 import copy
 import logging
 
-import numpy as np
 import matplotlib
+import numpy as np
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import MaxNLocator, NullLocator, ScalarFormatter
