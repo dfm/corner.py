@@ -11,8 +11,8 @@ __all__ = [
 import copy
 import logging
 
-import numpy as np
 import matplotlib
+import numpy as np
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import MaxNLocator, NullLocator, ScalarFormatter
@@ -174,8 +174,9 @@ def corner_impl(
 
     # Set up the default plotting arguments.
     if color is None:
-        color = colorConverter.to_rgba(matplotlib.rcParams["axes.edgecolor"],
-                                       alpha=1.0)
+        color = colorConverter.to_rgba(
+            matplotlib.rcParams["axes.edgecolor"], alpha=1.0
+        )
 
     # Set up the default histogram keywords.
     if hist_kwargs is None:
