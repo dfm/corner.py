@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import matplotlib
 import numpy as np
 import pytest
-import matplotlib
 from matplotlib import pyplot as pl
 from matplotlib.testing.decorators import image_comparison
 
