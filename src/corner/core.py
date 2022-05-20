@@ -12,6 +12,7 @@ import copy
 import logging
 
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import MaxNLocator, NullLocator, ScalarFormatter
@@ -27,7 +28,7 @@ def corner_impl(
     bins=20,
     range=None,
     weights=None,
-    color="k",
+    color=None,
     hist_bin_factor=1,
     smooth=None,
     smooth1d=None,
@@ -170,6 +171,11 @@ def corner_impl(
             raise ValueError(
                 "Dimension mismatch between hist_bin_factor and " "range"
             )
+
+    # Set up the default plotting arguments.
+    if color is None:
+        color = colorConverter.to_rgba(matplotlib.rcParams["axes.edgecolor"],
+                                       alpha=1.0)
 
     # Set up the default histogram keywords.
     if hist_kwargs is None:
@@ -545,7 +551,9 @@ def hist2d(
 
     # Set up the default plotting arguments.
     if color is None:
-        color = "k"
+        color = colorConverter.to_rgba(
+            matplotlib.rcParams["axes.edgecolor"], alpha=1.0
+        )
 
     # Choose the default "sigma" contour levels.
     if levels is None:
@@ -557,16 +565,7 @@ def hist2d(
     # This is the color map for the density plot, over-plotted to indicate the
     # density of the points near the center.
     density_cmap = LinearSegmentedColormap.from_list(
-        "density_cmap",
-        [
-            color,
-            tuple(
-                list(base_color[:3])
-                + [
-                    0.0,
-                ]
-            ),
-        ],
+        "density_cmap", [color, colorConverter.to_rgba(base_color, alpha=0.0)]
     )
 
     # This color map is used to hide the points at the high density areas.
