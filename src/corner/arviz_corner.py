@@ -46,7 +46,7 @@ def arviz_corner(
     # Original corner parameters
     range=None,
     weights=None,
-    color="k",
+    color=None,
     hist_bin_factor=1,
     smooth=None,
     smooth1d=None,
