@@ -80,7 +80,9 @@ def test_backgroundDark2():
 
 
 @image_comparison(
-    baseline_images=["backgroundSolarized"], remove_text=True, extensions=["png"]
+    baseline_images=["backgroundSolarized"],
+    remove_text=True,
+    extensions=["png"],
 )
 def test_backgroundSolarized():
     pl.style.use("Solarize_Light2")
