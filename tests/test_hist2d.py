@@ -80,12 +80,32 @@ def test_backgroundDark2():
 
 
 @image_comparison(
+    baseline_images=["backgroundSolarized"], remove_text=True, extensions=["png"]
+)
+def test_backgroundSolarized():
+    pl.style.use("Solarize_Light2")
+    _run_hist2d("backgroundSolarized")
+    pl.style.use("default")
+
+
+@image_comparison(
+    baseline_images=["backgroundSeaborn"], remove_text=True, extensions=["png"]
+)
+def test_backgroundSeaborn():
+    pl.style.use("seaborn")
+    _run_hist2d("backgroundSeaborn")
+    pl.style.use("default")
+
+
+@image_comparison(
     baseline_images=["backgroundColor"], remove_text=True, extensions=["png"]
 )
 def test_backgroundColor():
     pl.style.use("default")
     matplotlib.rcParams["axes.facecolor"] = "yellow"
     matplotlib.rcParams["axes.edgecolor"] = "red"
+    matplotlib.rcParams["xtick.color"] = "green"
+    matplotlib.rcParams["ytick.color"] = "blue"
     _run_hist2d("backgroundColor")
     pl.style.use("default")
 
