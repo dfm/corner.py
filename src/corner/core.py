@@ -174,7 +174,7 @@ def corner_impl(
 
     # Set up the default plotting arguments.
     if color is None:
-        color = matplotlib.rcParams["axes.edgecolor"]
+        color = matplotlib.rcParams["ytick.color"]
 
     # Set up the default histogram keywords.
     if hist_kwargs is None:
@@ -550,7 +550,7 @@ def hist2d(
 
     # Set up the default plotting arguments.
     if color is None:
-        color = matplotlib.rcParams["axes.edgecolor"]
+        color = matplotlib.rcParams["ytick.color"]
 
     # Choose the default "sigma" contour levels.
     if levels is None:
