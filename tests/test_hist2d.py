@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import matplotlib
 import numpy as np
 import pytest
 from matplotlib import pyplot as pl
@@ -58,6 +59,57 @@ def test_basic():
 )
 def test_color():
     _run_hist2d("color", color="g")
+
+
+@image_comparison(
+    baseline_images=["backgroundDark"], remove_text=True, extensions=["png"]
+)
+def test_backgroundDark():
+    pl.style.use("dark_background")
+    _run_hist2d("backgroundDark")
+    pl.style.use("default")
+
+
+@image_comparison(
+    baseline_images=["backgroundDark2"], remove_text=True, extensions=["png"]
+)
+def test_backgroundDark2():
+    pl.style.use("dark_background")
+    _run_hist2d("backgroundDark2", color="r")
+    pl.style.use("default")
+
+
+@image_comparison(
+    baseline_images=["backgroundSolarized"],
+    remove_text=True,
+    extensions=["png"],
+)
+def test_backgroundSolarized():
+    pl.style.use("Solarize_Light2")
+    _run_hist2d("backgroundSolarized")
+    pl.style.use("default")
+
+
+@image_comparison(
+    baseline_images=["backgroundSeaborn"], remove_text=True, extensions=["png"]
+)
+def test_backgroundSeaborn():
+    pl.style.use("seaborn")
+    _run_hist2d("backgroundSeaborn")
+    pl.style.use("default")
+
+
+@image_comparison(
+    baseline_images=["backgroundColor"], remove_text=True, extensions=["png"]
+)
+def test_backgroundColor():
+    pl.style.use("default")
+    matplotlib.rcParams["axes.facecolor"] = "yellow"
+    matplotlib.rcParams["axes.edgecolor"] = "red"
+    matplotlib.rcParams["xtick.color"] = "green"
+    matplotlib.rcParams["ytick.color"] = "blue"
+    _run_hist2d("backgroundColor")
+    pl.style.use("default")
 
 
 @image_comparison(
