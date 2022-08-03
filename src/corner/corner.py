@@ -6,10 +6,10 @@ import logging
 
 import numpy as np
 
-from .core import corner_impl
+from corner.core import corner_impl
 
 try:
-    from .arviz_corner import arviz_corner
+    from corner.arviz_corner import arviz_corner
 except ImportError:
     arviz_corner = None
 

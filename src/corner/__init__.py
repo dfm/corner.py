@@ -2,29 +2,6 @@
 
 __all__ = ["corner", "hist2d", "quantile", "overplot_lines", "overplot_points"]
 
-from .core import hist2d, overplot_lines, overplot_points, quantile
-from .corner import corner
-from .corner_version import __version__  # noqa
-
-__author__ = "Dan Foreman-Mackey"
-__email__ = "foreman.mackey@gmail.com"
-__uri__ = "https://corner.readthedocs.io"
-__license__ = "BSD"
-__description__ = "Make some beautiful corner plots"
-__copyright__ = "Copyright 2013-2021 Daniel Foreman-Mackey"
-__contributors__ = "https://github.com/dfm/corner.py/graphs/contributors"
-__bibtex__ = __citation__ = """
-@article{corner,
-  doi = {10.21105/joss.00024},
-  url = {https://doi.org/10.21105/joss.00024},
-  year  = {2016},
-  month = {jun},
-  publisher = {The Open Journal},
-  volume = {1},
-  number = {2},
-  pages = {24},
-  author = {Daniel Foreman-Mackey},
-  title = {corner.py: Scatterplot matrices in Python},
-  journal = {The Journal of Open Source Software}
-}
-"""
+from corner.core import hist2d, overplot_lines, overplot_points, quantile
+from corner.corner import corner
+from corner.version import version as __version__
