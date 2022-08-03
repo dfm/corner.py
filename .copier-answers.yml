@@ -1,0 +1,28 @@
+_commit: v0.0.10
+_src_path: gh:dfm/copier-python
+author_email: foreman.mackey@gmail.com
+author_fullname: Dan Foreman-Mackey
+author_username: dfm
+code_of_conduct_email: foreman.mackey@gmail.com
+copyright_holder: Dan Foreman-Mackey
+copyright_license: BSD
+copyright_year: 2013-2022
+documentation_url: https://corner.readthedocs.io
+enable_mypy: false
+enable_pybind11: false
+enable_windows: false
+general_nox_sessions: '"lint"'
+project_description: Make some beautiful corner plots
+project_development_status: stable
+project_line_length: 79
+project_name: corner.py
+python_formal_min_version: 6
+python_max_version: 10
+python_min_version: 7
+python_nox_sessions: '"tests"'
+python_package_distribution_name: corner
+python_package_import_name: corner
+readthedocs_project_name: corner
+repository_name: corner.py
+repository_namespace: dfm
+
