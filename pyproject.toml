@@ -25,7 +25,7 @@ arviz = ["arviz>=0.9"]
 docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme"]
 
 [build-system]
-requires = ["setuptools>=61.0", "wheel", "setuptools_scm"]
+requires = ["setuptools>=62.0", "wheel", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
