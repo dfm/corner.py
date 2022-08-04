@@ -4,7 +4,7 @@ description = "Make some beautiful corner plots"
 authors = [{ name = "Dan Foreman-Mackey", email = "foreman.mackey@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.6"
-license = { file = "LICENSE" }
+license = { text = "BSD 2-Clause License" }
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
