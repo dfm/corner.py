@@ -15,7 +15,7 @@ python:
       path: .
       extra_requirements:
         - docs
-  system_packages: true
+  # system_packages: true
 
 sphinx:
   builder: dirhtml
