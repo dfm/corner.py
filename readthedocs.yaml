@@ -10,8 +10,7 @@ build:
 
 python:
   install:
-    - method: pip
-      path: "setuptools>=62.0"
+    - requirements: docs/requirements.txt
     - method: pip
       path: .
       extra_requirements:
