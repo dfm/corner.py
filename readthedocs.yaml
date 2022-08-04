@@ -11,6 +11,8 @@ build:
 python:
   install:
     - method: pip
+      path: "setuptools>=62.0"
+    - method: pip
       path: .
       extra_requirements:
         - docs
