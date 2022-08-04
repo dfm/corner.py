@@ -1,1 +1,2 @@
+pip>=21.3
 setuptools>=62.0
