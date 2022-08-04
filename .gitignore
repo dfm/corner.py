@@ -11,3 +11,4 @@ _skbuild
 .coverage*
 dist
 result_images
+build
