@@ -1,5 +1,0 @@
-diff a/.gitignore b/.gitignore	(rejected hunks)
-@@ -12 +12,3 @@ _skbuild
- dist
-+result_images
-+build
