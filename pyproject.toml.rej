@@ -12,4 +12,3 @@ diff a/pyproject.toml b/pyproject.toml	(rejected hunks)
 -    "*/corner/corner_version.py",
 -]
 +omit = ["docs/*", "tests/*", "*/corner/corner_version.py"]
- 
