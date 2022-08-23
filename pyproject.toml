@@ -47,7 +47,11 @@ known_first_party = ["corner"]
 parallel = true
 branch = true
 source = ["corner"]
-omit = ["docs/*", "tests/*", "*/corner/corner_version.py"]
+omit = [
+    "docs/*",
+    "tests/*",
+    "*/corner/version.py",
+]
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
