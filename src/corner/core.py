@@ -700,7 +700,9 @@ def hist2d(
     if plot_contours:
         if contour_kwargs is None:
             contour_kwargs = dict()
-        contour_kwargs["colors"] = contour_kwargs.get("colors", color)
+        contour_kwargs["cmap"] = contour_kwargs.get("cmap", None)
+        if contour_kwargs["cmap"] is None:
+            contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
     _set_xlim(new_fig, ax, range[0])
