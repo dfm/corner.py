@@ -21,7 +21,7 @@ dependencies = ["matplotlib>=2.1"]
 
 [project.optional-dependencies]
 test = [
-    "pytest",
+    "pytest", "arviz>=0.9"
 ]
 docs = [
     "sphinx>=3.3",
