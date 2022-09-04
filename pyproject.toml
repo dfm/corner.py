@@ -20,8 +20,15 @@ dependencies = ["matplotlib>=2.1"]
 "Bug Tracker" = "https://github.com/dfm/corner.py/issues"
 
 [project.optional-dependencies]
-test = ["pytest"]
-docs = ["sphinx>=3.3", "sphinx_book_theme", "myst-nb", "arviz>=0.9"]
+test = [
+    "pytest",
+]
+docs = [
+    "sphinx>=3.3",
+    "sphinx_book_theme",
+    "myst-nb",
+    "arviz>=0.9"
+]
 arviz = ["arviz>=0.9"]
 
 [build-system]
