@@ -21,8 +21,8 @@ dependencies = ["matplotlib>=2.1"]
 
 [project.optional-dependencies]
 test = ["pytest"]
+docs = ["sphinx>=3.3", "sphinx_book_theme", "myst-nb", "arviz>=0.9"]
 arviz = ["arviz>=0.9"]
-docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme"]
 
 [build-system]
 requires = ["setuptools>=62.0", "wheel", "setuptools_scm"]
@@ -47,11 +47,7 @@ known_first_party = ["corner"]
 parallel = true
 branch = true
 source = ["corner"]
-omit = [
-    "docs/*",
-    "tests/*",
-    "*/corner/version.py",
-]
+omit = ["docs/*", "tests/*", "*/corner/version.py"]
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
