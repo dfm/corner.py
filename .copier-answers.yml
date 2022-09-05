@@ -1,4 +1,4 @@
-_commit: v0.0.14-11-g238e35a
+_commit: v0.0.14-12-gc3c7d8e
 _src_path: gh:dfm/copier-python
 author_email: foreman.mackey@gmail.com
 author_fullname: Dan Foreman-Mackey
@@ -29,6 +29,7 @@ python_formal_min_version: 6
 python_max_version: 10
 python_min_version: 7
 python_nox_sessions: '"tests"'
+python_optional_dependencies: arviz = ["arviz>=0.9"]
 python_package_distribution_name: corner
 python_package_import_name: corner
 python_test_dependencies: '"arviz>=0.9"'
