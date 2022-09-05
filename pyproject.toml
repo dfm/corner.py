@@ -20,15 +20,8 @@ dependencies = ["matplotlib>=2.1"]
 "Bug Tracker" = "https://github.com/dfm/corner.py/issues"
 
 [project.optional-dependencies]
-test = [
-    "pytest", "arviz>=0.9"
-]
-docs = [
-    "sphinx>=3.3",
-    "sphinx_book_theme",
-    "myst-nb",
-    "arviz>=0.9"
-]
+test = ["pytest", "arviz>=0.9"]
+docs = ["sphinx>=3.3", "sphinx_book_theme", "myst-nb", "arviz>=0.9"]
 arviz = ["arviz>=0.9"]
 
 [build-system]
@@ -54,7 +47,12 @@ known_first_party = ["corner"]
 parallel = true
 branch = true
 source = ["corner"]
-omit = ["docs/*", "tests/*", "*/corner/version.py"]
+omit = [
+    "docs/*",
+    "tests/*",
+    "*/corner/version.py",
+]
+arviz = ["arviz>=0.9"]
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
