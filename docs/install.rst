@@ -44,12 +44,15 @@ directory and run:
 Tests
 -----
 
-If you installed from source, you can run the unit tests. From the root of the
+If you installed from source, you can run the unit tests, but know that
+plotting-based tests can be pretty brittle. From the root of the
 source directory, run:
 
 .. code-block:: bash
 
-    python -m pip install pytest -v tests
+    python -m pip install nox
+    python -m nox -s tests-PYTHON_VERSION
 
-This might take a few minutes but you shouldn't get any errors if all went
-as planned.
+Where ``PYTHON_VERSION`` is the version of Python you're using (e.g.
+``3.10``) This might take a few minutes but you shouldn't get any errors
+if all went as planned.
