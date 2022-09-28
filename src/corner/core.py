@@ -15,7 +15,13 @@ import matplotlib
 import numpy as np
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
-from matplotlib.ticker import MaxNLocator, NullLocator, LogLocator, ScalarFormatter, NullFormatter
+from matplotlib.ticker import (
+    LogLocator,
+    MaxNLocator,
+    NullFormatter,
+    NullLocator,
+    ScalarFormatter,
+)
 
 try:
     from scipy.ndimage import gaussian_filter
@@ -27,7 +33,7 @@ def corner_impl(
     xs,
     bins=20,
     range=None,
-    axes_scale='linear',
+    axes_scale="linear",
     weights=None,
     color=None,
     hist_bin_factor=1,
@@ -110,9 +116,9 @@ def corner_impl(
     if isinstance(axes_scale, str):
         axes_scale = [axes_scale] * K
     else:
-        assert len(axes_scale) == K, (
-            "'axes_scale' should contain as many elements as data dimensions"
-        )
+        assert (
+            len(axes_scale) == K
+        ), "'axes_scale' should contain as many elements as data dimensions"
 
     # Create a new figure if one wasn't provided.
     new_fig = True
@@ -207,16 +213,19 @@ def corner_impl(
 
         # Plot the histograms.
         n_bins_1d = int(max(1, np.round(hist_bin_factor[i] * bins[i])))
-        if axes_scale[i]=='linear':
+        if axes_scale[i] == "linear":
             bins_1d = np.linspace(min(range[i]), max(range[i]), n_bins_1d + 1)
-        elif axes_scale[i]=='log':
-            bins_1d = np.logspace(np.log10(min(range[i])),
-                                  np.log10(max(range[i])),
-                                  n_bins_1d + 1)
+        elif axes_scale[i] == "log":
+            bins_1d = np.logspace(
+                np.log10(min(range[i])), np.log10(max(range[i])), n_bins_1d + 1
+            )
         else:
             raise ValueError(
-                "Scale " + axes_scale[i] + "for dimension " + str(i) +\
-                "not supported. Use 'linear' or 'log'"
+                "Scale "
+                + axes_scale[i]
+                + "for dimension "
+                + str(i)
+                + "not supported. Use 'linear' or 'log'"
             )
         if smooth1d is None:
             n, _, _ = ax.hist(x, bins=bins_1d, weights=weights, **hist_kwargs)
@@ -289,9 +298,11 @@ def corner_impl(
             ax.xaxis.set_major_locator(NullLocator())
             ax.yaxis.set_major_locator(NullLocator())
         else:
-            if axes_scale[i]=='linear':
-                ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks, prune="lower"))
-            elif axes_scale[i]=='log':
+            if axes_scale[i] == "linear":
+                ax.xaxis.set_major_locator(
+                    MaxNLocator(max_n_ticks, prune="lower")
+                )
+            elif axes_scale[i] == "log":
                 ax.xaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
             ax.yaxis.set_major_locator(NullLocator())
 
@@ -369,17 +380,23 @@ def corner_impl(
                 ax.xaxis.set_major_locator(NullLocator())
                 ax.yaxis.set_major_locator(NullLocator())
             else:
-                if axes_scale[j]=='linear':
-                    ax.xaxis.set_major_locator(MaxNLocator(max_n_ticks,
-                                                           prune="lower"))
-                elif axes_scale[j]=='log':
-                    ax.xaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
+                if axes_scale[j] == "linear":
+                    ax.xaxis.set_major_locator(
+                        MaxNLocator(max_n_ticks, prune="lower")
+                    )
+                elif axes_scale[j] == "log":
+                    ax.xaxis.set_major_locator(
+                        LogLocator(numticks=max_n_ticks)
+                    )
 
-                if axes_scale[i]=='linear':
-                    ax.yaxis.set_major_locator(MaxNLocator(max_n_ticks,
-                                                           prune="lower"))
-                elif axes_scale[i]=='log':
-                    ax.yaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
+                if axes_scale[i] == "linear":
+                    ax.yaxis.set_major_locator(
+                        MaxNLocator(max_n_ticks, prune="lower")
+                    )
+                elif axes_scale[i] == "log":
+                    ax.yaxis.set_major_locator(
+                        LogLocator(numticks=max_n_ticks)
+                    )
 
             if i < K - 1:
                 ax.set_xticklabels([])
@@ -493,7 +510,7 @@ def hist2d(
     y,
     bins=20,
     range=None,
-    axes_scale=['linear', 'linear'],
+    axes_scale=["linear", "linear"],
     weights=None,
     levels=None,
     smooth=None,
@@ -612,11 +629,9 @@ def hist2d(
 
     # We'll make the 2D histogram to directly estimate the density.
     bins_2d = []
-    if axes_scale[0]=='linear':
-        bins_2d.append(
-            np.linspace(min(range[0]), max(range[0]), bins[0] + 1)
-        )        
-    elif axes_scale[0]=='log':
+    if axes_scale[0] == "linear":
+        bins_2d.append(np.linspace(min(range[0]), max(range[0]), bins[0] + 1))
+    elif axes_scale[0] == "log":
         bins_2d.append(
             np.logspace(
                 np.log10(min(range[0])),
@@ -625,11 +640,9 @@ def hist2d(
             )
         )
 
-    if axes_scale[1]=='linear':
-        bins_2d.append(
-            np.linspace(min(range[1]), max(range[1]), bins[1] + 1)
-        )
-    elif axes_scale[1]=='log':
+    if axes_scale[1] == "linear":
+        bins_2d.append(np.linspace(min(range[1]), max(range[1]), bins[1] + 1))
+    elif axes_scale[1] == "log":
         bins_2d.append(
             np.logspace(
                 np.log10(min(range[1])),
@@ -637,7 +650,7 @@ def hist2d(
                 bins[1] + 1,
             )
         )
-    
+
     try:
         H, X, Y = np.histogram2d(
             x.flatten(),

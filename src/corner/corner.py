@@ -20,7 +20,7 @@ def corner(
     *,
     # Original corner parameters
     range=None,
-    axes_scale='linear',
+    axes_scale="linear",
     weights=None,
     color=None,
     hist_bin_factor=1,
