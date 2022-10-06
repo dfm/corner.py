@@ -627,6 +627,13 @@ def hist2d(
     for i, l in enumerate(levels):
         contour_cmap[i][-1] *= float(i) / (len(levels) + 1)
 
+    # Parse the bin specifications.
+    try:
+        bins = [int(bins) for _ in range]
+    except TypeError:
+        if len(bins) != len(range):
+            raise ValueError("Dimension mismatch between bins and range")
+
     # We'll make the 2D histogram to directly estimate the density.
     bins_2d = []
     if axes_scale[0] == "linear":
