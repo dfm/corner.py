@@ -75,14 +75,14 @@ def test_basic():
     baseline_images=["basic_log"], remove_text=True, extensions=["png"]
 )
 def test_basic_log():
-    fig = _run_corner(exp_data=True, axes_scale='log')
+    fig = _run_corner(exp_data=True, axes_scale="log")
 
 
 @image_comparison(
     baseline_images=["basic_log_x2_only"], remove_text=True, extensions=["png"]
 )
 def test_basic_log_x2_only():
-    _run_corner(exp_data=True, axes_scale=['linear', 'log', 'linear'])
+    _run_corner(exp_data=True, axes_scale=["linear", "log", "linear"])
 
 
 @image_comparison(baseline_images=["labels"], extensions=["png"])
@@ -101,7 +101,7 @@ def test_quantiles():
     baseline_images=["quantiles_log"], remove_text=True, extensions=["png"]
 )
 def test_quantiles_log():
-    _run_corner(exp_data=True, axes_scale='log', quantiles=[0.16, 0.5, 0.84])
+    _run_corner(exp_data=True, axes_scale="log", quantiles=[0.16, 0.5, 0.84])
 
 
 @image_comparison(
@@ -168,7 +168,7 @@ def test_overplot_log():
     fig = _run_corner(
         N=15000,
         exp_data=True,
-        axes_scale='log',
+        axes_scale="log",
         color="g",
         fill_contours=True,
     )
@@ -177,7 +177,7 @@ def test_overplot_log():
         factor=0.5,
         seed=15,
         exp_data=True,
-        axes_scale='log',
+        axes_scale="log",
         color="b",
         fig=fig,
         fill_contours=True,
@@ -195,7 +195,7 @@ def test_smooth1():
     baseline_images=["smooth1_log"], remove_text=True, extensions=["png"]
 )
 def test_smooth1_log():
-    _run_corner(exp_data=True, axes_scale='log', bins=50)
+    _run_corner(exp_data=True, axes_scale="log", bins=50)
 
 
 @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
@@ -211,7 +211,7 @@ def test_smooth2():
     baseline_images=["smooth2_log"], remove_text=True, extensions=["png"]
 )
 def test_smooth2_log():
-    _run_corner(exp_data=True, axes_scale='log', bins=50, smooth=1.0)
+    _run_corner(exp_data=True, axes_scale="log", bins=50, smooth=1.0)
 
 
 @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
@@ -227,7 +227,9 @@ def test_smooth1d():
     baseline_images=["smooth1d_log"], remove_text=True, extensions=["png"]
 )
 def test_smooth1d_log():
-    _run_corner(exp_data=True, axes_scale='log', bins=50, smooth=1.0, smooth1d=1.0)
+    _run_corner(
+        exp_data=True, axes_scale="log", bins=50, smooth=1.0, smooth1d=1.0
+    )
 
 
 @image_comparison(baseline_images=["titles1"], extensions=["png"])
@@ -293,7 +295,12 @@ def test_reverse():
     baseline_images=["reverse_log"], remove_text=True, extensions=["png"]
 )
 def test_reverse_log():
-    _run_corner(ndim=2, exp_data=True, axes_scale='log', range=[(1e4, 1e-4), (1e-5, 1e5)])
+    _run_corner(
+        ndim=2,
+        exp_data=True,
+        axes_scale="log",
+        range=[(1e4, 1e-4), (1e-5, 1e5)],
+    )
 
 
 @image_comparison(
@@ -380,10 +387,12 @@ def test_hist_bin_factor():
 
 
 @image_comparison(
-    baseline_images=["hist_bin_factor_log"], remove_text=True, extensions=["png"]
+    baseline_images=["hist_bin_factor_log"],
+    remove_text=True,
+    extensions=["png"],
 )
 def test_hist_bin_factor_log():
-    _run_corner(exp_data=True, axes_scale='log', hist_bin_factor=4)
+    _run_corner(exp_data=True, axes_scale="log", hist_bin_factor=4)
 
 
 @pytest.mark.skipif(az is None, reason="requires arviz")

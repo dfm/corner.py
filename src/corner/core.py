@@ -339,11 +339,11 @@ def corner_impl(
                     ax.xaxis.set_label_coords(0.5, -0.3 - labelpad)
 
             # use MathText for axes ticks
-            if axes_scale[i]=='linear':
+            if axes_scale[i] == "linear":
                 ax.xaxis.set_major_formatter(
                     ScalarFormatter(useMathText=use_math_text)
                 )
-            elif axes_scale[i]=='log':
+            elif axes_scale[i] == "log":
                 ax.xaxis.set_major_formatter(LogFormatterMathtext())
 
         for j, y in enumerate(xs):
@@ -418,11 +418,11 @@ def corner_impl(
                         ax.xaxis.set_label_coords(0.5, -0.3 - labelpad)
 
                 # use MathText for axes ticks
-                if axes_scale[j]=='linear':
+                if axes_scale[j] == "linear":
                     ax.xaxis.set_major_formatter(
                         ScalarFormatter(useMathText=use_math_text)
                     )
-                elif axes_scale[j]=='log':
+                elif axes_scale[j] == "log":
                     ax.xaxis.set_major_formatter(LogFormatterMathtext())
 
             if j > 0:
@@ -442,11 +442,11 @@ def corner_impl(
                         ax.yaxis.set_label_coords(-0.3 - labelpad, 0.5)
 
                 # use MathText for axes ticks
-                if axes_scale[i]=='linear':
+                if axes_scale[i] == "linear":
                     ax.yaxis.set_major_formatter(
                         ScalarFormatter(useMathText=use_math_text)
                     )
-                elif axes_scale[i]=='log':
+                elif axes_scale[i] == "log":
                     ax.yaxis.set_major_formatter(LogFormatterMathtext())
 
     if truths is not None:
