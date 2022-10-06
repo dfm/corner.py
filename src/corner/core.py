@@ -16,6 +16,7 @@ import numpy as np
 from matplotlib import pyplot as pl
 from matplotlib.colors import LinearSegmentedColormap, colorConverter
 from matplotlib.ticker import (
+    LogFormatterMathtext,
     LogLocator,
     MaxNLocator,
     NullFormatter,
@@ -338,9 +339,12 @@ def corner_impl(
                     ax.xaxis.set_label_coords(0.5, -0.3 - labelpad)
 
             # use MathText for axes ticks
-            ax.xaxis.set_major_formatter(
-                ScalarFormatter(useMathText=use_math_text)
-            )
+            if axes_scale[i]=='linear':
+                ax.xaxis.set_major_formatter(
+                    ScalarFormatter(useMathText=use_math_text)
+                )
+            elif axes_scale[i]=='log':
+                ax.xaxis.set_major_formatter(LogFormatterMathtext())
 
         for j, y in enumerate(xs):
             if np.shape(xs)[0] == 1:
@@ -414,9 +418,12 @@ def corner_impl(
                         ax.xaxis.set_label_coords(0.5, -0.3 - labelpad)
 
                 # use MathText for axes ticks
-                ax.xaxis.set_major_formatter(
-                    ScalarFormatter(useMathText=use_math_text)
-                )
+                if axes_scale[j]=='linear':
+                    ax.xaxis.set_major_formatter(
+                        ScalarFormatter(useMathText=use_math_text)
+                    )
+                elif axes_scale[j]=='log':
+                    ax.xaxis.set_major_formatter(LogFormatterMathtext())
 
             if j > 0:
                 ax.set_yticklabels([])
@@ -435,9 +442,12 @@ def corner_impl(
                         ax.yaxis.set_label_coords(-0.3 - labelpad, 0.5)
 
                 # use MathText for axes ticks
-                ax.yaxis.set_major_formatter(
-                    ScalarFormatter(useMathText=use_math_text)
-                )
+                if axes_scale[i]=='linear':
+                    ax.yaxis.set_major_formatter(
+                        ScalarFormatter(useMathText=use_math_text)
+                    )
+                elif axes_scale[i]=='log':
+                    ax.yaxis.set_major_formatter(LogFormatterMathtext())
 
     if truths is not None:
         overplot_lines(fig, truths, reverse=reverse, color=truth_color)
