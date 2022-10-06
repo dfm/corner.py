@@ -20,6 +20,7 @@ def corner(
     *,
     # Original corner parameters
     range=None,
+    axes_scale="linear",
     weights=None,
     color=None,
     hist_bin_factor=1,
@@ -156,6 +157,10 @@ def corner(
         [(0.,10.), (1.,5), 0.999, etc.].
         If a fraction, the bounds are chosen to be equal-tailed.
 
+    axes_scale : str or iterable (ndim,)
+        Scale (``"linear"``, ``"log"``) to use for each data dimension. If only
+        one scale is specified, use that for all dimensions.
+
     truths : iterable (ndim,)
         A list of reference values to indicate on the plots.  Individual
         values can be omitted by using ``None``.
@@ -238,6 +243,7 @@ def corner(
             data,
             bins=bins,
             range=range,
+            axes_scale=axes_scale,
             weights=weights,
             color=color,
             hist_bin_factor=hist_bin_factor,
@@ -269,6 +275,7 @@ def corner(
         data,
         bins=bins,
         range=range,
+        axes_scale=axes_scale,
         weights=weights,
         color=color,
         hist_bin_factor=hist_bin_factor,
