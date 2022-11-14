@@ -1,12 +1,21 @@
-_commit: v0.0.14
+_commit: v0.0.14-13-g199528f
 _src_path: gh:dfm/copier-python
 author_email: foreman.mackey@gmail.com
 author_fullname: Dan Foreman-Mackey
-author_username: dfm
 code_of_conduct_email: foreman.mackey@gmail.com
 copyright_holder: Dan Foreman-Mackey
 copyright_license: BSD
-copyright_year: 2013-2022
+copyright_year: '2013'
+documentation_build_type: dirhtml
+documentation_enable: true
+documentation_enable_binder: true
+documentation_enable_colab: true
+documentation_enable_execution: true
+documentation_execution_dependencies: '"arviz>=0.9"'
+documentation_execution_excludepatterns: ''
+documentation_favicon_filename: logo.svg
+documentation_logo_filename: logo.svg
+documentation_sphinx_theme: sphinx_book_theme
 documentation_url: https://corner.readthedocs.io
 enable_mypy: false
 enable_pybind11: false
@@ -20,8 +29,10 @@ python_formal_min_version: 6
 python_max_version: 10
 python_min_version: 7
 python_nox_sessions: '"tests"'
+python_optional_dependencies: arviz = ["arviz>=0.9"]
 python_package_distribution_name: corner
 python_package_import_name: corner
+python_test_dependencies: '"arviz>=0.9"'
 readthedocs_project_name: corner
 repository_name: corner.py
 repository_namespace: dfm

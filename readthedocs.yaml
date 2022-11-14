@@ -5,6 +5,8 @@ submodules:
 
 build:
   os: ubuntu-20.04
+  apt_packages:
+    - fonts-liberation
   tools:
     python: "3.10"
 

@@ -60,10 +60,7 @@ If you make use of this code, please cite [the JOSS paper](https://dx.doi.org/10
     }
 ```
 
-## Authors & License
+## Authors & license
 
-Copyright 2013-2021 Dan Foreman-Mackey
-
-Built by [Dan Foreman-Mackey](https://github.com/dfm) and contributors (see
-[the contribution graph](https://github.com/dfm/corner.py/graphs/contributors) for the most
-up to date list). Licensed under the 2-clause BSD license (see `LICENSE`).
+```{include} license.md
+```

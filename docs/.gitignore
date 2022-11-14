@@ -1,5 +1,1 @@
-_*
-!_static
-!*.png
-modules
-examples
+_build
