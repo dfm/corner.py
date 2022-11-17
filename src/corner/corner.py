@@ -36,6 +36,7 @@ def corner(
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
+    quant_linestyle=None,
     verbose=False,
     fig=None,
     max_n_ticks=5,
@@ -169,7 +170,11 @@ def corner(
 
     quantiles : iterable
         A list of fractional quantiles to show on the 1-D histograms as
-        vertical dashed lines.
+        vertical lines. The default linestyle is 'dashed'.
+
+    quant_linestyle : iterable
+        A list of linestyle to override the default 'dashed' linestyle.
+        The size must be equal to that of quantiles.
 
     verbose : bool
         If true, print the values of the computed quantiles.
@@ -254,6 +259,7 @@ def corner(
             truth_color=truth_color,
             scale_hist=scale_hist,
             quantiles=quantiles,
+            quant_linestyle=quant_linestyle,
             verbose=verbose,
             fig=fig,
             max_n_ticks=max_n_ticks,
@@ -285,6 +291,7 @@ def corner(
         truth_color=truth_color,
         scale_hist=scale_hist,
         quantiles=quantiles,
+        quant_linestyle=None,
         verbose=verbose,
         fig=fig,
         max_n_ticks=max_n_ticks,

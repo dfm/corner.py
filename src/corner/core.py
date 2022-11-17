@@ -42,6 +42,7 @@ def corner_impl(
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
+    quant_linestyle=None,
     title_quantiles=None,
     verbose=False,
     fig=None,
@@ -55,6 +56,7 @@ def corner_impl(
 ):
     if quantiles is None:
         quantiles = []
+        quant_linestyle = []
     if title_kwargs is None:
         title_kwargs = dict()
     if label_kwargs is None:
@@ -220,9 +222,12 @@ def corner_impl(
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
-            for q in qvalues:
-                ax.axvline(q, ls="dashed", color=color)
-
+            for q_i, q in enumerate(qvalues):
+                if quant_linestyle:
+                    ax.axvline(q, ls=quant_linestyle[q_i], color=color)
+                else: ax.axvline(q, ls="dashed", color=color)
+            # for q in qvalues:
+            #     ax.axvline(q, ls="dashed", color=color)
             if verbose:
                 print("Quantiles:")
                 print([item for item in zip(quantiles, qvalues)])
