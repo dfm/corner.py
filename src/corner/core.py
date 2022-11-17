@@ -247,7 +247,8 @@ def corner_impl(
             for q_i, q in enumerate(qvalues):
                 if quant_linestyle:
                     ax.axvline(q, ls=quant_linestyle[q_i], color=color)
-                else: ax.axvline(q, ls="dashed", color=color)
+                else:
+                    ax.axvline(q, ls="dashed", color=color)
             # for q in qvalues:
             #     ax.axvline(q, ls="dashed", color=color)
             if verbose:
