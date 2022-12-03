@@ -22,7 +22,7 @@ dependencies = ["matplotlib>=2.1"]
 [project.optional-dependencies]
 test = ["pytest"]
 arviz = ["arviz>=0.9"]
-docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme"]
+docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme", "ipython"]
 
 [build-system]
 requires = ["setuptools>=62.0", "wheel", "setuptools_scm"]
