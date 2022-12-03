@@ -120,8 +120,14 @@ def corner(
        respectively. If `None` (default), no smoothing is applied.
 
     labels : iterable (ndim,)
-        A list of names for the dimensions. If a ``xs`` is a
-        ``pandas.DataFrame``, labels will default to column names.
+        A list of names for the dimensions.
+
+        .. deprecated:: 2.2.1
+            If a ``xs`` is a ``pandas.DataFrame`` *and* ArviZ is installed,
+            labels will default to column names.
+            This behavior will be removed in version 3;
+            either use ArviZ data structures instead or pass
+            ``labels=dataframe.columns`` manually.
 
     label_kwargs : dict
         Any extra keyword arguments to send to the `set_xlabel` and
