@@ -53,7 +53,7 @@ def corner(
     divergences=False,
     divergences_kwargs=None,
     labeller=None,
-    **hist2d_kwargs
+    **hist2d_kwargs,
 ):
     """
     Make a *sick* corner plot showing the projections of a data set in a

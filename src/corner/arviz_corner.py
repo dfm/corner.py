@@ -77,7 +77,7 @@ def arviz_corner(
     divergences=False,
     divergences_kwargs=None,
     labeller=None,
-    **hist2d_kwargs
+    **hist2d_kwargs,
 ):
     is_np = False
     if isinstance(data, np.ndarray):

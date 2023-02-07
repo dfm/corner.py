@@ -59,7 +59,7 @@ def corner_impl(
     reverse=False,
     labelpad=0.0,
     hist_kwargs=None,
-    **hist2d_kwargs
+    **hist2d_kwargs,
 ):
     if quantiles is None:
         quantiles = []
@@ -537,9 +537,8 @@ def hist2d(
     data_kwargs=None,
     pcolor_kwargs=None,
     new_fig=True,
-    **kwargs
+    **kwargs,
 ):
-
     """
     Plot a 2-D histogram of samples.
 
