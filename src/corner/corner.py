@@ -20,6 +20,7 @@ def corner(
     *,
     # Original corner parameters
     range=None,
+    axes_scale="linear",
     weights=None,
     color=None,
     hist_bin_factor=1,
@@ -119,8 +120,14 @@ def corner(
        respectively. If `None` (default), no smoothing is applied.
 
     labels : iterable (ndim,)
-        A list of names for the dimensions. If a ``xs`` is a
-        ``pandas.DataFrame``, labels will default to column names.
+        A list of names for the dimensions.
+
+        .. deprecated:: 2.2.1
+            If a ``xs`` is a ``pandas.DataFrame`` *and* ArviZ is installed,
+            labels will default to column names.
+            This behavior will be removed in version 3;
+            either use ArviZ data structures instead or pass
+            ``labels=dataframe.columns`` manually.
 
     label_kwargs : dict
         Any extra keyword arguments to send to the `set_xlabel` and
@@ -155,6 +162,10 @@ def corner(
         giving the fraction of samples to include in bounds, e.g.,
         [(0.,10.), (1.,5), 0.999, etc.].
         If a fraction, the bounds are chosen to be equal-tailed.
+
+    axes_scale : str or iterable (ndim,)
+        Scale (``"linear"``, ``"log"``) to use for each data dimension. If only
+        one scale is specified, use that for all dimensions.
 
     truths : iterable (ndim,)
         A list of reference values to indicate on the plots.  Individual
@@ -238,6 +249,7 @@ def corner(
             data,
             bins=bins,
             range=range,
+            axes_scale=axes_scale,
             weights=weights,
             color=color,
             hist_bin_factor=hist_bin_factor,
@@ -269,6 +281,7 @@ def corner(
         data,
         bins=bins,
         range=range,
+        axes_scale=axes_scale,
         weights=weights,
         color=color,
         hist_bin_factor=hist_bin_factor,

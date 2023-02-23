@@ -45,6 +45,7 @@ def arviz_corner(
     *,
     # Original corner parameters
     range=None,
+    axes_scale="linear",
     weights=None,
     color=None,
     hist_bin_factor=1,
@@ -136,6 +137,7 @@ def arviz_corner(
         samples,
         bins=bins,
         range=range,
+        axes_scale=axes_scale,
         weights=weights,
         color=color,
         hist_bin_factor=hist_bin_factor,
