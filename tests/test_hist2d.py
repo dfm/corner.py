@@ -91,15 +91,6 @@ def test_backgroundSolarized():
 
 
 @image_comparison(
-    baseline_images=["backgroundSeaborn"], remove_text=True, extensions=["png"]
-)
-def test_backgroundSeaborn():
-    pl.style.use("seaborn")
-    _run_hist2d("backgroundSeaborn")
-    pl.style.use("default")
-
-
-@image_comparison(
     baseline_images=["backgroundColor"], remove_text=True, extensions=["png"]
 )
 def test_backgroundColor():

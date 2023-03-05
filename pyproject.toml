@@ -3,7 +3,7 @@ name = "corner"
 description = "Make some beautiful corner plots"
 authors = [{ name = "Dan Foreman-Mackey", email = "foreman.mackey@gmail.com" }]
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.9"
 license = { text = "BSD 2-Clause License" }
 classifiers = [
     "Operating System :: OS Independent",
@@ -20,7 +20,7 @@ dependencies = ["matplotlib>=2.1"]
 "Bug Tracker" = "https://github.com/dfm/corner.py/issues"
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "arviz>=0.9", "scipy"]
 arviz = ["arviz>=0.9"]
 docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme", "ipython"]
 
