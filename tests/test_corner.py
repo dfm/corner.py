@@ -75,7 +75,7 @@ def test_basic():
     baseline_images=["basic_log"], remove_text=True, extensions=["png"]
 )
 def test_basic_log():
-    fig = _run_corner(exp_data=True, axes_scale="log")
+    _run_corner(exp_data=True, axes_scale="log")
 
 
 @image_comparison(
@@ -185,32 +185,32 @@ def test_overplot_log():
 
 
 @image_comparison(
-    baseline_images=["smooth1"], remove_text=True, extensions=["png"]
+    baseline_images=["bins"], remove_text=True, extensions=["png"]
 )
-def test_smooth1():
-    _run_corner(bins=50)
+def test_bins():
+    _run_corner(bins=25)
 
 
 @image_comparison(
-    baseline_images=["smooth1_log"], remove_text=True, extensions=["png"]
+    baseline_images=["bins_log"], remove_text=True, extensions=["png"]
 )
-def test_smooth1_log():
-    _run_corner(exp_data=True, axes_scale="log", bins=50)
+def test_bins_log():
+    _run_corner(exp_data=True, axes_scale="log", bins=25)
 
 
 @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
-    baseline_images=["smooth2"], remove_text=True, extensions=["png"]
+    baseline_images=["smooth"], remove_text=True, extensions=["png"]
 )
-def test_smooth2():
+def test_smooth():
     _run_corner(bins=50, smooth=1.0)
 
 
 @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
-    baseline_images=["smooth2_log"], remove_text=True, extensions=["png"]
+    baseline_images=["smooth_log"], remove_text=True, extensions=["png"]
 )
-def test_smooth2_log():
+def test_smooth_log():
     _run_corner(exp_data=True, axes_scale="log", bins=50, smooth=1.0)
 
 
@@ -322,10 +322,6 @@ def test_extended_overplotting():
         [4 * nsamples // 5, ndim]
     )
     mean = 4 * np.random.rand(ndim)
-    data2 = mean[None, :] + np.random.randn(ndim * nsamples // 5).reshape(
-        [nsamples // 5, ndim]
-    )
-    samples = np.vstack([data1, data2])
 
     value1 = mean
     # This is the empirical mean of the sample:
