@@ -35,7 +35,7 @@ def _run_corner(
     ndim=3,
     factor=None,
     exp_data=False,
-    **kwargs
+    **kwargs,
 ):
     np.random.seed(seed)
     data1 = np.random.randn(ndim * 4 * N // 5).reshape([4 * N // 5, ndim])
