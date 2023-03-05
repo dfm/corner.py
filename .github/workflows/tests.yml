@@ -62,7 +62,7 @@ jobs:
         with:
           name: images-${{ matrix.os }}-${{ matrix.python-version }}
           path: ./result_images
-  
+
   release:
     if: ${{ inputs.prerelease || startsWith(github.ref, 'refs/tags/') }}
     needs: tests
