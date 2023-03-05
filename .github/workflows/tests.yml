@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.9", "3.10", "3.11"]
         nox-session: ["tests"]
         include:
           - os: macos-latest
@@ -42,20 +42,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pip packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.nox-session }}-${{ hashFiles('**/noxfile.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.nox-session }}-
-      - name: Cache nox session files
-        uses: actions/cache@v3
-        with:
-          path: .nox
-          key: ${{ runner.os }}-nox-${{ matrix.nox-session }}-${{ hashFiles('**/noxfile.py') }}
-          restore-keys: |
-            ${{ runner.os }}-nox-${{ matrix.nox-session }}-
       - name: Cache pre-commit environments
         if: ${{ matrix.nox-session == 'lint' }}
         uses: actions/cache@v3
@@ -70,6 +56,12 @@ jobs:
           python -m pip install -U nox
       - name: Run tests
         run: python -m nox --non-interactive -s ${{ matrix.nox-session }}
+      - name: Upload generated images on failure
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() && matrix.nox-session == 'tests' }}
+        with:
+          name: images-${{ matrix.os }}-${{ matrix.python-version }}
+          path: ./result_images
 
   release:
     if: ${{ inputs.prerelease || startsWith(github.ref, 'refs/tags/') }}
