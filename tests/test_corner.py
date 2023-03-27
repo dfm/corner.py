@@ -9,23 +9,6 @@ from matplotlib.testing.decorators import image_comparison
 
 import corner
 
-try:
-    import arviz as az
-except ImportError:
-    az = None
-
-try:
-    import pandas as pd
-except ImportError:
-    pd = None
-
-try:
-    import scipy  # noqa
-except ImportError:
-    scipy_installed = False
-else:
-    scipy_installed = True
-
 
 def _run_corner(
     pandas=False,
@@ -49,11 +32,12 @@ def _run_corner(
     if exp_data:
         data = 10**data
     if pandas:
-        # data = pd.DataFrame.from_items()
+        pd = pytest.importorskip("pandas")
         data = pd.DataFrame.from_dict(
             OrderedDict(zip(map("d{0}".format, range(ndim)), data.T))
         )
     elif arviz:
+        az = pytest.importorskip("arviz")
         data = az.from_dict(
             posterior={"x": data[None]},
             sample_stats={"diverging": data[None, :, 0] < 0.0},
@@ -198,35 +182,35 @@ def test_bins_log():
     _run_corner(exp_data=True, axes_scale="log", bins=25)
 
 
-@pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth"], remove_text=True, extensions=["png"]
 )
 def test_smooth():
+    pytest.importorskip("scipy")
     _run_corner(bins=50, smooth=1.0)
 
 
-@pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth_log"], remove_text=True, extensions=["png"]
 )
 def test_smooth_log():
+    pytest.importorskip("scipy")
     _run_corner(exp_data=True, axes_scale="log", bins=50, smooth=1.0)
 
 
-@pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth1d"], remove_text=True, extensions=["png"]
 )
 def test_smooth1d():
+    pytest.importorskip("scipy")
     _run_corner(bins=50, smooth=1.0, smooth1d=1.0)
 
 
-@pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth1d_log"], remove_text=True, extensions=["png"]
 )
 def test_smooth1d_log():
+    pytest.importorskip("scipy")
     _run_corner(
         exp_data=True, axes_scale="log", bins=50, smooth=1.0, smooth1d=1.0
     )
@@ -249,7 +233,6 @@ def test_top_ticks():
     _run_corner(top_ticks=True)
 
 
-@pytest.mark.skipif(pd is None, reason="requires pandas")
 @image_comparison(baseline_images=["pandas"], extensions=["png"])
 def test_pandas():
     _run_corner(pandas=True)
@@ -356,13 +339,8 @@ def test_reverse_overplotting():
         [4 * nsamples // 5, ndim]
     )
     mean = 4 * np.random.rand(ndim)
-    data2 = mean[None, :] + np.random.randn(ndim * nsamples // 5).reshape(
-        [nsamples // 5, ndim]
-    )
-    samples = np.vstack([data1, data2])
 
     value1 = mean
-    # This is the empirical mean of the sample:
     value2 = np.mean(data1, axis=0)
 
     corner.overplot_lines(figure, value1, color="C1", reverse=True)
@@ -391,7 +369,15 @@ def test_hist_bin_factor_log():
     _run_corner(exp_data=True, axes_scale="log", hist_bin_factor=4)
 
 
-@pytest.mark.skipif(az is None, reason="requires arviz")
 @image_comparison(baseline_images=["arviz"], extensions=["png"])
 def test_arviz():
     _run_corner(arviz=True)
+
+
+@image_comparison(
+    baseline_images=["range_fig_arg"], remove_text=True, extensions=["png"]
+)
+def test_range_fig_arg():
+    fig = pl.figure()
+    ranges = [(-1.1, 1), 0.8, (-1, 1)]
+    _run_corner(N=100_000, range=ranges, fig=fig)

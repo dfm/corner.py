@@ -19,7 +19,6 @@ from matplotlib.ticker import (
     LogFormatterMathtext,
     LogLocator,
     MaxNLocator,
-    NullFormatter,
     NullLocator,
     ScalarFormatter,
 )
@@ -126,8 +125,7 @@ def corner_impl(
     if fig is None:
         fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
-        new_fig = False
-        axes = _get_fig_axes(fig, K)
+        axes, new_fig = _get_fig_axes(fig, K)
 
     # Format the figure.
     lb = lbdim / dim
@@ -137,6 +135,7 @@ def corner_impl(
     )
 
     # Parse the parameter ranges.
+    force_range = False
     if range is None:
         if "extents" in hist2d_kwargs:
             logging.warning(
@@ -161,6 +160,8 @@ def corner_impl(
                 )
 
     else:
+        force_range = True
+
         # If any of the extents are percentiles, convert them to ranges.
         # Also make sure it's a normal list.
         range = list(range)
@@ -285,14 +286,14 @@ def corner_impl(
                     ax.set_title(title, **title_kwargs)
 
         # Set up the axes.
-        _set_xlim(new_fig, ax, range[i])
+        _set_xlim(force_range, new_fig, ax, range[i])
         ax.set_xscale(axes_scale[i])
         if scale_hist:
             maxn = np.max(n)
-            _set_ylim(new_fig, ax, [-0.1 * maxn, 1.1 * maxn])
+            _set_ylim(force_range, new_fig, ax, [-0.1 * maxn, 1.1 * maxn])
 
         else:
-            _set_ylim(new_fig, ax, [0, 1.1 * np.max(n)])
+            _set_ylim(force_range, new_fig, ax, [0, 1.1 * np.max(n)])
 
         ax.set_yticklabels([])
         if max_n_ticks == 0:
@@ -377,6 +378,7 @@ def corner_impl(
                 smooth=smooth,
                 bins=[bins[j], bins[i]],
                 new_fig=new_fig,
+                force_range=force_range,
                 **hist2d_kwargs,
             )
 
@@ -537,6 +539,7 @@ def hist2d(
     data_kwargs=None,
     pcolor_kwargs=None,
     new_fig=True,
+    force_range=False,
     **kwargs,
 ):
     """
@@ -791,8 +794,8 @@ def hist2d(
         contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
-    _set_xlim(new_fig, ax, range[0])
-    _set_ylim(new_fig, ax, range[1])
+    _set_xlim(force_range, new_fig, ax, range[0])
+    _set_ylim(force_range, new_fig, ax, range[1])
     ax.set_xscale(axes_scale[0])
     ax.set_yscale(axes_scale[1])
 
@@ -822,7 +825,7 @@ def overplot_lines(fig, xs, reverse=False, **kwargs):
 
     """
     K = len(xs)
-    axes = _get_fig_axes(fig, K)
+    axes, _ = _get_fig_axes(fig, K)
     if reverse:
         for k1 in range(K):
             if xs[k1] is not None:
@@ -871,7 +874,7 @@ def overplot_points(fig, xs, reverse=False, **kwargs):
     kwargs["linestyle"] = kwargs.pop("linestyle", "none")
     xs = _parse_input(xs)
     K = len(xs)
-    axes = _get_fig_axes(fig, K)
+    axes, _ = _get_fig_axes(fig, K)
     if reverse:
         for k1 in range(K):
             for k2 in range(k1):
@@ -895,9 +898,9 @@ def _parse_input(xs):
 
 def _get_fig_axes(fig, K):
     if not fig.axes:
-        return fig.subplots(K, K)
+        return fig.subplots(K, K), True
     try:
-        return np.array(fig.axes).reshape((K, K))
+        return np.array(fig.axes).reshape((K, K)), False
     except ValueError:
         raise ValueError(
             (
@@ -907,15 +910,15 @@ def _get_fig_axes(fig, K):
         )
 
 
-def _set_xlim(new_fig, ax, new_xlim):
-    if new_fig:
+def _set_xlim(force, new_fig, ax, new_xlim):
+    if force or new_fig:
         return ax.set_xlim(new_xlim)
     xlim = ax.get_xlim()
     return ax.set_xlim([min(xlim[0], new_xlim[0]), max(xlim[1], new_xlim[1])])
 
 
-def _set_ylim(new_fig, ax, new_ylim):
-    if new_fig:
+def _set_ylim(force, new_fig, ax, new_ylim):
+    if force or new_fig:
         return ax.set_ylim(new_ylim)
     ylim = ax.get_ylim()
     return ax.set_ylim([min(ylim[0], new_ylim[0]), max(ylim[1], new_ylim[1])])
