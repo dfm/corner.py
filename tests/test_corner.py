@@ -9,23 +9,6 @@ from matplotlib.testing.decorators import image_comparison
 
 import corner
 
-# try:
-#     import arviz as az
-# except ImportError:
-#     az = None
-
-# try:
-#     import pandas as pd
-# except ImportError:
-#     pd = None
-
-# try:
-#     import scipy  # noqa
-# except ImportError:
-#     scipy_installed = False
-# else:
-#     scipy_installed = True
-
 
 def _run_corner(
     pandas=False,
@@ -199,7 +182,6 @@ def test_bins_log():
     _run_corner(exp_data=True, axes_scale="log", bins=25)
 
 
-# @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth"], remove_text=True, extensions=["png"]
 )
@@ -208,7 +190,6 @@ def test_smooth():
     _run_corner(bins=50, smooth=1.0)
 
 
-# @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth_log"], remove_text=True, extensions=["png"]
 )
@@ -217,7 +198,6 @@ def test_smooth_log():
     _run_corner(exp_data=True, axes_scale="log", bins=50, smooth=1.0)
 
 
-# @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth1d"], remove_text=True, extensions=["png"]
 )
@@ -226,7 +206,6 @@ def test_smooth1d():
     _run_corner(bins=50, smooth=1.0, smooth1d=1.0)
 
 
-# @pytest.mark.skipif(not scipy_installed, reason="requires scipy for smoothing")
 @image_comparison(
     baseline_images=["smooth1d_log"], remove_text=True, extensions=["png"]
 )
@@ -254,7 +233,6 @@ def test_top_ticks():
     _run_corner(top_ticks=True)
 
 
-# @pytest.mark.skipif(pd is None, reason="requires pandas")
 @image_comparison(baseline_images=["pandas"], extensions=["png"])
 def test_pandas():
     _run_corner(pandas=True)
@@ -391,7 +369,6 @@ def test_hist_bin_factor_log():
     _run_corner(exp_data=True, axes_scale="log", hist_bin_factor=4)
 
 
-# @pytest.mark.skipif(az is None, reason="requires arviz")
 @image_comparison(baseline_images=["arviz"], extensions=["png"])
 def test_arviz():
     _run_corner(arviz=True)
