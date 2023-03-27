@@ -380,4 +380,4 @@ def test_arviz():
 def test_range_fig_arg():
     fig = pl.figure()
     ranges = [(-1.1, 1), 0.8, (-1, 1)]
-    _run_corner(range=ranges, fig=fig)
+    _run_corner(N=100_000, range=ranges, fig=fig)
