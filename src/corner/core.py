@@ -19,7 +19,6 @@ from matplotlib.ticker import (
     LogFormatterMathtext,
     LogLocator,
     MaxNLocator,
-    NullFormatter,
     NullLocator,
     ScalarFormatter,
 )
@@ -126,8 +125,7 @@ def corner_impl(
     if fig is None:
         fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
-        new_fig = False
-        axes = _get_fig_axes(fig, K)
+        axes, new_fig = _get_fig_axes(fig, K)
 
     # Format the figure.
     lb = lbdim / dim
@@ -822,7 +820,7 @@ def overplot_lines(fig, xs, reverse=False, **kwargs):
 
     """
     K = len(xs)
-    axes = _get_fig_axes(fig, K)
+    axes, _ = _get_fig_axes(fig, K)
     if reverse:
         for k1 in range(K):
             if xs[k1] is not None:
@@ -871,7 +869,7 @@ def overplot_points(fig, xs, reverse=False, **kwargs):
     kwargs["linestyle"] = kwargs.pop("linestyle", "none")
     xs = _parse_input(xs)
     K = len(xs)
-    axes = _get_fig_axes(fig, K)
+    axes, _ = _get_fig_axes(fig, K)
     if reverse:
         for k1 in range(K):
             for k2 in range(k1):
@@ -895,9 +893,9 @@ def _parse_input(xs):
 
 def _get_fig_axes(fig, K):
     if not fig.axes:
-        return fig.subplots(K, K)
+        return fig.subplots(K, K), True
     try:
-        return np.array(fig.axes).reshape((K, K))
+        return np.array(fig.axes).reshape((K, K)), False
     except ValueError:
         raise ValueError(
             (
