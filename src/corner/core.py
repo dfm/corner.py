@@ -578,12 +578,13 @@ def hist2d(
         contour_cmap[i][-1] *= float(i) / (len(levels) + 1)
 
     # We'll make the 2D histogram to directly estimate the density.
+    range = list(map(np.sort, range))
     try:
         H, X, Y = np.histogram2d(
             x.flatten(),
             y.flatten(),
             bins=bins,
-            range=list(map(np.sort, range)),
+            range=range,
             weights=weights,
         )
     except ValueError:
@@ -661,7 +662,15 @@ def hist2d(
         data_kwargs["ms"] = data_kwargs.get("ms", 2.0)
         data_kwargs["mec"] = data_kwargs.get("mec", "none")
         data_kwargs["alpha"] = data_kwargs.get("alpha", 0.1)
-        ax.plot(x, y, "o", zorder=-1, rasterized=True, **data_kwargs)
+        inds = (
+            (x >= range[0][0])
+            & (x <= range[0][1])
+            & (y >= range[1][0])
+            & (y <= range[1][1])
+        )
+        ax.plot(
+            x[inds], y[inds], "o", zorder=-1, rasterized=True, **data_kwargs
+        )
 
     # Plot the base fill to hide the densest data points.
     if (plot_contours or plot_density) and not no_fill_contours:
