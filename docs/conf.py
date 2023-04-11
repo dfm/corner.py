@@ -7,6 +7,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "myst_nb",
+    "IPython.sphinxext.ipython_console_highlighting",
 ]
 master_doc = "index"
 

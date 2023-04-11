@@ -7,7 +7,7 @@ repos:
         language: fail
         files: "\\.rej$"
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -20,10 +20,10 @@ repos:
       - id: isort
         additional_dependencies: [toml]
   - repo: https://github.com/psf/black
-    rev: "22.6.0"
+    rev: "22.10.0"
     hooks:
       - id: black-jupyter
   - repo: https://github.com/kynan/nbstripout
-    rev: "0.6.0"
+    rev: "0.6.1"
     hooks:
       - id: nbstripout
