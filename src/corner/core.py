@@ -620,8 +620,8 @@ def hist2d(
 
     # This is the base color of the axis (background color)
     if isinstance(pcolor_kwargs, dict):
-        if 'cmap' in list(pcolor_kwargs.keys()):
-            base_color = pcolor_kwargs['cmap'].resampled(512)(512)
+        if "cmap" in list(pcolor_kwargs.keys()):
+            base_color = pcolor_kwargs["cmap"].resampled(512)(512)
         else:
             base_color = ax.get_facecolor()
     else:
@@ -772,12 +772,14 @@ def hist2d(
 
         try:
             p = clevels.collections[0].get_paths()
-            indices = np.zeros_like(x,dtype=bool)
+            indices = np.zeros_like(x, dtype=bool)
             for level in p:
-                indices |= level.contains_points(list(zip(*(x,y))))
-            ax.plot(x[~indices], y[~indices], "o", rasterized=True, **data_kwargs)
+                indices |= level.contains_points(list(zip(*(x, y))))
+            ax.plot(
+                x[~indices], y[~indices], "o", rasterized=True, **data_kwargs
+            )
         except NameError:
-            ax.plot(x, y, "o", zorder = -1, rasterized=True, **data_kwargs)
+            ax.plot(x, y, "o", zorder=-1, rasterized=True, **data_kwargs)
 
     if plot_contours and fill_contours:
         if contourf_kwargs is None:
@@ -800,8 +802,8 @@ def hist2d(
         if pcolor_kwargs is None:
             pcolor_kwargs = dict()
 
-        if 'cmap' not in pcolor_kwargs.keys():
-            pcolor_kwargs['cmap'] = density_cmap
+        if "cmap" not in pcolor_kwargs.keys():
+            pcolor_kwargs["cmap"] = density_cmap
 
         ax.pcolor(X, Y, H.max() - H.T, **pcolor_kwargs)
 

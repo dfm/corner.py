@@ -109,11 +109,12 @@ def test_backgroundColor():
 def test_levels1():
     _run_hist2d("levels1", levels=[0.68, 0.95])
 
+
 @image_comparison(
     baseline_images=["levels1"], remove_text=True, extensions=["png"]
 )
 def test_cmap():
-    _run_hist2d("cmap", levels=[0.68, 0.95], pcolor_kwargs = {'cmap': pl.cm.jet})
+    _run_hist2d("cmap", levels=[0.68, 0.95], pcolor_kwargs={"cmap": pl.cm.jet})
 
 
 @image_comparison(
