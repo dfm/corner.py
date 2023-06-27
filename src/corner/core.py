@@ -561,6 +561,9 @@ def hist2d(
 
     levels : array_like
         The contour levels to draw.
+        If None, (0.5, 1, 1.5, 2)-sigma equivalent contours are drawn,
+        i.e., containing 11.8%, 39.3%, 67.5% and 86.4% of the samples.
+        See https://corner.readthedocs.io/en/latest/pages/sigmas/
 
     ax : matplotlib.Axes
         A axes instance on which to add the 2-D histogram.
