@@ -49,6 +49,7 @@ def corner_impl(
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
+    q_ls=None,
     title_quantiles=None,
     verbose=False,
     fig=None,
@@ -243,8 +244,19 @@ def corner_impl(
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
             qvalues = quantile(x, quantiles, weights=weights)
-            for q in qvalues:
-                ax.axvline(q, ls="dashed", color=color)
+            if q_ls is None or len(q_ls) == 0:
+                for q in qvalues:
+                    ax.axvline(q, ls="dashed", color=color)
+            else:
+                if len(q_ls) == len(quantiles):
+                    for q,ls in zip(qvalues,q_ls):
+                        ax.axvline(q, ls=ls, color=color)
+                elif len(q_ls) < len(quantiles):
+                    print(f"Not enough line styles given for quantiles, using {q_ls[0]} for all")
+                    for q in qvalues:
+                        ax.axvline(q, ls=q_ls[0], color=color)
+                    
+
 
             if verbose:
                 print("Quantiles:")
