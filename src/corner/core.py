@@ -249,14 +249,14 @@ def corner_impl(
                     ax.axvline(q, ls="dashed", color=color)
             else:
                 if len(q_ls) == len(quantiles):
-                    for q,ls in zip(qvalues,q_ls):
+                    for q, ls in zip(qvalues, q_ls):
                         ax.axvline(q, ls=ls, color=color)
                 elif len(q_ls) < len(quantiles):
-                    print(f"Not enough line styles given for quantiles, using {q_ls[0]} for all")
+                    print(
+                        f"Not enough line styles given for quantiles, using {q_ls[0]} for all"
+                    )
                     for q in qvalues:
                         ax.axvline(q, ls=q_ls[0], color=color)
-                    
-
 
             if verbose:
                 print("Quantiles:")

@@ -37,7 +37,7 @@ figure = corner.corner(
         r"$\Gamma \, [\mathrm{parsec}]$",
     ],
     quantiles=[0.16, 0.5, 0.84],
-    q_ls=["solid","dashed","dashdot"],
+    q_ls=["solid", "dashed", "dashdot"],
     show_titles=True,
     title_kwargs={"fontsize": 12},
 )
