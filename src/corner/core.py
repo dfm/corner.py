@@ -64,7 +64,7 @@ def corner_impl(
     reverse=False,
     labelpad=0.0,
     hist_kwargs=None,
-    **hist2d_kwargs
+    **hist2d_kwargs,
 ):
     if quantiles is None:
         quantiles = []
@@ -244,11 +244,17 @@ def corner_impl(
             y0 = np.array(list(zip(n, n))).flatten()
             if smooth1d is not None and interp1d is not None:
                 # Now use a continuos line for the plot instead of histogram counts
-                bins_1d_centers = 0.5*(bins_1d[1:] + bins_1d[:-1])
-                pdfinterpolated = interp1d(bins_1d_centers, n, fill_value="extrapolate")
+                bins_1d_centers = 0.5 * (bins_1d[1:] + bins_1d[:-1])
+                pdfinterpolated = interp1d(
+                    bins_1d_centers, n, fill_value="extrapolate"
+                )
                 newx = np.linspace(bins_1d.min(), bins_1d.max(), bins_1d.size)
                 nonzero = pdfinterpolated(newx) > 0
-                ax.plot(newx[nonzero], pdfinterpolated(newx)[nonzero], **hist_kwargs)
+                ax.plot(
+                    newx[nonzero],
+                    pdfinterpolated(newx)[nonzero],
+                    **hist_kwargs,
+                )
             else:
                 ax.plot(x0, y0, **hist_kwargs)
 
@@ -550,9 +556,8 @@ def hist2d(
     data_kwargs=None,
     pcolor_kwargs=None,
     new_fig=True,
-    **kwargs
+    **kwargs,
 ):
-
     """
     Plot a 2-D histogram of samples.
 
