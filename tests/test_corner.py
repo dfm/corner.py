@@ -146,6 +146,16 @@ def test_overplot():
 
 
 @image_comparison(
+    baseline_images=["overplot_1d"], remove_text=True, extensions=["png"]
+)
+def test_overplot_1d():
+    fig = _run_corner(N=15000, ndim=1, color="g", fill_contours=True)
+    _run_corner(
+        N=5000, ndim=1, seed=15, color="b", fig=fig, fill_contours=True
+    )
+
+
+@image_comparison(
     baseline_images=["overplot_log"], remove_text=True, extensions=["png"]
 )
 def test_overplot_log():
