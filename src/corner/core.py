@@ -903,7 +903,7 @@ def _get_fig_axes(fig, K):
     if not fig.axes:
         return fig.subplots(K, K), True
     try:
-        axarr =  np.array(fig.axes).reshape((K, K))
+        axarr = np.array(fig.axes).reshape((K, K))
         return axarr.item() if axarr.size == 1 else axarr.squeeze(), False
     except ValueError:
         raise ValueError(
