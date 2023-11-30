@@ -115,11 +115,14 @@ def test_title_quantiles_default():
 )
 def test_title_quantiles_raises():
     with pytest.raises(ValueError):
-        _run_corner(quantiles=[0.05, 0.16, 0.5, 0.84, 0.95], show_titles=True)
+        _run_corner(title_quantiles=[0.05, 0.16, 0.5, 0.84, 0.95], show_titles=True)
 
     # This one shouldn't raise since show_titles isn't provided
     _run_corner(quantiles=[0.05, 0.16, 0.5, 0.84, 0.95])
 
+def test_len_quantiles ():
+    # This test should not raise an error, as title_quantile should default to [0.16, 0.5, 0.84]
+    _run_corner(quantiles=[0.05, 0.16, 0.5, 0.84, 0.95], show_titles=True)
 
 @image_comparison(
     baseline_images=["color"], remove_text=True, extensions=["png"]
