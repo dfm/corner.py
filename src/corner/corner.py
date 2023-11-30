@@ -141,13 +141,13 @@ def corner(
 
     show_titles : bool
         Displays a title above each 1-D histogram showing the middle value,
-        lower and upper error as specified by the quantiles values provided 
+        lower and upper error as specified by the quantiles values provided
         in `title_quantiles`.
 
     title_quantiles : iterable
         A list of 3 fractional quantiles to show as the the upper and lower
         errors. If `None` (default), and if `quantiles` has exactly three
-        element, inherit the values from `quantiles`. Otherwise, it defaults 
+        element, inherit the values from `quantiles`. Otherwise, it defaults
         to [0.16,0.5,0.84]
 
     title_fmt : string
