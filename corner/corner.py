@@ -251,7 +251,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             x = x.compressed()
 
         if np.shape(xs)[0] == 1:
-            ax = axes
+            ax = axes if not isinstance(axes, np.ndarray) else axes.flatten()[0]
         else:
             if reverse:
                 ax = axes[K-i-1, K-i-1]

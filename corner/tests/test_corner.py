@@ -118,3 +118,8 @@ def test_reverse():
 @image_comparison(baseline_images=["hist_bin_factor"], extensions=["png"])
 def test_hist_bin_factor():
     _run_corner(hist_bin_factor=4)
+
+@image_comparison(baseline_images=["1d_fig_argument"], extensions=["png"])
+def test_1d_fig_argument():
+    fig = _run_corner(ndim=1, seed=0)
+    _run_corner(ndim=1, seed=1, fig=fig)
