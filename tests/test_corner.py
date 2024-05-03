@@ -391,3 +391,8 @@ def test_range_fig_arg():
     fig = pl.figure()
     ranges = [(-1.1, 1), 0.8, (-1, 1)]
     _run_corner(N=100_000, range=ranges, fig=fig)
+
+@image_comparison(baseline_images=["1d_fig_argument"], extensions=["png"])
+def test_1d_fig_argument():
+    fig = _run_corner(ndim=1, seed=0)
+    _run_corner(ndim=1, seed=1, fig=fig)
