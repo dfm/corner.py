@@ -18,9 +18,6 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
         nox-session: ["tests"]
         include:
-          - os: macos-latest
-            python-version: "3.10"
-            nox-session: "tests"
           - os: ubuntu-latest
             python-version: "3.10"
             nox-session: "lint"
