@@ -907,15 +907,16 @@ def _get_fig_axes(fig, K):
 
     axarr = np.array(fig.axes)
     axarr_size = axarr.size
-    if np.sqrt(axarr_size)!=int(np.sqrt(axarr_size)):
+    if np.sqrt(axarr_size) != int(np.sqrt(axarr_size)):
         raise ValueError(
-            f"Provided figure has {axarr_size} axes. Must be a square number")
-    if axarr.size==K**2:
+            f"Provided figure has {axarr_size} axes. Must be a square number"
+        )
+    if axarr.size == K**2:
         axarr = np.array(fig.axes).reshape((K, K))
         return axarr.item() if axarr.size == 1 else axarr.squeeze(), False
-    if axarr.size>K**2:
+    if axarr.size > K**2:
         axarr_ndim = int(np.sqrt(axarr_size))
-        axarr = axarr.reshape((axarr_ndim, axarr_ndim)) # Reshape to square
+        axarr = axarr.reshape((axarr_ndim, axarr_ndim))  # Reshape to square
         axarr = axarr[:K, :K]
         return axarr.squeeze(), False
 
