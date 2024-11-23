@@ -25,11 +25,14 @@ arviz = ["arviz>=0.9"]
 docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme", "ipython"]
 
 [build-system]
-requires = ["setuptools>=62.0", "wheel", "setuptools_scm"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
-[tool.setuptools_scm]
-write_to = "src/corner/version.py"
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/corner/version.py"
 
 [tool.black]
 line-length = 79
