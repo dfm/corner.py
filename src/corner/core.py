@@ -562,9 +562,10 @@ def hist2d(
         If true, suppress warnings for small datasets.
 
     levels : array_like
-        The contour levels to draw.
-        If None, (0.5, 1, 1.5, 2)-sigma equivalent contours are drawn,
-        i.e., containing 11.8%, 39.3%, 67.5% and 86.4% of the samples.
+        Confidence levels to use to draw contours.
+        If None, confidence levels (0.118, 0.393, 0.675, and 0.864) will be drawn.
+        For a 2D Gaussian distribution, these correspond to contours separated from the
+        center of the distribution by (0.5, 1, 1.5, 2)-sigma.
         See https://corner.readthedocs.io/en/latest/pages/sigmas/
 
     ax : matplotlib.Axes
