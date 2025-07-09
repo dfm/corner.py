@@ -310,7 +310,7 @@ def corner_impl(
                 ax.xaxis.set_major_locator(LogLocator(numticks=max_n_ticks))
             ax.yaxis.set_major_locator(NullLocator())
 
-        if i < K - 1:
+        if i <= K - 1:
             if top_ticks:
                 ax.xaxis.set_ticks_position("top")
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
@@ -318,7 +318,7 @@ def corner_impl(
             else:
                 ax.set_xticklabels([])
                 ax.set_xticklabels([], minor=True)
-        else:
+        if i == K - 1:
             if reverse:
                 ax.xaxis.tick_top()
             [l.set_rotation(45) for l in ax.get_xticklabels()]
