@@ -219,11 +219,11 @@ def corner(
         Overplot onto the provided figure object, which must either have no
         axes yet, or ``ndim * ndim`` axes already present.  If not set, the
         plot will be drawn on a newly created figure.
-    
+
     truth_uncertainties_kwargs : dict
         Any extra keyword arguments to send to the axvspan used to create truth
         uncertainty bands.
-    
+
     hist_kwargs : dict
         Any extra keyword arguments to send to the 1-D histogram plots.
 

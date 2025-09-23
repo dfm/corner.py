@@ -466,22 +466,22 @@ def corner_impl(
         )
 
         if truth_uncertainties is not None:
-            lower_list, upper_list = _parse_truth_uncertainties(truths, truth_uncertainties)
+            lower_list, upper_list = _parse_truth_uncertainties(
+                truths, truth_uncertainties
+            )
             if upper_list is not None and lower_list is not None:
                 if truth_uncertainties_kwargs is None:
                     # Use default settings.
                     truth_uncertainties_kwargs = dict(
-                        alpha=0.15,
-                        fc=truth_color,
-                        ec=truth_color,
-                        zorder=0
+                        alpha=0.15, fc=truth_color, ec=truth_color, zorder=0
                     )
-                overplot_spans(fig,
-                               lower_list,
-                               upper_list,
-                               reverse=reverse,
-                               **truth_uncertainties_kwargs
-                               )
+                overplot_spans(
+                    fig,
+                    lower_list,
+                    upper_list,
+                    reverse=reverse,
+                    **truth_uncertainties_kwargs,
+                )
 
     return fig
 
@@ -906,17 +906,23 @@ def overplot_spans(fig, x1s, x2s, reverse=False, **kwargs):
     K = len(x1s)
     if K != len(x2s):
         raise ValueError("`x1s` and `x2s` arrays must be the same length.")
-    
+
     axes, _ = _get_fig_axes(fig, K)
     if reverse:
         for k1 in range(K):
             if x1s[k1] is not None:
-                axes[K - k1 - 1, K - k1 - 1].axvspan(x1s[k1], x2s[k1], **kwargs)
+                axes[K - k1 - 1, K - k1 - 1].axvspan(
+                    x1s[k1], x2s[k1], **kwargs
+                )
             for k2 in range(k1 + 1, K):
                 if x1s[k1] is not None:
-                    axes[K - k2 - 1, K - k1 - 1].axvspan(x1s[k1], x2s[k1], **kwargs)
+                    axes[K - k2 - 1, K - k1 - 1].axvspan(
+                        x1s[k1], x2s[k1], **kwargs
+                    )
                 if x1s[k2] is not None:
-                    axes[K - k2 - 1, K - k1 - 1].axhspan(x1s[k2], x2s[k2], **kwargs)
+                    axes[K - k2 - 1, K - k1 - 1].axhspan(
+                        x1s[k2], x2s[k2], **kwargs
+                    )
     else:
         for k1 in range(K):
             if x1s[k1] is not None:
@@ -966,8 +972,9 @@ def overplot_points(fig, xs, reverse=False, **kwargs):
             for k2 in range(k1 + 1, K):
                 axes[k2, k1].plot(xs[k1], xs[k2], **kwargs)
 
+
 def _parse_truth_uncertainties(truths, truth_uncertainties):
-    
+
     if truth_uncertainties is None or truths is None:
         return None, None
 
@@ -992,11 +999,14 @@ def _parse_truth_uncertainties(truths, truth_uncertainties):
             lower_uncert = truths[i] - current_uncert[0]
             upper_uncert = truths[i] + current_uncert[1]
         else:
-            raise ValueError(f"Unexpected number of truth uncertainties provided at index {i}.")
+            raise ValueError(
+                f"Unexpected number of truth uncertainties provided at index {i}."
+            )
         lowers.append(lower_uncert)
         uppers.append(upper_uncert)
 
     return lowers, uppers
+
 
 def _parse_input(xs):
     xs = np.atleast_1d(xs)
