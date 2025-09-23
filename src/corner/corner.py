@@ -34,6 +34,7 @@ def corner(
     title_fmt=".2f",
     title_kwargs=None,
     truths=None,
+    truth_uncertainties=None,
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
@@ -44,6 +45,7 @@ def corner(
     use_math_text=False,
     reverse=False,
     labelpad=0.0,
+    truth_uncertainties_kwargs=None,
     hist_kwargs=None,
     # Arviz parameters
     group="posterior",
@@ -171,6 +173,13 @@ def corner(
         A list of reference values to indicate on the plots.  Individual
         values can be omitted by using ``None``.
 
+    truth_uncertainties : iterable (ndim, udim = 1 or 2)
+        A list of uncertainties corresponding to `truths`.
+        If udim is 1 then that uncertainty will be used for both the
+        lower and upper bounds. If udim is 2 then the first value will be used
+        as the lower bound and the second as the upper. Individual
+        values can be omitted by using ``None``.
+
     truth_color : str
         A ``matplotlib`` style color for the ``truths`` makers.
 
@@ -210,7 +219,11 @@ def corner(
         Overplot onto the provided figure object, which must either have no
         axes yet, or ``ndim * ndim`` axes already present.  If not set, the
         plot will be drawn on a newly created figure.
-
+    
+    truth_uncertainties_kwargs : dict
+        Any extra keyword arguments to send to the axvspan used to create truth
+        uncertainty bands.
+    
     hist_kwargs : dict
         Any extra keyword arguments to send to the 1-D histogram plots.
 
@@ -263,6 +276,7 @@ def corner(
             title_fmt=title_fmt,
             title_kwargs=title_kwargs,
             truths=truths,
+            truth_uncertainties=truth_uncertainties,
             truth_color=truth_color,
             scale_hist=scale_hist,
             quantiles=quantiles,
@@ -273,6 +287,7 @@ def corner(
             use_math_text=use_math_text,
             reverse=reverse,
             labelpad=labelpad,
+            truth_uncertainties_kwargs=truth_uncertainties_kwargs,
             hist_kwargs=hist_kwargs,
             **hist2d_kwargs,
         )
@@ -295,6 +310,7 @@ def corner(
         title_fmt=title_fmt,
         title_kwargs=title_kwargs,
         truths=truths,
+        truth_uncertainties=truth_uncertainties,
         truth_color=truth_color,
         scale_hist=scale_hist,
         quantiles=quantiles,
@@ -305,6 +321,7 @@ def corner(
         use_math_text=use_math_text,
         reverse=reverse,
         labelpad=labelpad,
+        truth_uncertainties_kwargs=truth_uncertainties_kwargs,
         hist_kwargs=hist_kwargs,
         group=group,
         var_names=var_names,

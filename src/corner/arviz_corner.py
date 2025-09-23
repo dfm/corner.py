@@ -58,6 +58,7 @@ def arviz_corner(
     title_fmt=".2f",
     title_kwargs=None,
     truths=None,
+    truth_uncertainties=None,
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
@@ -68,6 +69,7 @@ def arviz_corner(
     use_math_text=False,
     reverse=False,
     labelpad=0.0,
+    truth_uncertainties_kwargs=None,
     hist_kwargs=None,
     # Arviz parameters
     group="posterior",
@@ -126,6 +128,10 @@ def arviz_corner(
         truths = np.concatenate(
             [np.asarray(truths[k]).flatten() for k in var_names]
         )
+    if isinstance(truth_uncertainties, Mapping):
+        truth_uncertainties = np.concatenate(
+            [np.asarray(truth_uncertainties[k]).flatten() for k in var_names]
+        )
     if isinstance(titles, Mapping):
         titles = np.concatenate(
             [np.asarray(titles[k]).flatten() for k in var_names]
@@ -150,6 +156,7 @@ def arviz_corner(
         title_fmt=title_fmt,
         title_kwargs=title_kwargs,
         truths=truths,
+        truth_uncertainties=truth_uncertainties,
         truth_color=truth_color,
         scale_hist=scale_hist,
         quantiles=quantiles,
@@ -160,6 +167,7 @@ def arviz_corner(
         use_math_text=use_math_text,
         reverse=reverse,
         labelpad=labelpad,
+        truth_uncertainties_kwargs=truth_uncertainties_kwargs,
         hist_kwargs=hist_kwargs,
         **hist2d_kwargs,
     )
