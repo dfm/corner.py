@@ -6,7 +6,12 @@ import logging
 from collections.abc import Mapping
 
 import numpy as np
-from arviz.data import convert_to_dataset
+
+try:
+    from arviz.preview import convert_to_dataset
+except ImportError:
+    from arviz import convert_to_dataset
+
 from arviz.utils import _var_names, get_coords
 
 # Support multiple versions of arviz
