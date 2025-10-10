@@ -63,7 +63,7 @@ def corner(
     Parameters
     ----------
     data : obj
-        Any object that can be converted to an ``arviz.InferenceData`` object.
+        Any object that can be converted to an ``arviz.InferenceData`` or ``xarrayDataTree`` object.
         Refer to documentation of ``arviz.convert_to_dataset`` for details.
 
     bins : int or array_like[ndim,]

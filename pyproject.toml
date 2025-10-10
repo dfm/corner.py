@@ -20,9 +20,9 @@ dependencies = ["matplotlib>=2.1"]
 "Bug Tracker" = "https://github.com/dfm/corner.py/issues"
 
 [project.optional-dependencies]
-test = ["pytest", "arviz>=0.9", "scipy"]
-arviz = ["arviz>=0.9"]
-docs = ["arviz>=0.9", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme", "ipython"]
+test = ["pytest", "arviz>=0.9", "arviz-base", "scipy"]
+arviz = ["arviz>=0.9", "arviz-base"]
+docs = ["arviz>=0.9", "arviz-base", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme", "ipython"]
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]

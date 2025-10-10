@@ -13,6 +13,7 @@ import corner
 def _run_corner(
     pandas=False,
     arviz=False,
+    arviz_preview=False,
     N=10000,
     seed=1234,
     ndim=3,
@@ -41,6 +42,15 @@ def _run_corner(
         data = az.from_dict(
             posterior={"x": data[None]},
             sample_stats={"diverging": data[None, :, 0] < 0.0},
+        )
+        kwargs["truths"] = {"x": np.random.randn(ndim)}
+    elif arviz_preview:
+        az = pytest.importorskip("arviz.preview")
+        data = az.from_dict(
+            {
+                "posterior": {"x": data[None]},
+                "sample_stats": {"diverging": data[None, :, 0] < 0.0},
+            },
         )
         kwargs["truths"] = {"x": np.random.randn(ndim)}
 
@@ -382,6 +392,11 @@ def test_hist_bin_factor_log():
 @image_comparison(baseline_images=["arviz"], extensions=["png"])
 def test_arviz():
     _run_corner(arviz=True)
+
+
+@image_comparison(baseline_images=["arviz"], extensions=["png"])
+def test_arviz_preview():
+    _run_corner(arviz_preview=True)
 
 
 @image_comparison(
