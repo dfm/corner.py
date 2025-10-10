@@ -71,9 +71,12 @@ def corner_impl(
     if titles is None:
         titles = labels
 
-    # deal with title quantiles so they much quantiles unless desired otherwise
+    # If title_quantiles is not supplied, provide the
+    # value from quantiles if and only len (quantiles)
+    # is 3, otherwise fall back to default [0.16, 0.5, 0.84]
+    # value
     if title_quantiles is None:
-        if len(quantiles) > 0:
+        if len(quantiles) == 3:
             title_quantiles = quantiles
         else:
             # a default for when quantiles not supplied.
