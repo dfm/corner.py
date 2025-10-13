@@ -15,7 +15,7 @@ repos:
         exclude: ".copier-answers.yml"
       - id: check-yaml
   - repo: https://github.com/PyCQA/isort
-    rev: "6.1.0"
+    rev: "7.0.0"
     hooks:
       - id: isort
         additional_dependencies: [toml]
