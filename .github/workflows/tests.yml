@@ -47,7 +47,7 @@ jobs:
       - name: Run tests
         run: python -m nox --non-interactive -s ${{ matrix.nox-session }}
       - name: Upload generated images on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ failure() && matrix.nox-session == 'tests' }}
         with:
           name: images-${{ matrix.os }}-${{ matrix.python-version }}
@@ -68,7 +68,7 @@ jobs:
           python -m pip install -U pip
           python -m pip install -U build
           python -m build .
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           path: dist/*
 
