@@ -758,7 +758,16 @@ def hist2d(
         data_kwargs["ms"] = data_kwargs.get("ms", 2.0)
         data_kwargs["mec"] = data_kwargs.get("mec", "none")
         data_kwargs["alpha"] = data_kwargs.get("alpha", 0.1)
-        ax.plot(x, y, "o", zorder=-1, rasterized=True, **data_kwargs)
+        range = list(map(np.sort, range))
+        inds = (
+            (x >= range[0][0])
+            & (x <= range[0][1])
+            & (y >= range[1][0])
+            & (y <= range[1][1])
+        )
+        ax.plot(
+            x[inds], y[inds], "o", zorder=-1, rasterized=True, **data_kwargs
+        )
 
     # Plot the base fill to hide the densest data points.
     if (plot_contours or plot_density) and not no_fill_contours:
@@ -797,7 +806,9 @@ def hist2d(
     if plot_contours:
         if contour_kwargs is None:
             contour_kwargs = dict()
-        contour_kwargs["colors"] = contour_kwargs.get("colors", color)
+        contour_kwargs["cmap"] = contour_kwargs.get("cmap", None)
+        if contour_kwargs["cmap"] is None:
+            contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
     _set_xlim(force_range, new_fig, ax, range[0])
