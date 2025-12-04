@@ -65,6 +65,33 @@ def test_basic():
     _run_corner()
 
 
+def test_axis_index():
+
+    labels = ["a", "b", "c"]
+    fig = _run_corner(labels=labels, n=100)
+
+    # This should be x=a vs. y=c plotted in the lower left corner with both labels
+    ax = get_axis_by_index(fig, 0, 2)
+    assert(ax.get_xlabel() == labels[0])
+    assert(ax.get_ylabel() == labels[2])
+
+    # This should be x=b vs. y=c, to the right of the previous with no y label
+    ax = get_axis_by_index(fig, 1, 2)
+    assert(ax.get_xlabel() == labels[1])
+    assert(ax.get_ylabel() == "")
+
+    # This should be the histogram of c at the lower right
+    ax = get_axis_by_index(fig, 2, 2)
+
+    # Some big number, probably 1584 depending on the seed?
+    assert(ax.get_ylim()[1] > 100)
+
+    # ix > iy is hidden, which have ranges set to (0,1)
+    ax = get_axis_by_index(fig, 2, 1)
+    assert np.allclose(ax.get_xlim(), [0,1])
+    assert np.allclose(ax.get_ylim(), [0,1])
+
+
 @image_comparison(
     baseline_images=["basic_log"], remove_text=True, extensions=["png"]
 )
