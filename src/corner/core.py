@@ -958,10 +958,10 @@ def param_indices_from_axis(fig, i):
         Indices of the figure axes list corresponding to the plotted ``x`` and ``y`` of the specified axis
         index
     """
-    if (i > len(fig.axes)):
+    if i > len(fig.axes):
         msg = f"{i} must be < len(fig.axes) = {len(fig.axes)}"
         raise ValueError(msg)
-    
+
     ndim = int(np.sqrt(len(fig.axes)))
 
     ix = range(ndim)[(i % ndim)]
