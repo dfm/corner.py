@@ -71,26 +71,38 @@ def test_axis_index():
     fig = _run_corner(labels=labels, n=100)
 
     # This should be x=a vs. y=c plotted in the lower left corner with both labels
-    ax = get_axis_by_index(fig, 0, 2)
+    ax = corner.axis_from_param_indices(fig, 0, 2)
     assert(ax.get_xlabel() == labels[0])
     assert(ax.get_ylabel() == labels[2])
 
     # This should be x=b vs. y=c, to the right of the previous with no y label
-    ax = get_axis_by_index(fig, 1, 2)
+    ax = corner.axis_from_param_indices(fig, 1, 2)
     assert(ax.get_xlabel() == labels[1])
     assert(ax.get_ylabel() == "")
 
     # This should be the histogram of c at the lower right
-    ax = get_axis_by_index(fig, 2, 2)
+    ax = corner.axis_from_param_indices(fig, 2, 2)
 
     # Some big number, probably 1584 depending on the seed?
     assert(ax.get_ylim()[1] > 100)
 
     # ix > iy is hidden, which have ranges set to (0,1)
-    ax = get_axis_by_index(fig, 2, 1)
+    ax = corner.axis_from_param_indices(fig, 2, 1)
     assert np.allclose(ax.get_xlim(), [0,1])
     assert np.allclose(ax.get_ylim(), [0,1])
 
+    with pytest.raises(ValueError):
+        ax = corner.axis_from_param_indices(fig, 2, 4)
+
+    # Inverse
+    for ix in range(len(labels)):
+        for iy in range(ix+1, len(labels)):
+            i = corner.axis_from_param_indices(fig, ix, iy, return_axis=False)
+            ix_i, iy_i = corner.param_indices_from_axis(fig, i)
+            assert np.allclose([ix_i, iy_i], [ix, iy])
+
+    with pytest.raises(ValueError):
+        _ = corner.param_indices_from_axis(fig, 100)
 
 @image_comparison(
     baseline_images=["basic_log"], remove_text=True, extensions=["png"]
