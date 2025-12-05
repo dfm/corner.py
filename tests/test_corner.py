@@ -84,7 +84,7 @@ def test_axis_index():
     ax = corner.axis_from_param_indices(fig, 2, 2)
 
     # Some big number, probably 1584 depending on the seed?
-    assert(ax.get_ylim()[1] > 100)
+    assert ax.get_ylim()[1] > 100
 
     # ix > iy is hidden, which have ranges set to (0,1)
     ax = corner.axis_from_param_indices(fig, 2, 1)

@@ -919,13 +919,13 @@ def axis_from_param_indices(fig, ix, iy, return_axis=True):
         Entry in the ``fig.axes`` list.
     """
     ndim = int(np.sqrt(len(fig.axes)))
-    if (ix > ndim - 1):
+    if ix > ndim - 1:
         msg = f"ix={ix} too large for ndim={ndim}"
         raise ValueError(msg)
-    elif (iy > ndim - 1):
+    elif iy > ndim - 1:
         msg = f"ix={ix} too large for ndim={ndim}"
         raise ValueError(msg)
-        
+
     for i in range(ndim**2):
         ix_i = range(ndim)[(i % ndim)]
         iy_i = range(ndim)[(i // ndim) - ndim]
