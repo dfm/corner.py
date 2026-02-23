@@ -15,7 +15,7 @@ repos:
         exclude: ".copier-answers.yml"
       - id: check-yaml
   - repo: https://github.com/PyCQA/isort
-    rev: "7.0.0"
+    rev: "8.0.0"
     hooks:
       - id: isort
         additional_dependencies: [toml]
@@ -24,6 +24,6 @@ repos:
     hooks:
       - id: black-jupyter
   - repo: https://github.com/kynan/nbstripout
-    rev: "0.9.0"
+    rev: "0.9.1"
     hooks:
       - id: nbstripout
