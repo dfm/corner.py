@@ -28,6 +28,11 @@ try:
 except ImportError:
     gaussian_filter = None
 
+try:
+    from scipy.interpolate import interp1d
+except ImportError:
+    interp1d = None
+
 
 def corner_impl(
     xs,
@@ -236,11 +241,25 @@ def corner_impl(
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
-            n, _ = np.histogram(x, bins=bins_1d, weights=weights)
+            n, _ = np.histogram(x, bins=bins_1d, weights=weights, density=True)
             n = gaussian_filter(n, smooth1d)
             x0 = np.array(list(zip(bins_1d[:-1], bins_1d[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
-            ax.plot(x0, y0, **hist_kwargs)
+            if smooth1d is not None and interp1d is not None:
+                # Now use a continuos line for the plot instead of histogram counts
+                bins_1d_centers = 0.5 * (bins_1d[1:] + bins_1d[:-1])
+                pdfinterpolated = interp1d(
+                    bins_1d_centers, n, fill_value="extrapolate"
+                )
+                newx = np.linspace(bins_1d.min(), bins_1d.max(), bins_1d.size)
+                nonzero = pdfinterpolated(newx) > 0
+                ax.plot(
+                    newx[nonzero],
+                    pdfinterpolated(newx)[nonzero],
+                    **hist_kwargs,
+                )
+            else:
+                ax.plot(x0, y0, **hist_kwargs)
 
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
