@@ -19,6 +19,10 @@ except ImportError:
     import re
 
     def _var_names(var_names, dataset, filter_vars=None):
+        """Filter variable names from a dataset.
+
+        Replaces ``arviz.utils._var_names`` removed in arviz 1.0.
+        """
         if var_names is None:
             return None
         if filter_vars == "like":
@@ -36,6 +40,10 @@ except ImportError:
         return list(var_names)
 
     def get_coords(dataset, coords):
+        """Select coordinates from an xarray dataset.
+
+        Replaces ``arviz.utils.get_coords`` removed in arviz 1.0.
+        """
         if not coords:
             return dataset
         return dataset.sel(coords)
