@@ -269,7 +269,7 @@ def corner_impl(
 
                 # Add in the column name if it's given.
                 if titles is not None:
-                    title = "{0} = {1}".format(titles[i], title)
+                    title = "{0} =\\n{1}".format(titles[i], title)
 
             elif titles is not None:
                 title = "{0}".format(titles[i])
