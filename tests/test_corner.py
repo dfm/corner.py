@@ -39,12 +39,18 @@ def _run_corner(
         )
     elif arviz:
         az = pytest.importorskip("arviz")
-        data = az.from_dict(
-            {
-                "posterior": {"x": data[None]},
-                "sample_stats": {"diverging": data[None, :, 0] < 0.0},
-            },
-        )
+        try:
+            data = az.from_dict(
+                posterior={"x": data[None]},
+                sample_stats={"diverging": data[None, :, 0] < 0.0},
+            )
+        except TypeError:
+            data = az.from_dict(
+                {
+                    "posterior": {"x": data[None]},
+                    "sample_stats": {"diverging": data[None, :, 0] < 0.0},
+                },
+            )
         kwargs["truths"] = {"x": np.random.randn(ndim)}
     elif arviz_preview:
         az = pytest.importorskip("arviz.preview")

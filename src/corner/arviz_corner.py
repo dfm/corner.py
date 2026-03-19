@@ -7,41 +7,73 @@ import re
 from collections.abc import Mapping
 
 import numpy as np
-from arviz import convert_to_dataset, xarray_to_ndarray, xarray_var_iter
-from arviz_base.labels import BaseLabeller
+
+try:
+    from arviz.preview import convert_to_dataset
+except ImportError:
+    from arviz import convert_to_dataset
+
+# Support multiple versions of arviz
+try:
+    # arviz < 1.0
+    from arviz.utils import _var_names, get_coords
+except ImportError:
+    # arviz >= 1.0: these functions were removed
+
+    def _var_names(var_names, dataset, filter_vars=None):
+        if var_names is None:
+            return None
+        if filter_vars == "like":
+            return [
+                v
+                for v in dataset.data_vars
+                if any(vn in v for vn in var_names)
+            ]
+        elif filter_vars == "regex":
+            return [
+                v
+                for v in dataset.data_vars
+                if any(re.search(vn, v) for vn in var_names)
+            ]
+        return list(var_names)
+
+    def get_coords(dataset, coords):
+        if not coords:
+            return dataset
+        return dataset.sel(coords)
 
 
-def _var_names(var_names, dataset, filter_vars=None):
-    """Filter variable names from a dataset."""
-    if var_names is None:
-        return None
-    if filter_vars == "like":
+try:
+    # Very old arviz
+    from arviz.plots.plot_utils import (
+        make_label,
+        xarray_to_ndarray,
+        xarray_var_iter,
+    )
+
+    def _get_labels(plotters, labeller=None):
         return [
-            v for v in dataset.data_vars if any(vn in v for vn in var_names)
+            make_label(var_name, selection)
+            for var_name, selection, _ in plotters
         ]
-    elif filter_vars == "regex":
+
+except ImportError:
+    try:
+        # Medium arviz (< 1.0)
+        from arviz.labels import BaseLabeller
+        from arviz.sel_utils import xarray_to_ndarray, xarray_var_iter
+    except ImportError:
+        # arviz >= 1.0
+        from arviz import xarray_to_ndarray, xarray_var_iter
+        from arviz_base.labels import BaseLabeller
+
+    def _get_labels(plotters, labeller=None):
+        if labeller is None:
+            labeller = BaseLabeller()
         return [
-            v
-            for v in dataset.data_vars
-            if any(re.search(vn, v) for vn in var_names)
+            labeller.make_label_vert(var_name, sel, isel)
+            for var_name, sel, isel, _ in plotters
         ]
-    return list(var_names)
-
-
-def get_coords(dataset, coords):
-    """Select coordinates from an xarray dataset."""
-    if not coords:
-        return dataset
-    return dataset.sel(coords)
-
-
-def _get_labels(plotters, labeller=None):
-    if labeller is None:
-        labeller = BaseLabeller()
-    return [
-        labeller.make_label_vert(var_name, sel, isel)
-        for var_name, sel, isel, _ in plotters
-    ]
 
 
 from .core import corner_impl, overplot_points
