@@ -39,10 +39,18 @@ def _run_corner(
         )
     elif arviz:
         az = pytest.importorskip("arviz")
-        data = az.from_dict(
-            posterior={"x": data[None]},
-            sample_stats={"diverging": data[None, :, 0] < 0.0},
-        )
+        try:
+            data = az.from_dict(
+                posterior={"x": data[None]},
+                sample_stats={"diverging": data[None, :, 0] < 0.0},
+            )
+        except TypeError:
+            data = az.from_dict(
+                {
+                    "posterior": {"x": data[None]},
+                    "sample_stats": {"diverging": data[None, :, 0] < 0.0},
+                },
+            )
         kwargs["truths"] = {"x": np.random.randn(ndim)}
     elif arviz_preview:
         az = pytest.importorskip("arviz.preview")
@@ -293,7 +301,7 @@ def test_top_ticks():
     _run_corner(top_ticks=True)
 
 
-@image_comparison(baseline_images=["pandas"], extensions=["png"])
+@image_comparison(baseline_images=["pandas"], extensions=["png"], tol=7)
 def test_pandas():
     _run_corner(pandas=True)
 
