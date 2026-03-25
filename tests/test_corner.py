@@ -37,29 +37,20 @@ def _run_corner(
         data = pd.DataFrame.from_dict(
             OrderedDict(zip(map("d{0}".format, range(ndim)), data.T))
         )
-    elif arviz:
-        az = pytest.importorskip("arviz")
+    elif arviz_preview or arviz:
+        if arviz:
+            az = pytest.importorskip("arviz")
+        elif arviz_preview:
+            az = pytest.importorskip("arviz.preview")
+
+        input_dict = {
+            "posterior": {"x": data[None]},
+            "sample_stats": {"diverging": data[None, :, 0] < 0.0},
+        }
         try:
-            data = az.from_dict(
-                posterior={"x": data[None]},
-                sample_stats={"diverging": data[None, :, 0] < 0.0},
-            )
+            data = az.from_dict(**input_dict)
         except TypeError:
-            data = az.from_dict(
-                {
-                    "posterior": {"x": data[None]},
-                    "sample_stats": {"diverging": data[None, :, 0] < 0.0},
-                },
-            )
-        kwargs["truths"] = {"x": np.random.randn(ndim)}
-    elif arviz_preview:
-        az = pytest.importorskip("arviz.preview")
-        data = az.from_dict(
-            {
-                "posterior": {"x": data[None]},
-                "sample_stats": {"diverging": data[None, :, 0] < 0.0},
-            },
-        )
+            data = az.from_dict(input_dict)
         kwargs["truths"] = {"x": np.random.randn(ndim)}
 
     fig = corner.corner(data, **kwargs)
