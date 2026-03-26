@@ -299,6 +299,11 @@ def test_titles_fmt_single():
     _run_corner(show_titles=True, title_fmt=".3f")
 
 
+@image_comparison(baseline_images=["titles_fmt_multi"], extensions=["png"])
+def test_titles_fmt_multi():
+    _run_corner(show_titles=True, title_fmt=[".2f", ".1f", ".3f"])
+
+
 @image_comparison(
     baseline_images=["top_ticks"], remove_text=True, extensions=["png"]
 )
