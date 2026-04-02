@@ -156,10 +156,10 @@ def corner(
         titles when ``show_titles=True`` and ``title_fmt`` is not ``None``.
         If ``False`` (default), they are shown on a single line.
 
-    title_fmt : string
-        The format string for the quantiles given in titles. If you explicitly
-        set ``show_titles=True`` and ``title_fmt=None``, the labels will be
-        shown as the titles. (default: ``.2f``)
+    title_fmt : string or iterable (ndim,)
+        The format string for the quantiles given in titles for eachimension.
+        If you explicitly set ``show_titles=True`` and ``title_fmt=None``,
+        the labels will be shown as the titles. (default: ``.2f``)
 
     title_kwargs : dict
         Any extra keyword arguments to send to the `set_title` command.

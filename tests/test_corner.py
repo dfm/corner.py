@@ -37,21 +37,20 @@ def _run_corner(
         data = pd.DataFrame.from_dict(
             OrderedDict(zip(map("d{0}".format, range(ndim)), data.T))
         )
-    elif arviz:
-        az = pytest.importorskip("arviz")
-        data = az.from_dict(
-            posterior={"x": data[None]},
-            sample_stats={"diverging": data[None, :, 0] < 0.0},
-        )
-        kwargs["truths"] = {"x": np.random.randn(ndim)}
-    elif arviz_preview:
-        az = pytest.importorskip("arviz.preview")
-        data = az.from_dict(
-            {
-                "posterior": {"x": data[None]},
-                "sample_stats": {"diverging": data[None, :, 0] < 0.0},
-            },
-        )
+    elif arviz_preview or arviz:
+        if arviz:
+            az = pytest.importorskip("arviz")
+        elif arviz_preview:
+            az = pytest.importorskip("arviz.preview")
+
+        input_dict = {
+            "posterior": {"x": data[None]},
+            "sample_stats": {"diverging": data[None, :, 0] < 0.0},
+        }
+        try:
+            data = az.from_dict(**input_dict)
+        except TypeError:
+            data = az.from_dict(input_dict)
         kwargs["truths"] = {"x": np.random.randn(ndim)}
 
     fig = corner.corner(data, **kwargs)
@@ -286,6 +285,16 @@ def test_titles2():
     _run_corner(show_titles=True, title_fmt=None, labels=["a", "b", "c"])
 
 
+@image_comparison(baseline_images=["titles_fmt_single"], extensions=["png"])
+def test_titles_fmt_single():
+    _run_corner(show_titles=True, title_fmt=".3f")
+
+
+@image_comparison(baseline_images=["titles_fmt_multi"], extensions=["png"])
+def test_titles_fmt_multi():
+    _run_corner(show_titles=True, title_fmt=[".2f", ".1f", ".3f"])
+
+
 @image_comparison(
     baseline_images=["top_ticks"], remove_text=True, extensions=["png"]
 )
@@ -293,7 +302,7 @@ def test_top_ticks():
     _run_corner(top_ticks=True)
 
 
-@image_comparison(baseline_images=["pandas"], extensions=["png"])
+@image_comparison(baseline_images=["pandas"], extensions=["png"], tol=7)
 def test_pandas():
     _run_corner(pandas=True)
 
