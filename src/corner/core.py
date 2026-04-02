@@ -50,6 +50,7 @@ def corner_impl(
     scale_hist=False,
     quantiles=None,
     title_quantiles=None,
+    wrap_title_quantiles=False,
     verbose=False,
     fig=None,
     max_n_ticks=5,
@@ -269,7 +270,11 @@ def corner_impl(
 
                 # Add in the column name if it's given.
                 if titles is not None:
-                    title = "{0} =\\n{1}".format(titles[i], title)
+                    # Wrap the quantiles below the column name if asked
+                    if wrap_title_quantiles:
+                        title = "{0} =\\n{1}".format(titles[i], title)
+                    else:
+                        title = "{0} = {1}".format(titles[i], title)
 
             elif titles is not None:
                 title = "{0}".format(titles[i])
