@@ -31,6 +31,7 @@ def corner(
     titles=None,
     show_titles=False,
     title_quantiles=None,
+    wrap_title_quantiles=False,
     title_fmt=".2f",
     title_kwargs=None,
     truths=None,
@@ -148,6 +149,13 @@ def corner(
         errors. If `None` (default), inherit the values from quantiles, unless
         quantiles is `None`, in which case it defaults to [0.16,0.5,0.84]
 
+    wrap_title_quantiles : bool
+        If ``True``, and if quantile values are being shown in the titles,
+        place the parameter name and the formatted quantile summary on
+        separate lines. This only affects automatically generated quantile
+        titles when ``show_titles=True`` and ``title_fmt`` is not ``None``.
+        If ``False`` (default), they are shown on a single line.
+
     title_fmt : string
         The format string for the quantiles given in titles. If you explicitly
         set ``show_titles=True`` and ``title_fmt=None``, the labels will be
@@ -260,6 +268,7 @@ def corner(
             titles=titles,
             show_titles=show_titles,
             title_quantiles=title_quantiles,
+            wrap_title_quantiles=wrap_title_quantiles,
             title_fmt=title_fmt,
             title_kwargs=title_kwargs,
             truths=truths,
@@ -292,6 +301,7 @@ def corner(
         titles=titles,
         show_titles=show_titles,
         title_quantiles=title_quantiles,
+        wrap_title_quantiles=wrap_title_quantiles,
         title_fmt=title_fmt,
         title_kwargs=title_kwargs,
         truths=truths,
