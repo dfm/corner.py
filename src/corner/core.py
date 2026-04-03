@@ -231,6 +231,7 @@ def corner_impl(
             bins_1d = np.logspace(
                 np.log10(min(range[i])), np.log10(max(range[i])), n_bins_1d + 1
             )
+            ax.set_xlim(np.sort(range[i]))
         else:
             raise ValueError(
                 "Scale "
@@ -249,6 +250,7 @@ def corner_impl(
             x0 = np.array(list(zip(bins_1d[:-1], bins_1d[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
+            ax.set_xlim(np.sort(range[i]))
 
         # Plot quantiles if wanted.
         if len(quantiles) > 0:
