@@ -32,6 +32,7 @@ def corner(
     show_titles=False,
     title_quantiles=None,
     title_fmt=".2f",
+    title_round=None,
     title_kwargs=None,
     truths=None,
     truth_color="#4682b4",
@@ -149,10 +150,19 @@ def corner(
         quantiles is `None`, in which case it defaults to [0.16,0.5,0.84]
 
     title_fmt : string or iterable (ndim,)
-        The format string for the quantiles given in titles for eachimension.
+        The format string for the quantiles given in titles for each dimension.
         If you explicitly set ``show_titles=True`` and ``title_fmt=None``,
         the labels will be shown as the titles. (default: ``.2f``)
-
+    
+    title_round : int or iterable (ndim,)
+        Specifies how many digits to round to after the decimal point for each
+        dimension. Use negative values for rounding to left of decimal point.
+        Uses python `round() function for rounding.
+        If rounding right of decimal point, use ``title_fmt`` instead
+        since `round()` can give unexpected behavior for floats.
+        Specify `None` for any dimension to not be formatted with `round()`.
+        (default: `None`)
+    
     title_kwargs : dict
         Any extra keyword arguments to send to the `set_title` command.
 
@@ -261,6 +271,7 @@ def corner(
             show_titles=show_titles,
             title_quantiles=title_quantiles,
             title_fmt=title_fmt,
+            title_round=title_round,
             title_kwargs=title_kwargs,
             truths=truths,
             truth_color=truth_color,
@@ -293,6 +304,7 @@ def corner(
         show_titles=show_titles,
         title_quantiles=title_quantiles,
         title_fmt=title_fmt,
+        title_round=title_round,
         title_kwargs=title_kwargs,
         truths=truths,
         truth_color=truth_color,
