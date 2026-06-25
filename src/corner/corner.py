@@ -153,7 +153,7 @@ def corner(
         The format string for the quantiles given in titles for each dimension.
         If you explicitly set ``show_titles=True`` and ``title_fmt=None``,
         the labels will be shown as the titles. (default: ``.2f``)
-    
+
     title_round : int or iterable (ndim,)
         Specifies how many digits to round to after the decimal point for each
         dimension. Use negative values for rounding to left of decimal point.
@@ -162,7 +162,7 @@ def corner(
         since `round()` can give unexpected behavior for floats.
         Specify `None` for any dimension to not be formatted with `round()`.
         (default: `None`)
-    
+
     title_kwargs : dict
         Any extra keyword arguments to send to the `set_title` command.
 
