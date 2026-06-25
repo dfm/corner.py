@@ -290,15 +290,13 @@ def corner_impl(
                 # Format the quantile display.
                 fmt = "{{0:{0}}}".format(title_fmt[i]).format
                 title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
-                
+
                 # Check for symmetric errorbars
                 if fmt(q_m) == fmt(q_p):
                     title = r"${{{0}}}\pm{{{1}}}$"
-                
+
                 title = title.format(fmt(q_mid), fmt(q_m), fmt(q_p))
-                
-                
-                
+
                 # Add in the column name if it's given.
                 if titles is not None:
                     title = "{0} = {1}".format(titles[i], title)
