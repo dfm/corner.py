@@ -6,7 +6,8 @@ _skbuild
 *.so
 .mypy_cache
 .tox
-.nox
+.venv
+uv.lock
 .coverage
 .coverage*
 dist

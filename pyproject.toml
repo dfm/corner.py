@@ -24,6 +24,10 @@ test = ["pytest", "arviz>=0.9", "arviz-base", "scipy"]
 arviz = ["arviz>=0.9", "arviz-base"]
 docs = ["arviz>=0.9", "arviz-base", "sphinx>=1.7.5", "pandoc", "myst-nb", "sphinx-book-theme", "ipython"]
 
+# Installed by default with `uv run`/`uv sync`, so `uv run pytest` just works.
+[dependency-groups]
+dev = ["pytest", "arviz>=0.9", "arviz-base", "scipy"]
+
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
