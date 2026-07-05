@@ -38,8 +38,13 @@ TODO
 ## How to test the project
 
 ```bash
-python -m pip install nox
-python -m nox
+uv run pytest -v tests
+```
+
+You can also run the linters with:
+
+```bash
+uvx pre-commit run --all-files
 ```
 
 ## How to submit changes
