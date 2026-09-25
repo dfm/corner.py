@@ -461,3 +461,31 @@ def test_range_fig_arg():
 def test_1d_fig_argument():
     fig = _run_corner(ndim=1, seed=0)
     _run_corner(ndim=1, seed=1, fig=fig)
+
+
+def test_wrap_title_quantiles():
+    # wrap_title_quantiles should place the quantile summary on a new line
+    # (a real newline), not inject the literal characters "\n" into the title.
+    fig = _run_corner(
+        ndim=2,
+        seed=0,
+        labels=["a", "b"],
+        show_titles=True,
+        title_fmt=".2f",
+        wrap_title_quantiles=True,
+    )
+    titles = [ax.title.get_text() for ax in fig.axes if ax.title.get_text()]
+    assert titles
+    assert any("\n" in t for t in titles)
+
+    fig = _run_corner(
+        ndim=2,
+        seed=0,
+        labels=["a", "b"],
+        show_titles=True,
+        title_fmt=".2f",
+        wrap_title_quantiles=False,
+    )
+    titles = [ax.title.get_text() for ax in fig.axes if ax.title.get_text()]
+    assert titles
+    assert all("\n" not in t for t in titles)
