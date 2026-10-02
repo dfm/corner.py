@@ -461,3 +461,50 @@ def test_range_fig_arg():
 def test_1d_fig_argument():
     fig = _run_corner(ndim=1, seed=0)
     _run_corner(ndim=1, seed=1, fig=fig)
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("value", [None, 0.25])
+@pytest.mark.parametrize("input_1d", [False, True])
+def test_overplot_lines_1d(reverse, value, input_1d):
+    data = np.linspace(-1, 1, 101)
+    if not input_1d:
+        data = data[:, None]
+    fig = corner.corner(data, reverse=reverse)
+    ax = fig.axes[0]
+    initial_lines = len(ax.lines)
+
+    corner.overplot_lines(
+        fig, [value], reverse=reverse, color="red", linewidth=2.5
+    )
+
+    if value is None:
+        assert len(ax.lines) == initial_lines
+    else:
+        assert len(ax.lines) == initial_lines + 1
+        line = ax.lines[-1]
+        np.testing.assert_array_equal(line.get_xdata(), [value, value])
+        np.testing.assert_array_equal(line.get_ydata(), [0, 1])
+        assert line.get_color() == "red"
+        assert line.get_linewidth() == 2.5
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("use_fig", [False, True])
+@pytest.mark.parametrize("input_1d", [False, True])
+def test_truths_1d(reverse, use_fig, input_1d):
+    data = np.linspace(-1, 1, 101)
+    if not input_1d:
+        data = data[:, None]
+    fig = pl.figure() if use_fig else None
+    fig = corner.corner(
+        data,
+        truths=[0.25],
+        truth_color="red",
+        reverse=reverse,
+        fig=fig,
+    )
+    assert len(fig.axes) == 1
+    line = fig.axes[0].lines[-1]
+    np.testing.assert_array_equal(line.get_xdata(), [0.25, 0.25])
+    assert line.get_color() == "red"

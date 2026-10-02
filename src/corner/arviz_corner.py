@@ -125,7 +125,7 @@ def arviz_corner(
     if isinstance(data, np.ndarray):
         is_np = True
         if data.ndim == 1:
-            data = data[None, :, :]
+            data = data[None, :, None]
         elif data.ndim == 2:
             data = data[None, :, :]
         elif data.ndim != 3:
