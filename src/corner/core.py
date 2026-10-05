@@ -44,6 +44,7 @@ def corner_impl(
     titles=None,
     show_titles=False,
     title_fmt=".2f",
+    title_round=None,
     title_kwargs=None,
     truths=None,
     truth_color="#4682b4",
@@ -120,6 +121,14 @@ def corner_impl(
         assert (
             len(title_fmt) == K
         ), "'title_fmt' should contain as many elements as data dimensions"
+
+    # Make title_round into a list if necessary, otherwise check length
+    if isinstance(title_round, int):
+        title_round = [title_round] * K
+    elif title_round is not None:
+        assert (
+            len(title_fmt) == K
+        ), "'title_round' should contain as many elements as data dimensions"
 
     # Make axes_scale into a list if necessary, otherwise check length
     if isinstance(axes_scale, str):
@@ -271,9 +280,22 @@ def corner_impl(
                 )
                 q_m, q_p = q_mid - q_lo, q_hi - q_mid
 
+                # Round the titles if needed
+                if title_round is not None and title_round[i] is not None:
+                    q_m, q_mid, q_p = (
+                        round(q_m, title_round[i]),
+                        round(q_mid, title_round[i]),
+                        round(q_p, title_round[i]),
+                    )
+
                 # Format the quantile display.
                 fmt = "{{0:{0}}}".format(title_fmt[i]).format
                 title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+
+                # Check for symmetric errorbars
+                if fmt(q_m) == fmt(q_p):
+                    title = r"${{{0}}}\pm{{{1}}}$"
+
                 title = title.format(fmt(q_mid), fmt(q_m), fmt(q_p))
 
                 # Add in the column name if it's given.
