@@ -619,6 +619,9 @@ def hist2d(
     if ax is None:
         ax = pl.gca()
 
+    x = np.atleast_1d(x)
+    y = np.atleast_1d(y)
+
     # Set the default range based on the data range if not provided.
     if range is None:
         if "extent" in kwargs:
