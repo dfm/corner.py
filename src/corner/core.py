@@ -526,7 +526,7 @@ def quantile(x, q, weights=None):
             raise ValueError("Dimension mismatch: len(weights) != len(x)")
         idx = np.argsort(x)
         sw = weights[idx]
-        cdf = np.cumsum(sw)[:-1]
+        cdf = np.cumsum(sw, dtype=np.result_type(sw.dtype, np.float64))[:-1]
         cdf /= cdf[-1]
         cdf = np.append(0, cdf)
         return np.interp(q, cdf, x[idx]).tolist()
