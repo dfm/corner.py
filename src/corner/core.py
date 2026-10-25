@@ -845,6 +845,7 @@ def overplot_lines(fig, xs, reverse=False, **kwargs):
     """
     K = len(xs)
     axes, _ = _get_fig_axes(fig, K)
+    axes = np.atleast_2d(axes)
     if reverse:
         for k1 in range(K):
             if xs[k1] is not None:
