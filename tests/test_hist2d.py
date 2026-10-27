@@ -111,6 +111,13 @@ def test_levels1():
 
 
 @image_comparison(
+    baseline_images=["levels1"], remove_text=True, extensions=["png"]
+)
+def test_cmap():
+    _run_hist2d("cmap", levels=[0.68, 0.95], pcolor_kwargs={"cmap": pl.cm.jet})
+
+
+@image_comparison(
     baseline_images=["levels2"], remove_text=True, extensions=["png"]
 )
 def test_levels2():
