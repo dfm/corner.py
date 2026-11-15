@@ -280,7 +280,7 @@ def corner_impl(
                 if titles is not None:
                     # Wrap the quantiles below the column name if asked
                     if wrap_title_quantiles:
-                        title = "{0} =\\n{1}".format(titles[i], title)
+                        title = "{0} =\n{1}".format(titles[i], title)
                     else:
                         title = "{0} = {1}".format(titles[i], title)
 
