@@ -53,3 +53,22 @@ def test_weighted_quantile(seed=42):
     q = [0.0, 1.0]
     a = corner.quantile(x, q, weights=np.random.rand(len(x)))
     assert np.allclose(a, (np.min(x), np.max(x)))
+
+
+@pytest.mark.parametrize("dtype", [np.int8, np.int32, np.uint64])
+def test_integer_weights(dtype):
+    x = np.array([7.0, 2.0, 9.0, 1.0, 5.0])
+    weights = np.array([90, 40, 30, 100, 60], dtype=dtype)
+    q = [0.0, 0.16, 0.5, 0.84, 1.0]
+    actual = corner.quantile(x, q, weights=weights)
+    expected = corner.quantile(x, q, weights=weights.astype(float))
+    np.testing.assert_array_equal(actual, expected)
+
+
+def test_python_integer_weights():
+    x = np.arange(10.0)
+    q = [0.16, 0.5, 0.84]
+    np.testing.assert_allclose(
+        corner.quantile(x, q, weights=[1] * 10),
+        np.percentile(x, 100 * np.array(q)),
+    )
