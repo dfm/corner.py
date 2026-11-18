@@ -3,7 +3,6 @@
 __all__ = ["arviz_corner"]
 
 import logging
-import re
 from collections.abc import Mapping
 
 import numpy as np
@@ -18,24 +17,8 @@ try:
     # arviz < 1.0
     from arviz.utils import _var_names, get_coords
 except ImportError:
-    # arviz >= 1.0: these functions were removed
-
-    def _var_names(var_names, dataset, filter_vars=None):
-        if var_names is None:
-            return None
-        if filter_vars == "like":
-            return [
-                v
-                for v in dataset.data_vars
-                if any(vn in v for vn in var_names)
-            ]
-        elif filter_vars == "regex":
-            return [
-                v
-                for v in dataset.data_vars
-                if any(re.search(vn, v) for vn in var_names)
-            ]
-        return list(var_names)
+    # arviz >= 1.0: variable selection moved to arviz_base
+    from arviz_base.utils import _var_names
 
     def get_coords(dataset, coords):
         if not coords:
