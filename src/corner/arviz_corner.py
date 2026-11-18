@@ -214,6 +214,10 @@ def arviz_corner(
             getattr(data, divergent_group), "diverging"
         ):
             divergent_data = convert_to_dataset(data, group=divergent_group)
+            divergent_data = get_coords(
+                divergent_data,
+                {k: v for k, v in coords.items() if k in divergent_data.dims},
+            )
             _, diverging_mask = xarray_to_ndarray(
                 divergent_data, var_names=("diverging",), combined=True
             )
