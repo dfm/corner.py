@@ -890,7 +890,8 @@ def overplot_points(fig, xs, reverse=False, **kwargs):
 
     """
     kwargs["marker"] = kwargs.pop("marker", ".")
-    kwargs["linestyle"] = kwargs.pop("linestyle", "none")
+    if "ls" not in kwargs and "linestyle" not in kwargs:
+        kwargs["linestyle"] = "none"
     xs = _parse_input(xs)
     K = len(xs)
     axes, _ = _get_fig_axes(fig, K)
