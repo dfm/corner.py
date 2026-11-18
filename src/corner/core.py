@@ -205,6 +205,8 @@ def corner_impl(
     # Set up the default histogram keywords.
     if hist_kwargs is None:
         hist_kwargs = dict()
+    else:
+        hist_kwargs = dict(hist_kwargs)
     hist_kwargs["color"] = hist_kwargs.get("color", color)
     if smooth1d is None:
         hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
@@ -767,6 +769,8 @@ def hist2d(
     if plot_datapoints:
         if data_kwargs is None:
             data_kwargs = dict()
+        else:
+            data_kwargs = dict(data_kwargs)
         data_kwargs["color"] = data_kwargs.get("color", color)
         data_kwargs["ms"] = data_kwargs.get("ms", 2.0)
         data_kwargs["mec"] = data_kwargs.get("mec", "none")
@@ -787,6 +791,8 @@ def hist2d(
     if plot_contours and fill_contours:
         if contourf_kwargs is None:
             contourf_kwargs = dict()
+        else:
+            contourf_kwargs = dict(contourf_kwargs)
         contourf_kwargs["colors"] = contourf_kwargs.get("colors", contour_cmap)
         contourf_kwargs["antialiased"] = contourf_kwargs.get(
             "antialiased", False
@@ -810,6 +816,8 @@ def hist2d(
     if plot_contours:
         if contour_kwargs is None:
             contour_kwargs = dict()
+        else:
+            contour_kwargs = dict(contour_kwargs)
         contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
 
