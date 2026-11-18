@@ -38,6 +38,7 @@ def corner(
     truth_color="#4682b4",
     scale_hist=False,
     quantiles=None,
+    q_ls=None,
     verbose=False,
     fig=None,
     max_n_ticks=5,
@@ -188,7 +189,10 @@ def corner(
 
     quantiles : iterable
         A list of fractional quantiles to show on the 1-D histograms as
-        vertical dashed lines.
+        vertical dashed lines or depends on ``q_ls``.
+
+    q_ls : iterable
+        A list of matplotlib line style specifiers to be used for the quantiles.
 
     verbose : bool
         If true, print the values of the computed quantiles.
@@ -275,6 +279,7 @@ def corner(
             truth_color=truth_color,
             scale_hist=scale_hist,
             quantiles=quantiles,
+            q_ls=q_ls,
             verbose=verbose,
             fig=fig,
             max_n_ticks=max_n_ticks,

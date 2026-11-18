@@ -18,12 +18,13 @@ np.random.seed(42)
 ndim, nsamples = 3, 50000
 
 # Generate some fake data.
-data1 = np.random.randn(ndim * 4 * nsamples / 5).reshape(
-    [4 * nsamples / 5, ndim]
+data1 = np.random.randn(int(ndim * 4 * nsamples / 5)).reshape(
+    [int(4 * nsamples / 5), ndim]
 )
+
 data2 = 4 * np.random.rand(ndim)[None, :] + np.random.randn(
-    ndim * nsamples / 5
-).reshape([nsamples / 5, ndim])
+    int(ndim * nsamples / 5)
+).reshape([int(nsamples / 5), ndim])
 data = np.vstack([data1, data2])
 
 # Plot it.
@@ -36,6 +37,7 @@ figure = corner.corner(
         r"$\Gamma \, [\mathrm{parsec}]$",
     ],
     quantiles=[0.16, 0.5, 0.84],
+    q_ls=["solid", "dashed", "dashdot"],
     show_titles=True,
     title_kwargs={"fontsize": 12},
 )
