@@ -332,7 +332,7 @@ def corner_impl(
                 ax.set_xticklabels([])
                 ax.set_xticklabels([], minor=True)
         else:
-            if reverse:
+            if reverse or top_ticks:
                 ax.xaxis.tick_top()
             [l.set_rotation(45) for l in ax.get_xticklabels()]
             [l.set_rotation(45) for l in ax.get_xticklabels(minor=True)]
